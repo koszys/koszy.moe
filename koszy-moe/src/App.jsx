@@ -1,94 +1,256 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import GameCard from './components/GameCard';
+
+const GAMES = [
+  {
+    id: 'genshin',
+    name: 'Genshin Impact',
+    status: 'active',
+    bgUrl: '/genshin_impact_background.webp',
+    link: '/genshin',
+    tags: [
+      { label: 'Planner', color: 'bg-blue-500/80' },
+      { label: 'Timeline', color: 'bg-purple-500/80' }
+    ]
+  },
+  {
+    id: 'hsr',
+    name: 'Honkai: Star Rail',
+    status: 'inactive',
+    bgUrl: '/hsr_background.png'
+  },
+  {
+    id: 'zzz',
+    name: 'Zenless Zone Zero',
+    status: 'inactive',
+    bgUrl: '/zzz_background.jpg'
+  },
+  {
+    id: 'wuwa',
+    name: 'Wuthering Waves',
+    status: 'inactive',
+    bgUrl: '/wuwa_background.jpg'
+  }
+];
+
+// Automatically grab all background URLs for the randomizer
+const BACKGROUNDS = GAMES.map(game => game.bgUrl);
 
 export default function App() {
+  const [currentBg, setCurrentBg] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const savedBg = localStorage.getItem('koszy-last-bg');
+    if (savedBg) {
+      setCurrentBg(savedBg);
+    } else {
+      const randomBg = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)];
+      setCurrentBg(randomBg);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleHover = (bgUrl) => {
+    setCurrentBg(bgUrl);
+    localStorage.setItem('koszy-last-bg', bgUrl);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 font-sans selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white relative">
       
-      {/* Navigation Header */}
-      <header className="sticky top-0 z-50 flex items-center justify-between p-4 bg-gray-900/95 backdrop-blur border-b border-gray-800">
-        <div className="flex items-center gap-8">
-          <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 tracking-wider cursor-pointer">
-            koszy.moe
-          </div>
-          <nav className="hidden md:flex space-x-6 text-sm font-semibold text-gray-400">
-            <a href="#" className="text-white transition-colors">Home</a>
-            <a href="#" className="hover:text-white transition-colors">Global Planner</a>
-            <a href="#" className="hover:text-white transition-colors">Pinned Events</a>
-          </nav>
-        </div>
-        <div className="flex items-center space-x-5">
-          {/* Placeholder for Ko-fi / Discord */}
-          <a href="#" className="text-gray-400 hover:text-white transition-colors">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
-          </a>
-          <button className="px-5 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-bold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]">
-            Login
-          </button>
-        </div>
-      </header>
+     {/* Dynamic Background Layers */}
+      {BACKGROUNDS.map((bg) => (
+        <div 
+          key={bg}
+          className={`fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-in-out ${
+            currentBg === bg ? 'opacity-25' : 'opacity-0'
+          }`}
+          style={{ backgroundImage: `url('${bg}')` }}
+        />
+      ))}
 
-      <main className="max-w-7xl mx-auto p-6 mt-10">
-        
-        {/* Hero Section */}
-        <section className="text-center mb-20 mt-10">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
-            Master Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Gacha Routine</span>
-          </h1>
-          <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Your unified planner and event timeline. Track daily rewards, manage stamina, and never miss a banner across all your favorite games and servers.
-          </p>
-        </section>
-
-        {/* Database Hub / Games Grid */}
-        <section>
-          <div className="flex items-center justify-between mb-8 border-b border-gray-800 pb-4">
-            <h2 className="text-2xl font-bold tracking-wide">Supported Games</h2>
+      <div className="relative z-10">
+        <header className={`sticky top-0 z-50 flex items-center justify-between px-5 py-3 transition-all duration-300 border-b ${
+          scrolled 
+            ? 'bg-[#1c1d21]/90 border-[#33343a] shadow-md' 
+            : 'bg-transparent border-transparent'
+        }`}>
+          <div className="flex items-center gap-8">
+            <div className="text-2xl font-black text-white tracking-widest cursor-pointer">
+              KOSZY<span className="text-blue-500">.MOE</span>
+            </div>
+            <nav className="hidden md:flex space-x-6 text-sm font-semibold">
+              <a href="#" className="text-white border-b-2 border-blue-500 pb-1">Home</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Global Planner</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Pinned Events</a>
+            </nav>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            
-            {/* Active Game: Genshin Impact */}
-            <a href="/genshin" className="group block relative rounded-2xl overflow-hidden bg-gray-800 border border-gray-700 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_30px_rgba(37,99,235,0.2)] hover:-translate-y-1">
-              <div className="aspect-[16/9] bg-gray-700 relative overflow-hidden">
-                {/* Visual placeholder - later replace with actual game banner */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 to-gray-800 opacity-80 group-hover:scale-110 transition-transform duration-500"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent z-10"></div>
+          <div className="flex items-center space-x-4">
+            <button className="text-sm font-semibold text-gray-400 hover:text-white transition-colors hidden sm:block">Discord</button>
+            <button className="text-sm font-semibold text-white hover:text-white transition-colors hidden sm:block bg-red-500">Ko-fi</button>
+            <button className="ml-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm font-bold transition-colors">Sign In</button>
+          </div>
+        </header>
+
+        {/* <div className="relative z-10">
+        <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-3 bg-[#1c1d21]/90 backdrop-blur-sm border-b border-[#33343a] shadow-md">
+          <div className="flex items-center gap-8">
+            <div className="text-2xl font-black text-white tracking-widest cursor-pointer">
+              KOSZY<span className="text-blue-500">.MOE</span>
+            </div>
+            <nav className="hidden md:flex space-x-6 text-sm font-semibold">
+              <a href="#" className="text-white border-b-2 border-blue-500 pb-1">Home</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Global Planner</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Pinned Events</a>
+            </nav>
+          </div>
+          <div className="flex items-center space-x-4">
+            <button className="text-sm font-semibold text-gray-400 hover:text-white transition-colors hidden sm:block">Discord</button>
+            <button className="text-sm font-semibold text-white hover:text-white transition-colors hidden sm:block bg-red-500">Ko-fi</button>
+            <button className="ml-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm font-bold transition-colors">Sign In</button>
+          </div>
+        </header> */}
+
+        <main className="max-w-[1200px] mx-auto p-4 md:p-6 mt-6">
+          <section className="mb-10">
+            <div className="relative w-full h-32 md:h-40 flex items-center justify-center group cursor-pointer">
+              <div className="relative z-10 text-center px-4">
+                <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide uppercase"> KOSZY<span className="text-blue-500">.MOE</span></h1>
+                <p className="text-gray-400 text-sm md:text-base">
+                  Your tracker for dailies, events, and other content for your gacha games. 
+                  This is currently being maintained solo so I would appreciate any support and feedback!
+                </p>
               </div>
-              
-              <div className="absolute bottom-0 w-full p-5 z-20">
-                <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">Genshin Impact</h3>
-                <div className="flex gap-2 mt-2">
-                  <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 rounded">Planner</span>
-                  <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 rounded">Timeline</span>
+            </div>
+          </section>
+
+          {/* <main className="max-w-[1200px] mx-auto p-4 md:p-6 mt-6">
+          <section className="mb-10">
+            <div className="relative w-full h-32 md:h-40 bg-[#1c1d21] border border-[#33343a] rounded-md overflow-hidden flex items-center justify-center group cursor-pointer">
+              <div className="absolute inset-0  bg-gradient-to-r from-blue-900/20 to-purple-900/20 group-hover:scale-105 transition-transform duration-500"></div> {}
+              <div className="relative z-10 text-center px-4">
+                <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide uppercase"> KOSZY<span className="text-blue-500">.MOE</span></h1>
+                <p className="text-gray-400 text-sm md:text-base">
+                  Your tracker for dailies, events, and other content for your gacha games. 
+                  This is currently being maintained solo so I would appreciate any support and feedback!
+                </p>
+              </div>
+            </div>
+          </section> */}
+
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-white uppercase tracking-wider border-l-4 border-blue-500 pl-3">
+              Supported Games
+            </h2>
+          </div>
+
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {GAMES.map((game) => (
+              <GameCard 
+                key={game.id}
+                name={game.name}
+                status={game.status}
+                bgUrl={game.bgUrl}
+                link={game.link}
+                tags={game.tags}
+                onHover={handleHover}
+              />
+            ))}
+          </section>
+
+          {/* Featured Content */}
+          <section className="mt-16">
+            <h2 className="text-xl font-bold text-white uppercase tracking-wider border-l-4 border-purple-500 pl-3 mb-6">
+              Featured Content
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6 hover:border-purple-500/50 transition-colors">
+                <h3 className="text-lg font-bold text-white mb-3">Community Events</h3>
+                <p className="text-gray-400 mb-4">
+                  Join our discord community to share your progress, discuss strategies, and stay updated with the latest event information across all supported games.
+                </p>
+                <button className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded text-sm font-semibold transition-colors">
+                  Join Discord
+                </button>
+              </div>
+              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6 hover:border-blue-500/50 transition-colors">
+                <h3 className="text-lg font-bold text-white mb-3">Quick Tips</h3>
+                <p className="text-gray-400 mb-4">
+                  Never miss daily missions or limited-time events. Our tracker helps you stay organized and maximize your rewards across all your favorite gacha games.
+                </p>
+                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm font-semibold transition-colors">
+                  Learn More
+                </button>
+              </div>
+            </div>
+          </section>
+          
+          {/* Upcoming Features */}
+          <section className="mt-16">
+            <h2 className="text-xl font-bold text-white uppercase tracking-wider border-l-4 border-yellow-500 pl-3 mb-6">
+              Upcoming Features
+            </h2>
+            <div className="space-y-4">
+              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
+                <h4 className="text-white font-bold mb-2">✓ Multi-Account Support</h4>
+                <p className="text-gray-400 text-sm">Track multiple accounts across different platforms with ease.</p>
+              </div>
+              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
+                <h4 className="text-white font-bold mb-2">✓ Push Notifications</h4>
+                <p className="text-gray-400 text-sm">Get real-time alerts for event resets and important milestones.</p>
+              </div>
+              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
+                <h4 className="text-white font-bold mb-2">✓ Team Coordination Tools</h4>
+                <p className="text-gray-400 text-sm">Collaborate with your team and share event strategies in real-time.</p>
+              </div>
+              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
+                <h4 className="text-white font-bold mb-2">✓ Advanced Statistics</h4>
+                <p className="text-gray-400 text-sm">Analyze your gameplay patterns and optimize your daily routine.</p>
+              </div>
+            </div>
+          </section>
+          
+          {/* Getting Started */}
+          <section className="mt-16 mb-20">
+            <h2 className="text-xl font-bold text-white uppercase tracking-wider border-l-4 border-green-500 pl-3 mb-6">
+              Getting Started
+            </h2>
+            <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-8">
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                  <div>
+                    <h4 className="text-white font-bold mb-1">Select Your Games</h4>
+                    <p className="text-gray-400 text-sm">Choose which gacha games you play from our supported list above.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                  <div>
+                    <h4 className="text-white font-bold mb-1">Set Up Your Dashboard</h4>
+                    <p className="text-gray-400 text-sm">Customize your daily checklist and pin your most important events.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                  <div>
+                    <h4 className="text-white font-bold mb-1">Stay on Top of Events</h4>
+                    <p className="text-gray-400 text-sm">Never miss a daily reset, event deadline, or limited-time reward again.</p>
+                  </div>
                 </div>
               </div>
-            </a>
-
-            {/* Inactive Games (Placeholders based on your list) */}
-            <div className="rounded-2xl overflow-hidden bg-gray-800/30 border border-gray-800/50 opacity-40 cursor-not-allowed aspect-[16/9] relative">
-              <div className="absolute bottom-0 w-full p-5">
-                <h3 className="text-xl font-bold text-gray-300">Honkai: Star Rail</h3>
-                <p className="text-xs text-gray-500 mt-2 uppercase tracking-wider font-bold">Coming Soon</p>
-              </div>
             </div>
-
-            <div className="rounded-2xl overflow-hidden bg-gray-800/30 border border-gray-800/50 opacity-40 cursor-not-allowed aspect-[16/9] relative">
-              <div className="absolute bottom-0 w-full p-5">
-                <h3 className="text-xl font-bold text-gray-300">Zenless Zone Zero</h3>
-                <p className="text-xs text-gray-500 mt-2 uppercase tracking-wider font-bold">Coming Soon</p>
-              </div>
-            </div>
-
-            <div className="rounded-2xl overflow-hidden bg-gray-800/30 border border-gray-800/50 opacity-40 cursor-not-allowed aspect-[16/9] relative">
-              <div className="absolute bottom-0 w-full p-5">
-                <h3 className="text-xl font-bold text-gray-300">Wuthering Waves</h3>
-                <p className="text-xs text-gray-500 mt-2 uppercase tracking-wider font-bold">Coming Soon</p>
-              </div>
-            </div>
-
-          </div>
-        </section>
-      </main>
+          </section>
+        </main>
+      </div>
     </div>
   );
 }
