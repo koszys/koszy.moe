@@ -47,6 +47,7 @@ export default function App() {
   const [isExpanded, setIsExpanded] = useState(false); 
   const [visibleCount, setVisibleCount] = useState(4); 
 
+  {/* Game background */}
   useEffect(() => {
     const savedBg = localStorage.getItem('koszy-last-bg');
     if (savedBg) {
@@ -57,6 +58,7 @@ export default function App() {
     }
   }, []);
 
+  {/* Handles scroll behavior */}
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -65,6 +67,7 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  {/* Handles hover behavior for game cards */}
   const handleHover = (bgUrl) => {
     setCurrentBg(bgUrl);
     localStorage.setItem('koszy-last-bg', bgUrl);
