@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GameCard from './components/GameCard';
+import kofiLogo from './assets/kofilogo.webp';
+import discordLogo from './assets/discordlogo.png';
 
 const GAMES = [
   {
@@ -9,8 +11,8 @@ const GAMES = [
     bgUrl: '/genshin_impact_background.webp',
     link: '/genshin',
     tags: [
-      { label: 'Planner', color: 'bg-blue-500/80' },
-      { label: 'Timeline', color: 'bg-purple-500/80' }
+      //{ label: 'Planner', color: 'bg-blue-500/80' },
+      //{ label: 'Timeline', color: 'bg-purple-500/80' }
     ]
   },
   {
@@ -77,8 +79,9 @@ export default function App() {
         />
       ))}
 
+      {/* Header */}
       <div className="relative z-10">
-        <header className={`sticky top-0 z-50 flex items-center justify-between px-5 py-3 transition-all duration-300 border-b ${
+        <header className={`sticky top-0 z-50 flex items-center justify-between px-5 py-3 transition-all duration-700 border-b ${
           scrolled 
             ? 'bg-[#1c1d21]/90 border-[#33343a] shadow-md' 
             : 'bg-transparent border-transparent'
@@ -93,11 +96,21 @@ export default function App() {
               <a href="#" className="text-gray-400 hover:text-white transition-colors">Pinned Events</a>
             </nav>
           </div>
+
           <div className="flex items-center space-x-4">
-            <button className="text-sm font-semibold text-gray-400 hover:text-white transition-colors hidden sm:block">Discord</button>
-            <button className="text-sm font-semibold text-white hover:text-white transition-colors hidden sm:block bg-red-500">Ko-fi</button>
-            <button className="ml-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm font-bold transition-colors">Sign In</button>
+            <button className="flex hidden items-center gap-2 text-sm font-semibold text-white hover:text-white transition-colors sm:flex bg-[#5865F2] hover:bg-inherit hover:border-[#5865F2] px-3 py-2 rounded">
+              <img src={discordLogo} alt="Discord" className="w-5 h-5" />
+              <span>Discord</span>
+            </button>
+
+            <button className="flex hidden items-center gap-2 text-sm font-semibold text-white hover:text-white transition-colors sm:flex  bg-red-500 hover:bg-inherit hover:border-red-500 px-3 py-2 rounded">
+              <img src={kofiLogo} alt="Ko-fi" className="w-6 h-5" />
+              <span>Ko-fi</span>
+            </button>
+
+            <button className="ml-2 px-5 py-2 bg-blue-500 hover:bg-inherit hover:border-blue-500 text-white rounded text-sm font-bold transition-colors">Sign In</button>
           </div>
+
         </header>
 
         {/* <div className="relative z-10">
@@ -119,6 +132,7 @@ export default function App() {
           </div>
         </header> */}
 
+        {/* Hero Section */}
         <main className="max-w-[1200px] mx-auto p-4 md:p-6 mt-6">
           <section className="mb-10">
             <div className="relative w-full h-32 md:h-40 flex items-center justify-center group cursor-pointer">
@@ -146,12 +160,13 @@ export default function App() {
             </div>
           </section> */}
 
+          {/* Supported Games */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-white uppercase tracking-wider border-l-4 border-blue-500 pl-3">
+            <h2 className=" text-xl font-bold text-white uppercase tracking-wider border-l-4 border-blue-500 pl-3">
               Supported Games
             </h2>
-          </div>
 
+          </div>
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {GAMES.map((game) => (
               <GameCard 
@@ -166,29 +181,51 @@ export default function App() {
             ))}
           </section>
 
-          {/* Featured Content */}
-          <section className="mt-16">
-            <h2 className="text-xl font-bold text-white uppercase tracking-wider border-l-4 border-purple-500 pl-3 mb-6">
-              Featured Content
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6 hover:border-purple-500/50 transition-colors">
-                <h3 className="text-lg font-bold text-white mb-3">Community Events</h3>
-                <p className="text-gray-400 mb-4">
-                  Join our discord community to share your progress, discuss strategies, and stay updated with the latest event information across all supported games.
-                </p>
-                <button className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded text-sm font-semibold transition-colors">
-                  Join Discord
-                </button>
+          {/* Community & Support Section */}
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 mt-10">
+            
+            {/* Discord Card */}
+            <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(88,101,242,0.15)]">
+              <div className="w-16 h-16 flex-shrink-0  rounded-full flex items-center justify-center p-3">
+                <img src={discordLogo} alt="Discord" className="w-full h-full object-contain" />
               </div>
-              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6 hover:border-blue-500/50 transition-colors">
-                <h3 className="text-lg font-bold text-white mb-3">Quick Tips</h3>
-                <p className="text-gray-400 mb-4">
-                  Never miss daily missions or limited-time events. Our tracker helps you stay organized and maximize your rewards across all your favorite gacha games.
+
+              <div className="flex-1 text-center sm:text-left">
+                <h3 className="text-xl font-bold text-white mb-2">Join the Community</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Join the discord server to share feedback, suggest features, and talk with other users! I appreciate any help on maintaining and improving the planner, so feel free to reach out if you want to contribute. Thank you!
                 </p>
-                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm font-semibold transition-colors">
-                  Learn More
-                </button>
+                <a
+                  href="YOUR_DISCORD_LINK_HERE"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2 bg-[#5865F2] border border-transparent hover:bg-inherit hover:border-[#5865F2] text-white hover:text-white text-sm font-bold rounded transition-colors"
+                >
+                  <img src={discordLogo} alt="Discord" className="w-5 h-5" />
+                  <span>Discord</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Ko-fi Card */}
+            <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,94,91,0.15)]">
+              <div className="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center p-3">
+                <img src={kofiLogo} alt="Ko-fi" className="w-full h-full object-contain" />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <h3 className="text-xl font-bold text-white mb-2">Support the Project</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  koszy.moe currently runs ad-free and is being maintained by one person (me lol). If this planner helps you out with dailies and stuff, consider supporting me on Ko-fi. I appreciate it!
+                </p>
+                <a
+                  href="YOUR_KOFI_LINK_HERE"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2 bg-red-500 border border-transparent hover:bg-inherit hover:border-red-500 text-white hover:text-white text-sm font-bold rounded transition-colors"
+                >
+                  <img src={kofiLogo} alt="Ko-fi" className="w-6 h-5" />
+                  <span>Support on Ko-fi</span>
+                </a>
               </div>
             </div>
           </section>
@@ -207,19 +244,11 @@ export default function App() {
                 <h4 className="text-white font-bold mb-2">✓ Push Notifications</h4>
                 <p className="text-gray-400 text-sm">Get real-time alerts for event resets and important milestones.</p>
               </div>
-              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
-                <h4 className="text-white font-bold mb-2">✓ Team Coordination Tools</h4>
-                <p className="text-gray-400 text-sm">Collaborate with your team and share event strategies in real-time.</p>
-              </div>
-              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
-                <h4 className="text-white font-bold mb-2">✓ Advanced Statistics</h4>
-                <p className="text-gray-400 text-sm">Analyze your gameplay patterns and optimize your daily routine.</p>
-              </div>
             </div>
           </section>
           
           {/* Getting Started */}
-          <section className="mt-16 mb-20">
+          {/* <section className="mt-16 mb-20">
             <h2 className="text-xl font-bold text-white uppercase tracking-wider border-l-4 border-green-500 pl-3 mb-6">
               Getting Started
             </h2>
@@ -248,7 +277,8 @@ export default function App() {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
+
         </main>
       </div>
     </div>
