@@ -1,11 +1,12 @@
-    import React from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-    export default function GameCard({ name, status, bgUrl, link, tags, onHover }) {
+export default function GameCard({ name, status, bgUrl, link, tags, onHover }) {
     const isActive = status === 'active';
 
-    // We change the HTML wrapper depending on if it's a clickable link or a static div
-    const CardContainer = isActive ? 'a' : 'div';
-    const containerProps = isActive ? { href: link } : {};
+    // Use React Router's <Link> for active games, and a standard <div> for inactive ones
+    const CardContainer = isActive ? Link : 'div';
+    const containerProps = isActive ? { to: link } : {};
 
     return (
         <CardContainer 
@@ -17,16 +18,13 @@
             : 'border-[#33343a] opacity-60 cursor-not-allowed hover:opacity-100 hover:border-gray-500'
         }`}
         >
-        {/* Background Image */}
         <div 
             className={`absolute inset-0 bg-cover bg-center ${isActive ? 'transition-transform duration-500 group-hover:scale-105' : ''}`}
             style={{ backgroundImage: `url('${bgUrl}')` }}
         ></div>
         
-        {/* Gradient Overlay */}
         <div className={`absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/${isActive ? '60' : '80'} to-[#121212]/${isActive ? '0' : '30'}`}></div>
         
-        {/* Text Content */}
         <div className="absolute bottom-0 left-0 w-full p-4 z-20">
             <h3 className={`text-xl font-bold mb-1 ${isActive ? 'text-white' : 'text-gray-300'}`}>{name}</h3>
             
@@ -44,4 +42,4 @@
         </div>
         </CardContainer>
     );
-    }
+}
