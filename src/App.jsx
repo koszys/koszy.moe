@@ -33,6 +33,7 @@ export default function App() {
       }>
         <Route index element={<GenshinHome />} />
         <Route path="planner" element={<GenshinPlanner />} />
+        {/* <Route path="/privacy" element={<Privacy />} /> */}
       </Route>
 
     </Routes>
