@@ -4,6 +4,7 @@ import kofiLogo from '../assets/kofilogo.webp';
 import discordLogo from '../assets/discordlogo.png';
 import ChangelogItem from '../components/ChangelogItem';
 import { CHANGELOG_DATA } from '../data/changelog';
+import { Link } from 'react-router-dom';
 
 const GAMES = [
   {
@@ -95,11 +96,16 @@ export default function Home() {
           scrolled 
             ? 'bg-[#1c1d21]/90 border-[#33343a] shadow-md' 
             : 'bg-transparent border-transparent'
-        }`}>
+          }`}>
+        
           <div className="flex items-center gap-8">
-            <div className="text-2xl font-black text-white tracking-widest cursor-pointer">
+            <Link 
+              to="/" 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="text-2xl font-black text-white hover:text-white tracking-widest cursor-pointer"
+            >
               KOSZY<span className="text-blue-500">.MOE</span>
-            </div>
+            </Link>
             <nav className="hidden md:flex space-x-6 text-sm font-semibold">
               <a href="#" className="text-white border-b-2 border-blue-500 pb-1">Home</a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">Global Planner</a>
@@ -123,15 +129,15 @@ export default function Home() {
 
         </header>
 
-        {/* Hero Section */}
+        {/* Main Page */}
         <main className="max-w-[1200px] mx-auto p-4 md:p-6 mt-6">
 
-          {/* Intro Section */}
+          {/* Intro */}
           <section className="mb-10">
             <div className="relative w-full h-32 md:h-40 flex items-center justify-center group cursor-pointer">
               <div className="relative z-10 text-center px-4">
                 <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide uppercase"> KOSZY<span className="text-blue-500">.MOE</span></h1>
-                <p className="text-gray-400 text-sm md:text-base">
+                <p className="text-gray-350 text-sm md:text-base">
                   Your tracker for dailies, events, and other content for your gacha games. 
                   This is currently being maintained solo so I would appreciate any support and feedback!
                 </p>
@@ -144,7 +150,6 @@ export default function Home() {
             <h2 className=" text-xl font-bold text-white uppercase tracking-wider border-l-4 border-blue-500 pl-3">
               Supported Games
             </h2>
-
           </div>
 
           {/* Game Cards Grid */}
@@ -173,7 +178,7 @@ export default function Home() {
 
               <div className="flex-1 text-center sm:text-left">
                 <h3 className="text-xl font-bold text-white mb-2">Join the Community</h3>
-                <p className="text-gray-400 text-sm mb-4">
+                <p className="text-gray-350 text-sm mb-4">
                   Join the discord server to share feedback, suggest features, and talk with other users! I appreciate any help on maintaining and improving the planner, so feel free to reach out if you want to contribute. Thank you!
                 </p>
                 <a
@@ -195,7 +200,7 @@ export default function Home() {
               </div>
               <div className="flex-1 text-center sm:text-left">
                 <h3 className="text-xl font-bold text-white mb-2">Support the Project</h3>
-                <p className="text-gray-400 text-sm mb-4">
+                <p className="text-gray-350 text-sm mb-4">
                   koszy.moe currently runs ad-free and is being maintained by one person (me lol). If this planner helps you out with dailies and stuff, consider supporting me on Ko-fi. I appreciate it!
                 </p>
                 <a
@@ -219,11 +224,11 @@ export default function Home() {
             <div className="space-y-4">
               <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
                 <h4 className="text-white font-bold mb-2">✓ Multi-Account Support</h4>
-                <p className="text-gray-400 text-sm">Track multiple accounts across different platforms with ease.</p>
+                <p className="text-gray-350 text-sm">Track multiple accounts across different platforms with ease.</p>
               </div>
               <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
                 <h4 className="text-white font-bold mb-2">✓ Push Notifications</h4>
-                <p className="text-gray-400 text-sm">Get real-time alerts for event resets and important milestones.</p>
+                <p className="text-gray-350 text-sm">Get real-time alerts for event resets and important milestones.</p>
               </div>
             </div>
           </section>

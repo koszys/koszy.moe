@@ -6,7 +6,7 @@ export default function ChangelogItem({ version, date, changes }) {
             <h4 className="text-white font-bold">{version}</h4>
             <span className="text-xs text-gray-500">{date}</span>
         </div>
-        <ul className="list-disc list-inside text-sm text-white space-y-1">
+        <ul className="list-disc list-inside text-sm text-gray-350 space-y-1">
             {changes.map((change, i) => (
             <li key={i}>{change}</li>
             ))}
