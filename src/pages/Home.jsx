@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import GameCard from '../components/GameCard';
+import { Link } from 'react-router-dom';
+
 import kofiLogo from '../assets/kofilogo.webp';
 import discordLogo from '../assets/discordlogo.png';
+
+import GameCard from '../components/GameCard';
 import ChangelogItem from '../components/ChangelogItem';
+import Footer from '../components/Footer';
+
 import { CHANGELOG_DATA } from '../data/changelog';
-import { Link } from 'react-router-dom';
 
 const GAMES = [
   {
@@ -325,6 +329,9 @@ export default function Home() {
               </div>
             </div>
           </section> */}
+
+          {/* Footer */}
+          <Footer />
 
         </main>
       </div>

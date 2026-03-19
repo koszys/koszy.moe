@@ -4,6 +4,8 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import kofiLogo from '../assets/kofilogo.webp';
 import discordLogo from '../assets/discordlogo.png';
 
+import Footer from './Footer';
+
 export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     const location = useLocation();
     
@@ -166,8 +168,9 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             </header>
 
             {/* Main Content Area */}
-            <main className="flex-1 overflow-y-auto p-4 md:p-8">
-            <Outlet /> 
+            <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col">            
+                <Outlet /> 
+                <Footer /> 
             </main>
         </div>
 
