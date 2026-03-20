@@ -40,7 +40,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         `}>
             
             {/* Sidebar Header: Logo ONLY */}
-            <div className="h-16 flex items-center justify-center px-4 border-b border-[#33343a] flex-shrink-0 bg-[#121212]">
+            <div className="h-16 flex items-center justify-center px-4 border-b border-[#33343a] flex-shrink-0 "> {/* bg-[#121212] can be added for a different logo background*/}
             {(!isSidebarCollapsed || isMobileNavOpen) ? (
                 <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
                 KOSZY<span className="text-blue-500">.MOE</span>
@@ -187,7 +187,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             transform transition-transform duration-300 ease-in-out flex flex-col
             ${isGameSwitcherOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
-            <div className="p-5 border-b border-[#33343a] flex items-center justify-between bg-[#121212]">
+            <div className="p-5 border-b border-[#33343a] flex items-center justify-between ">
             
             {/* Game Switcher Header */}
             <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
