@@ -14,24 +14,24 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     const availableGames = [
-        { name: 'Genshin Impact', path: '/genshin', bgUrl: '/genshin_impact_background.webp' },
-        { name: 'Honkai: Star Rail', path: '#', bgUrl: 'https://images8.alphacoders.com/131/1315858.jpeg' },
-        { name: 'Zenless Zone Zero', path: '#', bgUrl: 'https://images5.alphacoders.com/132/1322071.jpeg' },
-        { name: 'Wuthering Waves', path: '#', bgUrl: 'https://images8.alphacoders.com/133/1334994.png' }
+        { name: 'Genshin Impact', path: '/genshin', bgUrl: '/genshin_background.webp' },
+        { name: 'Honkai: Star Rail', path: '#', bgUrl: '/hsr_background.png' },
+        { name: 'Zenless Zone Zero', path: '#', bgUrl: '/zzz_background.jpg' },
+        { name: 'Wuthering Waves', path: '#', bgUrl: '/wuwa_background.jpg' }
     ];
 
     return (
         <div className="flex h-screen w-full bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
 
-        {/* --- MOBILE NAV OVERLAY --- */}
+        {/* Mobile Nav Overlay */}
         {isMobileNavOpen && (
             <div 
-            className="fixed inset-0 bg-black/70 z-40 md:hidden backdrop-blur-sm transition-opacity" 
+            className="fixed inset-0 bg-black/70 z-40 md:hidden transition-opacity" // "backdrop-blur-sm" adds a blur effect to the background
             onClick={() => setIsMobileNavOpen(false)} 
             />
         )}
 
-        {/* --- LEFT SIDEBAR --- */}
+        {/* Left Sidebar */}
         <aside className={`
             fixed md:static inset-y-0 left-0 z-50 bg-[#1c1d21] border-r border-[#33343a] flex flex-col flex-shrink-0
             transition-all duration-300 ease-in-out
@@ -40,26 +40,26 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         `}>
             
             {/* Sidebar Header: Logo ONLY */}
-            <div className="h-16 flex items-center justify-center px-4 border-b border-[#33343a] flex-shrink-0">
+            <div className="h-16 flex items-center justify-center px-4 border-b border-[#33343a] flex-shrink-0 bg-[#121212]">
             {(!isSidebarCollapsed || isMobileNavOpen) ? (
-                <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left">
+                <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
                 KOSZY<span className="text-blue-500">.MOE</span>
                 </Link>
             ) : (
-                <Link to="/" className="text-xl font-black text-white tracking-widest">
+                <Link to="/" className="text-xl font-black text-white tracking-widest hover:text-blue-500 transition-colors">
                 K<span className="text-blue-500">.</span>
                 </Link>
             )}
 
-            {/* Mobile Close Button */}
-            <button onClick={() => setIsMobileNavOpen(false)} className="md:hidden p-1 text-gray-400 hover:text-white bg-gray-800 rounded-md ml-auto">
+            {/* Mobile Close Button in Left Sidebar */}
+            <button onClick={() => setIsMobileNavOpen(false)} className="md:hidden p-1 bg-gray-500/20 text-white hover:text-white hover:border-blue-500 rounded-md ml-auto">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
             </div>
 
-            {/* --- FULL CONTAINER GAME SWITCHER BUTTON --- */}
+            {/* Game Switcher Button In Left Sidebar */}
             <div className="p-3 border-b border-[#33343a] flex-shrink-0">
             <button 
                 onClick={() => setIsGameSwitcherOpen(true)}
@@ -89,7 +89,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             </button>
             </div>
 
-            {/* Sidebar Nav Links */}
+            {/* Left Sidebar Nav Links */}
             <nav className="flex-1 p-3 flex flex-col gap-2 overflow-y-auto">
             {navLinks.map((link) => {
                 const isActive = location.pathname === link.path || location.pathname === link.path + '/';
@@ -102,7 +102,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
                     className={`flex items-center rounded-md font-bold text-sm transition-all whitespace-nowrap overflow-hidden
                     ${isSidebarCollapsed && !isMobileNavOpen ? 'justify-center p-3' : 'px-4 py-3 gap-3'}
                     ${isActive 
-                        ? 'bg-blue-600/20 text-blue-400 border border-blue-500/50' 
+                        ? 'bg-gray-400/20 text-white hover:text-white border border-blue-500' 
                         : 'text-gray-400 hover:bg-[#2a2b30] hover:text-white border border-transparent'}
                     `}
                 >
@@ -114,7 +114,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             </nav>
         </aside>
 
-        {/* --- RIGHT COLUMN (Header + Content) --- */}
+        {/* Right Column (Header + Content) */}
         <div className="flex-1 flex flex-col min-w-0 relative">
             
             {/* Global Top Header */}
@@ -124,7 +124,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
                 
                 {/* Mobile Hamburger Menu */}
                 <button 
-                className="md:hidden p-1.5 text-gray-400 hover:text-white transition-colors"
+                className="md:hidden p-1.5 text-white hover:text-white transition-colors hover:border-blue-500"
                 onClick={() => setIsMobileNavOpen(true)}
                 >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,9 +132,9 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
                 </svg>
                 </button>
 
-                {/* Desktop Collapse Toggle */}
+                {/* Desktop Hamburger Collapse Toggle */}
                 <button 
-                className="hidden md:flex p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors"
+                className="hidden md:flex p-1.5 text-white hover:text-white rounded-md transition-colors hover:border-blue-500"
                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                 title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
                 >
@@ -143,9 +143,9 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
                 </svg>
                 </button>
 
-                {/* Mobile Switcher Icon */}
+                {/* Mobile Game Switcher Icon */}
                 <button 
-                className="md:hidden p-1.5 text-gray-400 hover:text-blue-400 transition-colors"
+                className="md:hidden p-1.5 text-white hover:text-white hover:border-blue-500 transition-colors"
                 onClick={() => setIsGameSwitcherOpen(true)}
                 title={`Switching from ${gameTitle}`}
                 >
@@ -156,7 +156,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
 
             </div>
 
-            {/* Right Side Icons */}
+            {/* Right Side Icons (Discord, Ko-fi) */}
             <div className="flex items-center gap-4">
                 <a href="#" className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity">
                 <img src={discordLogo} alt="Discord" className="w-full h-full object-contain" />
@@ -174,10 +174,10 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             </main>
         </div>
 
-        {/* --- GAME SWITCHER DRAWER --- */}
+        {/* Game Switcher Drawer */}
         {isGameSwitcherOpen && (
             <div 
-            className="fixed inset-0 bg-black/70 z-[60] backdrop-blur-sm transition-opacity" 
+            className="fixed inset-0 bg-black/70 z-[60] transition-opacity" // "backdrop-blur-sm" adds a blur effect to the background
             onClick={() => setIsGameSwitcherOpen(false)} 
             />
         )}
@@ -188,14 +188,21 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             ${isGameSwitcherOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
             <div className="p-5 border-b border-[#33343a] flex items-center justify-between bg-[#121212]">
-            <h2 className="text-xl font-bold text-white uppercase tracking-wider">Select Game</h2>
-            <button onClick={() => setIsGameSwitcherOpen(false)} className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">
+            
+            {/* Game Switcher Header */}
+            <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
+                KOSZY<span className="text-blue-500">.MOE</span>
+            </Link>
+
+            {/* Close Button */}
+            <button onClick={() => setIsGameSwitcherOpen(false)} className="p-1.5 bg-gray-500/20 text-white hover:border-blue-500 rounded-md">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
             </div>
             
+            {/* Game Options List */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
             {availableGames.map(game => (
                 <Link
@@ -210,7 +217,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
                 ></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/50 to-transparent z-10"></div>
                 <div className="absolute bottom-0 left-0 w-full p-3 z-20">
-                    <h3 className="font-bold text-white group-hover:text-blue-400 transition-colors drop-shadow-lg">
+                    <h3 className="font-bold text-white transition-colors drop-shadow-lg">
                     {game.name}
                     </h3>
                 </div>

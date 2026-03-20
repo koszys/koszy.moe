@@ -15,7 +15,7 @@ const GAMES = [
     id: 'genshin',
     name: 'Genshin Impact',
     status: 'active',
-    bgUrl: '/genshin_impact_background.webp',
+    bgUrl: '/genshin_background.webp',
     link: '/genshin',
     tags: [
       //{ label: 'Planner', color: 'bg-blue-500/80' },
@@ -106,7 +106,7 @@ export default function Home() {
             <Link 
               to="/" 
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="text-2xl font-black text-white hover:text-white tracking-widest cursor-pointer"
+              className="text-2xl font-black text-white hover:text-blue-500 tracking-widest cursor-pointer"
             >
               KOSZY<span className="text-blue-500">.MOE</span>
             </Link>
