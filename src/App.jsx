@@ -9,13 +9,24 @@ import GenshinPlanner from './pages/genshin/GenshinPlanner';
 // Components
 import GameLayout from './components/GameLayout';
 
+// Genshin Icons
+import genshinPlannerIcon from './assets/genshin/genshin-quest.png';
+import genshinLogoIcon from './assets/genshin/genshin-logo.webp'
+
 export default function App() {
   
-  // Define the sidebar links for Genshin here
-  // You can easily swap the icons out for actual <img> tags of the seelies later!
+  // Genshin Sidebar Links
   const genshinLinks = [
-    { name: 'Home', path: '/genshin', icon: '🏠' },
-    { name: 'Planner', path: '/genshin/planner', icon: '📅' }
+    { 
+      name: 'Home', 
+      path: '/genshin', 
+      icon: <img src={genshinLogoIcon} alt="Home" className="w-5 h-5 object-contain" /> 
+    },
+    { 
+      name: 'Planner', 
+      path: '/genshin/planner', 
+      icon: <img src={genshinPlannerIcon} alt="Planner" className="w-5 h-5 object-contain" /> 
+    }
   ];
 
   return (
@@ -23,11 +34,11 @@ export default function App() {
       {/* The Main Hub */}
       <Route path="/" element={<Home />} />
       
-      {/* Updated Genshin Route: Passing the background URL as a prop */}
+      {/* Genshin Route: Passing the background URL as a prop */}
       <Route path="/genshin" element={
         <GameLayout 
           gameTitle="Genshin Impact" 
-          currentGameBgUrl="/genshin_impact_background.webp" // <-- Pass the public image here
+          currentGameBgUrl="/genshin_background.webp"
           navLinks={genshinLinks} 
         />
       }>
