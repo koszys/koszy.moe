@@ -20,33 +20,36 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         { name: 'Wuthering Waves', path: '#', bgUrl: '/wuwa_background.jpg' }
     ];
 
+    // Uniform class for all UI icon buttons
+    const iconButtonClass = "p-1.5 text-white bg-white/5 hover:bg-white/10 border border-transparent hover:border-blue-500 rounded-md transition-all flex items-center justify-center";
+
     return (
         <div className="relative flex h-screen w-full bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
         
         {/* Static Background Layer for Main Content */}
         <div 
-            className="absolute inset-0  bg-cover bg-center bg-no-repeat opacity-35 pointer-events-none"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35 pointer-events-none"
             style={{ backgroundImage: currentGameBgUrl ? `url('${currentGameBgUrl}')` : 'none' }}
         />
 
         {/* Mobile Nav Overlay */}
         {isMobileNavOpen && (
             <div 
-            className="fixed inset-0 bg-black/70 z-40 md:hidden transition-opacity" // "backdrop-blur-sm" adds a blur effect to the background
+            className="fixed inset-0 bg-black/70 z-40 md:hidden transition-all"
             onClick={() => setIsMobileNavOpen(false)} 
             />
         )}
 
         {/* Left Sidebar */}
         <aside className={`
-            fixed md:static inset-y-0 left-0 z-50 bg-[#1c1d21]/80 backdrop-blur-sm border-r border-[#33343a] flex flex-col flex-shrink-0
+            fixed md:static inset-y-0 left-0 z-50 bg-[#1c1d21] border-r border-[#33343a] flex flex-col flex-shrink-0
             transition-all duration-300 ease-in-out
             ${isMobileNavOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'}
             ${isSidebarCollapsed ? 'md:w-20' : 'md:w-64'}
         `}>
             
             {/* Sidebar Header: Logo ONLY */}
-            <div className="h-16 flex items-center justify-center px-4 border-b border-[#33343a] flex-shrink-0 "> {/* bg-[#121212] can be added for a different logo background*/}
+            <div className="h-16 flex items-center justify-center px-4 border-b border-[#33343a] flex-shrink-0">
             {(!isSidebarCollapsed || isMobileNavOpen) ? (
                 <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
                 KOSZY<span className="text-blue-500">.MOE</span>
@@ -58,7 +61,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             )}
 
             {/* Mobile Close Button in Left Sidebar */}
-            <button onClick={() => setIsMobileNavOpen(false)} className="md:hidden p-1 bg-gray-500/20 text-white hover:text-white hover:border-blue-500 rounded-md ml-auto">
+            <button onClick={() => setIsMobileNavOpen(false)} className={`md:hidden ml-auto ${iconButtonClass}`}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -124,13 +127,13 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         <div className="flex-1 flex flex-col min-w-0 relative">
             
             {/* Global Top Header */}
-            <header className="h-16 flex-shrink-0 bg-[#1c1d21]/80 backdrop-blur-sm border-b border-[#33343a] flex items-center justify-between px-4 z-30 shadow-sm">
+            <header className="h-16 flex-shrink-0 bg-[#1c1d21] border-b border-[#33343a] flex items-center justify-between px-4 z-30 shadow-sm">
             
             <div className="flex items-center gap-2 md:gap-4">
                 
                 {/* Mobile Hamburger Menu */}
                 <button 
-                className="md:hidden p-1.5 text-white hover:text-white transition-colors hover:border-blue-500"
+                className={`md:hidden ${iconButtonClass}`}
                 onClick={() => setIsMobileNavOpen(true)}
                 >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,7 +143,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
 
                 {/* Desktop Hamburger Collapse Toggle */}
                 <button 
-                className="hidden md:flex p-1.5 text-white hover:text-white rounded-md transition-colors hover:border-blue-500"
+                className={`hidden md:flex ${iconButtonClass}`}
                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                 title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
                 >
@@ -151,7 +154,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
 
                 {/* Mobile Game Switcher Icon */}
                 <button 
-                className="md:hidden p-1.5 text-white hover:text-white hover:border-blue-500 transition-colors"
+                className={`md:hidden ${iconButtonClass}`}
                 onClick={() => setIsGameSwitcherOpen(true)}
                 title={`Switching from ${gameTitle}`}
                 >
@@ -174,7 +177,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             </header>
 
             {/* Main Content Area */}
-            <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col">            
+            <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col z-10 relative">            
                 <Outlet /> 
                 <Footer /> 
             </main>
@@ -183,7 +186,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         {/* Game Switcher Drawer */}
         {isGameSwitcherOpen && (
             <div 
-            className="fixed inset-0 bg-[#1c1d21]/70 z-[60] transition-opacity" // "backdrop-blur-sm" adds a blur effect to the background
+            className="fixed inset-0 bg-black/70 z-[60] transition-all"
             onClick={() => setIsGameSwitcherOpen(false)} 
             />
         )}
@@ -193,7 +196,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             transform transition-transform duration-300 ease-in-out flex flex-col
             ${isGameSwitcherOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
-            <div className="p-5 border-b border-[#33343a] flex items-center justify-between ">
+            <div className="p-5 border-b border-[#33343a] flex items-center justify-between">
             
             {/* Game Switcher Header */}
             <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
@@ -201,7 +204,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             </Link>
 
             {/* Close Button */}
-            <button onClick={() => setIsGameSwitcherOpen(false)} className="p-1.5 bg-gray-500/20 text-white hover:border-blue-500 rounded-md">
+            <button onClick={() => setIsGameSwitcherOpen(false)} className={iconButtonClass}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
