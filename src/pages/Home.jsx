@@ -86,7 +86,7 @@ export default function Home() {
         <div 
           key={bg}
           className={`fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-in-out ${
-            currentBg === bg ? 'opacity-25' : 'opacity-0'
+            currentBg === bg ? 'opacity-40' : 'opacity-0' // Background Opacity 
           }`}
           style={{ backgroundImage: `url('${bg}')` }}
         />

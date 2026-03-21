@@ -21,7 +21,13 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     ];
 
     return (
-        <div className="flex h-screen w-full bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
+        <div className="relative flex h-screen w-full bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
+        
+        {/* Static Background Layer for Main Content */}
+        <div 
+            className="absolute inset-0  bg-cover bg-center bg-no-repeat opacity-35 pointer-events-none"
+            style={{ backgroundImage: currentGameBgUrl ? `url('${currentGameBgUrl}')` : 'none' }}
+        />
 
         {/* Mobile Nav Overlay */}
         {isMobileNavOpen && (
@@ -33,7 +39,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
 
         {/* Left Sidebar */}
         <aside className={`
-            fixed md:static inset-y-0 left-0 z-50 bg-[#1c1d21] border-r border-[#33343a] flex flex-col flex-shrink-0
+            fixed md:static inset-y-0 left-0 z-50 bg-[#1c1d21]/80 backdrop-blur-sm border-r border-[#33343a] flex flex-col flex-shrink-0
             transition-all duration-300 ease-in-out
             ${isMobileNavOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'}
             ${isSidebarCollapsed ? 'md:w-20' : 'md:w-64'}
@@ -118,7 +124,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         <div className="flex-1 flex flex-col min-w-0 relative">
             
             {/* Global Top Header */}
-            <header className="h-16 flex-shrink-0 bg-[#1c1d21] border-b border-[#33343a] flex items-center justify-between px-4 z-30 shadow-sm">
+            <header className="h-16 flex-shrink-0 bg-[#1c1d21]/80 backdrop-blur-sm border-b border-[#33343a] flex items-center justify-between px-4 z-30 shadow-sm">
             
             <div className="flex items-center gap-2 md:gap-4">
                 
@@ -177,7 +183,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         {/* Game Switcher Drawer */}
         {isGameSwitcherOpen && (
             <div 
-            className="fixed inset-0 bg-black/70 z-[60] transition-opacity" // "backdrop-blur-sm" adds a blur effect to the background
+            className="fixed inset-0 bg-[#1c1d21]/70 z-[60] transition-opacity" // "backdrop-blur-sm" adds a blur effect to the background
             onClick={() => setIsGameSwitcherOpen(false)} 
             />
         )}
