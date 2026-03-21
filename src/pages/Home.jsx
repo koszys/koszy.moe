@@ -9,41 +9,10 @@ import ChangelogItem from '../components/ChangelogItem';
 import Footer from '../components/Footer';
 
 import { CHANGELOG_DATA } from '../data/changelog';
+import { GAME_CONFIG } from '../data/games'; 
 
-const GAMES = [
-  {
-    id: 'genshin',
-    name: 'Genshin Impact',
-    status: 'active',
-    bgUrl: '/genshin_background.webp',
-    link: '/genshin',
-    tags: [
-      //{ label: 'Planner', color: 'bg-blue-500/80' },
-      //{ label: 'Timeline', color: 'bg-purple-500/80' }
-    ]
-  },
-  {
-    id: 'hsr',
-    name: 'Honkai: Star Rail',
-    status: 'inactive',
-    bgUrl: '/hsr_background.png'
-  },
-  {
-    id: 'zzz',
-    name: 'Zenless Zone Zero',
-    status: 'inactive',
-    bgUrl: '/zzz_background.jpg'
-  },
-  {
-    id: 'wuwa',
-    name: 'Wuthering Waves',
-    status: 'inactive',
-    bgUrl: '/wuwa_background.jpg'
-  }
-];
-
-// Automatically grab all background URLs for the randomizer
-const BACKGROUNDS = GAMES.map(game => game.bgUrl);
+//Map backgrounds dynamically from config
+const BACKGROUNDS = GAME_CONFIG.map(game => game.bgUrl);
 
 export default function Home() {
   const [currentBg, setCurrentBg] = useState(null);
@@ -158,13 +127,13 @@ export default function Home() {
 
           {/* Game Cards Grid */}
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {GAMES.map((game) => (
+            {GAME_CONFIG.map((game) => (
               <GameCard 
                 key={game.id}
                 name={game.name}
                 status={game.status}
                 bgUrl={game.bgUrl}
-                link={game.link}
+                link={game.path}
                 tags={game.tags}
                 onHover={handleHover}
               />

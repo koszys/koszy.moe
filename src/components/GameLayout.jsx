@@ -6,19 +6,14 @@ import discordLogo from '../assets/discordlogo.png';
 
 import Footer from './Footer';
 
+import { GAME_CONFIG } from '../data/games'; 
+
 export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     const location = useLocation();
     
     const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
     const [isGameSwitcherOpen, setIsGameSwitcherOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-    const availableGames = [
-        { name: 'Genshin Impact', path: '/genshin', bgUrl: '/genshin_background.webp' },
-        { name: 'Honkai: Star Rail', path: '#', bgUrl: '/hsr_background.png' },
-        { name: 'Zenless Zone Zero', path: '#', bgUrl: '/zzz_background.jpg' },
-        { name: 'Wuthering Waves', path: '#', bgUrl: '/wuwa_background.jpg' }
-    ];
 
     // Uniform class for all UI icon buttons
     const iconButtonClass = "p-1.5 text-white bg-white/5 hover:bg-white/10 border border-transparent hover:border-blue-500 rounded-md transition-all flex items-center justify-center";
@@ -213,9 +208,9 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             
             {/* Game Options List */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-            {availableGames.map(game => (
+            {GAME_CONFIG.map(game => (
                 <Link
-                key={game.name}
+                key={game.id} // Changed to game.id
                 to={game.path}
                 onClick={() => setIsGameSwitcherOpen(false)}
                 className="relative group block h-28 rounded-md overflow-hidden border border-[#33343a] hover:border-blue-500 transition-all shadow-md"
@@ -233,6 +228,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
                 </Link>
             ))}
             </div>
+
         </div>
 
         </div>

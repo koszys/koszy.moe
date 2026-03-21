@@ -1,6 +1,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
+import { GAME_CONFIG } from './data/games'; 
+
 // Pages
 import Home from './pages/Home';
 import GenshinHome from './pages/genshin/GenshinHome';
@@ -11,11 +13,10 @@ import GameLayout from './components/GameLayout';
 
 // Genshin Icons
 import genshinPlannerIcon from './assets/genshin/genshin-quest.png';
-import genshinLogoIcon from './assets/genshin/genshin-logo.webp'
+import genshinLogoIcon from './assets/genshin/genshin-logo.webp';
 
 export default function App() {
   
-  // Genshin Sidebar Links
   const genshinLinks = [
     { 
       name: 'Home', 
@@ -29,24 +30,23 @@ export default function App() {
     }
   ];
 
+  // Find the Genshin data from master config
+  const genshinData = GAME_CONFIG.find(game => game.id === 'genshin');
+
   return (
     <Routes>
-      {/* The Main Hub */}
       <Route path="/" element={<Home />} />
       
-      {/* Genshin Route: Passing the background URL as a prop */}
       <Route path="/genshin" element={
         <GameLayout 
-          gameTitle="Genshin Impact" 
-          currentGameBgUrl="/genshin_background.webp"
+          gameTitle={genshinData.name} 
+          currentGameBgUrl={genshinData.bgUrl} // Pulls dynamically from games.js
           navLinks={genshinLinks} 
         />
       }>
         <Route index element={<GenshinHome />} />
         <Route path="planner" element={<GenshinPlanner />} />
-        {/* <Route path="/privacy" element={<Privacy />} /> */}
       </Route>
-
     </Routes>
   );
 }
