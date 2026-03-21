@@ -23,7 +23,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         
         {/* Static Background Layer for Main Content. Commenting out will remove all backgrounds */}
         <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35 pointer-events-none"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 pointer-events-none"
             style={{ backgroundImage: currentGameBgUrl ? `url('${currentGameBgUrl}')` : 'none' }}
         />
 
@@ -210,7 +210,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
             {GAME_CONFIG.map(game => (
                 <Link
-                key={game.id} // Changed to game.id
+                key={game.id} 
                 to={game.path}
                 onClick={() => setIsGameSwitcherOpen(false)}
                 className="relative group block h-28 rounded-md overflow-hidden border border-[#33343a] hover:border-blue-500 transition-all shadow-md"

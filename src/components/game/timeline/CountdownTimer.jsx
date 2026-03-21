@@ -28,7 +28,7 @@ export default function CountdownTimer({ endDate }) {
     const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
 
-    // Formatting strictly to Days and Hours (or Hours and Minutes if < 1 day)
+    // Days and Hours (or Hours and Minutes if < 1 day)
     let displayTime = '';
     if (days > 0) {
         displayTime = `${days}d ${hours}h`;
@@ -38,7 +38,6 @@ export default function CountdownTimer({ endDate }) {
         displayTime = `${minutes}m`;
     }
 
-    // Matches the exact green pill from your reference image
     return (
         <div className="bg-[#2f855a] text-white text-[11px] md:text-xs font-bold px-2 py-0.5 rounded shadow-sm tracking-wide">
         {displayTime}

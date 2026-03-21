@@ -7,7 +7,7 @@ const EventCard = ({ event, isCurrent }) => {
     const isBanner = event.type === 'banner';
 
     return (
-        <div className="relative flex items-center bg-[#1c1d21]/80 border border-[#33343a] rounded-xl p-3 h-24 shadow-sm hover:border-[#4b4c53] transition-colors group">
+        <div className="relative flex items-center bg-[#1c1d21]/70 border border-[#33343a] rounded-xl p-3 h-24 shadow-sm hover:border-[#4b4c53] transition-colors group">
         
         {/* LEFT: Event/Banner Icon */}
         <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0 flex items-center justify-center mr-4 rounded-md overflow-hidden">

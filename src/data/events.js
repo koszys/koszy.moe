@@ -12,7 +12,7 @@ export const EVENT_LABELS = {
     genshin: [
         {
         id: "ge_skirk_banner",
-        name: "Event Wishes", // The generic title
+        name: "Event Wishes",
         type: "banner",
         start: "2026-03-17T04:00:00Z",
         end: "2026-04-07T17:59:59Z",
