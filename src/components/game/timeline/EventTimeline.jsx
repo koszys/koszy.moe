@@ -97,30 +97,30 @@ export default function EventTimeline({ rawEvents, gameTitle }) {
 
     return (
         <section>
-        {/* Current Events (Standard Priority Sort) */}
-        <SectionHeader title={`Current ${gameTitle} Events`} />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {currentEvents.map(event => (
-            <EventCard key={event.id} event={event} isCurrent={true} />
-            ))}
-            {!currentEvents.length && (
-            <div className="text-gray-500 italic p-6 text-center border-2 border-dashed border-[#33343a] rounded-lg bg-[#1c1d21]/20 col-span-2">
-                No active events.
-            </div>
-            )}
-        </div>
-
-        {/* Upcoming Events (Optionally commented out in data/events.js later if unneeded) */}
-        {upcomingEvents.length > 0 && (
-            <>
-            <SectionHeader title={`Upcoming ${gameTitle} Events`} />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-70 hover:opacity-100 transition-opacity">
-                {upcomingEvents.map(event => (
-                <EventCard key={event.id} event={event} isCurrent={false} />
+            {/* Current Events */}
+            <SectionHeader title="Current Events" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {currentEvents.map(event => (
+                <EventCard key={event.id} event={event} isCurrent={true} />
                 ))}
+                {!currentEvents.length && (
+                <div className="text-gray-500 italic p-6 text-center border-2 border-dashed border-[#33343a] rounded-lg bg-[#1c1d21]/20 col-span-2">
+                    No active events.
+                </div>
+                )}
             </div>
-            </>
-        )}
+
+            {/* Upcoming Events */}
+            {upcomingEvents.length > 0 && (
+                <>
+                <SectionHeader title="Upcoming Events" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-70 hover:opacity-100 transition-opacity mt-8">
+                    {upcomingEvents.map(event => (
+                    <EventCard key={event.id} event={event} isCurrent={false} />
+                    ))}
+                </div>
+                </>
+            )}
         </section>
     );
 }
