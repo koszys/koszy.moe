@@ -11,22 +11,30 @@ export const EVENT_LABELS = {
     export const GLOBAL_EVENTS = {
     genshin: [
         {
-        id: "ge_skirk_banner",
-        name: "Event Wishes",
-        type: "banner",
-        start: "2026-03-17T04:00:00Z",
-        end: "2026-04-07T17:59:59Z",
-        image: "/genshin/ui-icon/genshin-wish.png", // The star icon on the left
-        bannerData: {
-            featuredChars: [
-            { name: "Skirk", icon: "/genshin/charactericon/skirk-icon.png"},
-            { name: "Escoffier", icon: "/genshin/charactericon/escoffier-icon.png" },
-            ],
-            featuredWeapons: [
-            { name: "Azurelight", icon: "/genshin/weaponicon/azurelight-icon.png" },
-            { name: "Symphonist of Scents", icon: "/genshin/weaponicon/symphonist-of-scents-icon.png" },
-            ]
-        }
+            id: "ge_banner",
+            name: "Event Wishes",
+            type: "banner",
+            start: "2026-03-17T04:00:00Z",
+            end: "2026-04-07T17:59:59Z",
+            image: "/genshin/ui-icon/genshin-wish.png", // The star icon on the left
+            bannerData: {
+                featuredChars: [
+                { name: "Skirk", icon: "/genshin/charactericon/skirk-icon.png"},
+                { name: "Escoffier", icon: "/genshin/charactericon/escoffier-icon.png" },
+                ],
+                featuredWeapons: [
+                { name: "Azurelight", icon: "/genshin/weaponicon/azurelight-icon.png" },
+                { name: "Symphonist of Scents", icon: "/genshin/weaponicon/symphonist-of-scents-icon.png" },
+                ]
+            }
+        },
+        {
+            id: "ge_sightseeing",
+            name: "Sightseeing With Friends",
+            type: "event",
+            start: "2026-03-16T10:00:00Z",
+            end: "2026-03-26T03:59:00Z",
+            image: "/genshin/eventimg/sightseeing_with_friends.webp",
         }
     ]
 };
