@@ -7,8 +7,9 @@ import discordLogo from '../assets/discordlogo.png';
 import GameCard from '../components/GameCard';
 import ChangelogItem from '../components/ChangelogItem';
 import Footer from '../components/Footer';
+import ChangelogSection from '../components/ChangelogSection';
 
-import { CHANGELOG_DATA } from '../data/changelog';
+import { CHANGELOG_DATA } from '../data/changelogs/mainchangelog';
 import { GAME_CONFIG } from '../data/games'; 
 
 //Map backgrounds dynamically from config
@@ -17,9 +18,7 @@ const BACKGROUNDS = GAME_CONFIG.map(game => game.bgUrl);
 export default function Home() {
   const [currentBg, setCurrentBg] = useState(null);
   const [scrolled, setScrolled] = useState(false);
-  const [showChangelog, setShowChangelog] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); 
-  const [visibleCount, setVisibleCount] = useState(4); 
 
   {/* Game background */}
   useEffect(() => {
@@ -207,65 +206,7 @@ export default function Home() {
           </section>
         
           {/* Changelog */}
-          <section className="mt-10 mb-20">
-            <button 
-              onClick={() => {
-                setShowChangelog(!showChangelog);
-                if (!showChangelog) setVisibleCount(4); 
-              }}
-              className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/40 border border-[#33343a] px-4 py-2 rounded mb-6"
-            >
-              {showChangelog ? '− Hide Changelog' : '+ View Changelog'}
-            </button>
-
-            {showChangelog && (
-              <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                {/* Main Card Container for all items */}
-                <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6 space-y-6">
-                  {CHANGELOG_DATA.slice(0, visibleCount).map((entry, idx) => (
-                    <div key={idx} className={idx !== 0 ? "border-t border-[#33343a] pt-6" : ""}>
-                      <ChangelogItem 
-                        version={entry.version} 
-                        date={entry.date} 
-                        changes={entry.changes} 
-                      />
-                    </div>
-                  ))}
-
-                  {/* Control Buttons Container inside the card */}
-                  <div className="flex flex-wrap gap-4 pt-2">
-                    {visibleCount < CHANGELOG_DATA.length && (
-                      <button
-                        onClick={() => setVisibleCount(prev => prev + 4)}
-                        className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/60 border border-[#33343a] px-4 py-2 rounded"
-                      >
-                        ↓ Show more
-                      </button>
-                    )}
-
-                    {visibleCount > 4 && (
-                      <button
-                        onClick={() => setVisibleCount(prev => Math.max(4, prev - 4))}
-                        className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/60 border border-[#33343a] px-4 py-2 rounded"
-                      >
-                        ↑ Show less
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() => {
-                        setShowChangelog(false);
-                        setVisibleCount(4);
-                      }}
-                      className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/60 border border-[#33343a] px-4 py-2 rounded"
-                    >
-                      × Hide Changelog
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </section>
+          <ChangelogSection changelogData={CHANGELOG_DATA} />
 
           {/* Getting Started */}
           {/* <section className="mt-16 mb-20">
