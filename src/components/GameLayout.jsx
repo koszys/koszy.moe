@@ -21,7 +21,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     return (
         <div className="relative flex h-screen w-full bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
         
-        {/* Static Background Layer for Main Content */}
+        {/* Static Background Layer for Main Content. Commenting out will remove all backgrounds */}
         <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35 pointer-events-none"
             style={{ backgroundImage: currentGameBgUrl ? `url('${currentGameBgUrl}')` : 'none' }}

@@ -1,18 +1,53 @@
 import React from 'react';
 
-import ChangelogSection from '../../components/ChangelogSection';
+// Data Imports
+import { CHANGELOG_DATA } from '../../data/changelogs/genshinchangelog';
+import { ACTIVE_CODES } from '../../data/codes';
+import { GLOBAL_EVENTS } from '../../data/events';
 
-import { CHANGELOG_DATA } from '../../data/changelogs/genshinchangelog';  
+// Standardized Components
+import ChangelogSection from '../../components/ChangelogSection';
+import SectionHeader from '../../components/game/SectionHeader';
+import GameIntro from '../../components/game/GameIntro';
+import ActiveCodes from '../../components/game/ActiveCodes';
+import EventTimeline from '../../components/game/timeline/EventTimeline';
 
 export default function GenshinHome() {
+    const gameId = 'genshin';
+    const gameTitle = 'Genshin Impact';
+    
+    // Custom URL (can be moved to games.js later)
+    const redeemUrl = 'https://genshin.hoyoverse.com/en/gift'; 
+    
+    // Data Extraction (simple filtering based on the consistent game ID)
+    const codes = ACTIVE_CODES[gameId];
+    const events = GLOBAL_EVENTS[gameId];
+    
     return (
-        <div className="w-full max-w-[1200px] mx-auto">
-        {/* ... other Genshin Home content will go here ... */}
+        <div className="w-full max-w-[1200px] mx-auto pb-20">
         
-        <h2 className="text-xl font-bold text-white uppercase tracking-wider border-l-4 border-blue-500 pl-3 mt-12 mb-2">
-            Changelog
-        </h2>
+        {/* SECTION 1: Standard Intro Header */}
+        <GameIntro 
+            text="A planner to keep up to date with new banners, events, and updates in Genshin Impact. "
+        />
+        
+        {/* SECTION 2: Active Codes */}
+        <SectionHeader title="Active Codes (Redeem Code Links)" />
+        <ActiveCodes 
+            codes={codes} 
+            redeemUrl={redeemUrl}
+        />
+        
+        {/* SECTION 3: Current & Upcoming Events (The Event Brain) */}
+        <EventTimeline 
+            rawEvents={events} 
+            gameTitle={gameTitle}
+        />
+        
+        {/* SECTION 4: Standard Changelog Section */}
+        <SectionHeader title="Genshin Updates" />
         <ChangelogSection changelogData={CHANGELOG_DATA} />
+
         </div>
     );
 }

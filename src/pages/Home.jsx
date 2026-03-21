@@ -54,7 +54,7 @@ export default function Home() {
         <div 
           key={bg}
           className={`fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-in-out ${
-            currentBg === bg ? 'opacity-40' : 'opacity-0' // Background Opacity 
+            currentBg === bg ? 'opacity-35' : 'opacity-0' // Background Opacity 
           }`}
           style={{ backgroundImage: `url('${bg}')` }}
         />
@@ -109,7 +109,7 @@ export default function Home() {
             <div className="relative w-full h-32 md:h-40 flex items-center justify-center group cursor-pointer">
               <div className="relative z-10 text-center px-4">
                 <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide uppercase"> KOSZY<span className="text-blue-500">.MOE</span></h1>
-                <p className="text-gray-350 text-sm md:text-base">
+                <p className="text-white text-sm md:text-base">
                   Your tracker for dailies, events, and other content for your gacha games. 
                   This is currently being maintained solo so I would appreciate any support and feedback!
                 </p>
