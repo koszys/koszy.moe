@@ -10,7 +10,7 @@ const EventCard = ({ event, isCurrent }) => {
         <div className="relative flex items-center bg-[#1c1d21]/80 border border-[#33343a] rounded-xl p-3 min-h-[6rem] shadow-sm hover:border-[#4b4c53] transition-colors group">
         
         {/* LEFT: Event/Banner Image */}
-        {/* Dynamic sizing: Banners get a square, regular events get a wide landscape box */}
+        {/* Banners get a square. Regular events get a landscape box */}
         <div className={`flex-shrink-0 flex items-center justify-center mr-4 overflow-hidden ${
             isBanner 
             ? 'w-12 h-12 md:w-14 md:h-14 rounded-md' 
@@ -28,10 +28,10 @@ const EventCard = ({ event, isCurrent }) => {
         </div>
 
         {/* MIDDLE: Content */}
-        {/* Increased right padding (pr-20) so long titles don't slide under the timer */}
+        {/* Right padding (pr-20) so long titles dont slide under the timer */}
         <div className="flex flex-col flex-1 justify-center min-w-0 pr-20">
             
-            {/* Dynamic Layout: Banners are side-by-side, Events stack Label ABOVE Title */}
+            {/* Banners side by side, Label is above Title */}
             <div className={`flex ${isBanner ? 'items-center gap-2 mb-1.5' : 'flex-col items-start gap-1.5'}`}>
             {event.label && !isBanner && (
                 <span className={`text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded w-max ${event.label.bgColor} ${event.label.textColor}`}>
