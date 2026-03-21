@@ -6,6 +6,8 @@ import discordLogo from '../assets/discordlogo.png';
 
 import Footer from './Footer';
 
+import { GAME_CONFIG } from '../data/games'; 
+
 export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     const location = useLocation();
     
@@ -13,20 +15,22 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     const [isGameSwitcherOpen, setIsGameSwitcherOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-    const availableGames = [
-        { name: 'Genshin Impact', path: '/genshin', bgUrl: '/genshin_background.webp' },
-        { name: 'Honkai: Star Rail', path: '#', bgUrl: '/hsr_background.png' },
-        { name: 'Zenless Zone Zero', path: '#', bgUrl: '/zzz_background.jpg' },
-        { name: 'Wuthering Waves', path: '#', bgUrl: '/wuwa_background.jpg' }
-    ];
+    // Uniform class for all UI icon buttons
+    const iconButtonClass = "p-1.5 text-white bg-white/5 hover:bg-white/10 border border-transparent hover:border-blue-500 rounded-md transition-all flex items-center justify-center";
 
     return (
-        <div className="flex h-screen w-full bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
+        <div className="relative flex h-screen w-full bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
+        
+        {/* Static Background Layer for Main Content */}
+        <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35 pointer-events-none"
+            style={{ backgroundImage: currentGameBgUrl ? `url('${currentGameBgUrl}')` : 'none' }}
+        />
 
         {/* Mobile Nav Overlay */}
         {isMobileNavOpen && (
             <div 
-            className="fixed inset-0 bg-black/70 z-40 md:hidden transition-opacity" // "backdrop-blur-sm" adds a blur effect to the background
+            className="fixed inset-0 bg-black/70 z-40 md:hidden transition-all"
             onClick={() => setIsMobileNavOpen(false)} 
             />
         )}
@@ -40,7 +44,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         `}>
             
             {/* Sidebar Header: Logo ONLY */}
-            <div className="h-16 flex items-center justify-center px-4 border-b border-[#33343a] flex-shrink-0 "> {/* bg-[#121212] can be added for a different logo background*/}
+            <div className="h-16 flex items-center justify-center px-4 border-b border-[#33343a] flex-shrink-0">
             {(!isSidebarCollapsed || isMobileNavOpen) ? (
                 <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
                 KOSZY<span className="text-blue-500">.MOE</span>
@@ -52,7 +56,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             )}
 
             {/* Mobile Close Button in Left Sidebar */}
-            <button onClick={() => setIsMobileNavOpen(false)} className="md:hidden p-1 bg-gray-500/20 text-white hover:text-white hover:border-blue-500 rounded-md ml-auto">
+            <button onClick={() => setIsMobileNavOpen(false)} className={`md:hidden ml-auto ${iconButtonClass}`}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -124,7 +128,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
                 
                 {/* Mobile Hamburger Menu */}
                 <button 
-                className="md:hidden p-1.5 text-white hover:text-white transition-colors hover:border-blue-500"
+                className={`md:hidden ${iconButtonClass}`}
                 onClick={() => setIsMobileNavOpen(true)}
                 >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -134,7 +138,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
 
                 {/* Desktop Hamburger Collapse Toggle */}
                 <button 
-                className="hidden md:flex p-1.5 text-white hover:text-white rounded-md transition-colors hover:border-blue-500"
+                className={`hidden md:flex ${iconButtonClass}`}
                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                 title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
                 >
@@ -145,7 +149,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
 
                 {/* Mobile Game Switcher Icon */}
                 <button 
-                className="md:hidden p-1.5 text-white hover:text-white hover:border-blue-500 transition-colors"
+                className={`md:hidden ${iconButtonClass}`}
                 onClick={() => setIsGameSwitcherOpen(true)}
                 title={`Switching from ${gameTitle}`}
                 >
@@ -168,7 +172,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             </header>
 
             {/* Main Content Area */}
-            <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col">            
+            <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col z-10 relative">            
                 <Outlet /> 
                 <Footer /> 
             </main>
@@ -177,7 +181,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         {/* Game Switcher Drawer */}
         {isGameSwitcherOpen && (
             <div 
-            className="fixed inset-0 bg-black/70 z-[60] transition-opacity" // "backdrop-blur-sm" adds a blur effect to the background
+            className="fixed inset-0 bg-black/70 z-[60] transition-all"
             onClick={() => setIsGameSwitcherOpen(false)} 
             />
         )}
@@ -187,7 +191,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             transform transition-transform duration-300 ease-in-out flex flex-col
             ${isGameSwitcherOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
-            <div className="p-5 border-b border-[#33343a] flex items-center justify-between ">
+            <div className="p-5 border-b border-[#33343a] flex items-center justify-between">
             
             {/* Game Switcher Header */}
             <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
@@ -195,7 +199,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             </Link>
 
             {/* Close Button */}
-            <button onClick={() => setIsGameSwitcherOpen(false)} className="p-1.5 bg-gray-500/20 text-white hover:border-blue-500 rounded-md">
+            <button onClick={() => setIsGameSwitcherOpen(false)} className={iconButtonClass}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -204,9 +208,9 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             
             {/* Game Options List */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-            {availableGames.map(game => (
+            {GAME_CONFIG.map(game => (
                 <Link
-                key={game.name}
+                key={game.id} // Changed to game.id
                 to={game.path}
                 onClick={() => setIsGameSwitcherOpen(false)}
                 className="relative group block h-28 rounded-md overflow-hidden border border-[#33343a] hover:border-blue-500 transition-all shadow-md"
@@ -224,6 +228,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
                 </Link>
             ))}
             </div>
+
         </div>
 
         </div>
