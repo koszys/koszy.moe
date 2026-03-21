@@ -19,12 +19,12 @@ export const EVENT_LABELS = {
         image: "/genshin/genshin-wish.png", // The star icon on the left
         bannerData: {
             featuredChars: [
-            { name: "Skirk", icon: "/genshin/charactericon/skirk-icon.png" },
+            { name: "Skirk", icon: "/genshin/charactericon/skirk-icon.png"},
             { name: "Escoffier", icon: "/genshin/charactericon/escoffier-icon.png" },
             ],
             featuredWeapons: [
-            { name: "Azurelight", icon: "/genshin/weapon/azurelight-icon.png" },
-            { name: "Symphonist of Scents", icon: "/genshin/weapon/symphonist-of-scents-icon.png" },
+            { name: "Azurelight", icon: "/genshin/weaponicon/azurelight-icon.png" },
+            { name: "Symphonist of Scents", icon: "/genshin/weaponicon/symphonist-of-scents-icon.png" },
             ]
         }
         }
