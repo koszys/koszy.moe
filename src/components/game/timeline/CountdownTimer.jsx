@@ -38,8 +38,16 @@ export default function CountdownTimer({ endDate }) {
         displayTime = `${minutes}m`;
     }
 
+    // Determine the color based on the remaining days
+    let bgColorClass = "bg-[#2f855a]"; // Default Green (>= 4 days)
+    if (days < 2) {
+        bgColorClass = "bg-red-600";     // Red (< 2 days)
+    } else if (days < 4) {
+        bgColorClass = "bg-yellow-600";  // Yellow (>= 2 days AND < 4 days)
+    }
+
     return (
-        <div className="bg-[#2f855a] text-white text-[11px] md:text-xs font-bold px-2 py-0.5 rounded shadow-sm tracking-wide">
+        <div className={`${bgColorClass} text-white text-[11px] md:text-xs font-bold px-2 py-0.5 rounded shadow-sm tracking-wide transition-colors duration-500`}>
         {displayTime}
         </div>
     );

@@ -1,12 +1,17 @@
 export const EVENT_LABELS = {
-    VERSION: { text: "New Version", bgColor: "bg-red-900/40", textColor: "text-red-300" },
-    WISH_1: { text: "Wish Event (P1)", bgColor: "bg-blue-900/40", textColor: "text-blue-300" },
-    WISH_2: { text: "Wish Event (P2)", bgColor: "bg-purple-900/40", textColor: "text-purple-300" },
-    LIMIT: { text: "Time Limit", bgColor: "bg-amber-900/40", textColor: "text-amber-300" },
+    VERSION: { text: "New Version",  bgColor: "bg-teal-900/40", textColor: "text-teal-300" },
     WEB: { text: "Web Event", bgColor: "bg-emerald-900/40", textColor: "text-emerald-300" },
-    BONUS: { text: "Bonus Drop", bgColor: "bg-teal-900/40", textColor: "text-teal-300" },
     STREAM: { text: "Livestream", bgColor: "bg-sky-900/40", textColor: "text-sky-300" },
-    };
+    WORLD_EXPL: { text: "World Exploration", bgColor: "bg-blue-900/40", textColor: "text-blue-300" },
+    LOGIN: { text: "Login Event", bgColor: "bg-blue-900/40", textColor: "text-blue-300" }, 
+    TCG: { text: "TCG", bgColor: "bg-blue-900/40", textColor: "text-blue-300" }, // Genshin
+};
+
+// bgColor: "bg-emerald-900/40", textColor: "text-emerald-300"
+// bgColor: "bg-sky-900/40", textColor: "text-sky-300"
+// bgColor: "bg-purple-900/40", textColor: "text-purple-300"
+// bgColor: "bg-amber-900/40", textColor: "text-amber-300"
+// bgColor: "bg-teal-900/40", textColor: "text-teal-300"
 
     export const GLOBAL_EVENTS = {
     genshin: [
