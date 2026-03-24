@@ -19,7 +19,7 @@ export default function ActiveCodes({ codes, redeemUrl }) {
                 href={link} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="block bg-[#1c1d21] border border-[#33343a] rounded-lg p-6 hover:border-blue-500 transition-colors group"
+                className="block bg-[#1c1d21]/80 border border-[#33343a] rounded-lg p-6 hover:border-blue-500 transition-colors group"
                 title={`Redeem ${item.code}`}
             >
                 <h4 className="font-mono text-xl font-bold text-white group-hover:text-white transition-colors tracking-wide mb-2">

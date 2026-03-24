@@ -54,7 +54,7 @@ export default function Home() {
         <div 
           key={bg}
           className={`fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-in-out ${
-            currentBg === bg ? 'opacity-35' : 'opacity-0' // Background Opacity 
+            currentBg === bg ? 'opacity-40' : 'opacity-0' // Background Opacity 
           }`}
           style={{ backgroundImage: `url('${bg}')` }}
         />
@@ -143,7 +143,7 @@ export default function Home() {
           <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 mt-10">
             
             {/* Discord Card */}
-            <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(88,101,242,0.15)]">
+            <div className="bg-[#1c1d21]/70 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(88,101,242,0.15)]">
               <div className="w-16 h-16 flex-shrink-0  rounded-full flex items-center justify-center p-3">
                 <img src={discordLogo} alt="Discord" className="w-full h-full object-contain" />
               </div>
@@ -166,7 +166,7 @@ export default function Home() {
             </div>
 
             {/* Ko-fi Card */}
-            <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,94,91,0.15)]">
+            <div className="bg-[#1c1d21]/70 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,94,91,0.15)]">
               <div className="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center p-3">
                 <img src={kofiLogo} alt="Ko-fi" className="w-full h-full object-contain" />
               </div>
@@ -194,11 +194,11 @@ export default function Home() {
               Upcoming Features
             </h2>
             <div className="space-y-4">
-              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
+              <div className="bg-[#1c1d21]/70 border border-[#33343a] rounded-lg p-6">
                 <h4 className="text-white font-bold mb-2">✓ Multi-Account Support</h4>
                 <p className="text-gray-350 text-sm">Track multiple accounts across different platforms with ease.</p>
               </div>
-              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
+              <div className="bg-[#1c1d21]/70 border border-[#33343a] rounded-lg p-6">
                 <h4 className="text-white font-bold mb-2">✓ Push Notifications</h4>
                 <p className="text-gray-350 text-sm">Get real-time alerts for event resets and important milestones.</p>
               </div>
