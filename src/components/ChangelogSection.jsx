@@ -15,14 +15,14 @@ export default function ChangelogSection({ changelogData }) {
             setShowChangelog(!showChangelog);
             if (!showChangelog) setVisibleCount(4); 
             }}
-            className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/40 border border-[#33343a] px-4 py-2 rounded mb-6"
+            className="flex items-center gap-2 text-white hover:text-white hover:border-blue-500 transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/70 border border-[#33343a] px-4 py-2 rounded mb-6"
         >
             {showChangelog ? '− Hide Changelog' : '+ View Changelog'}
         </button>
 
         {showChangelog && (
             <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-            <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6 space-y-6">
+            <div className="bg-[#1c1d21]/70 border border-[#33343a] rounded-lg p-6 space-y-6">
                 {changelogData.slice(0, visibleCount).map((entry, idx) => (
                 <div key={idx} className={idx !== 0 ? "border-t border-[#33343a] pt-6" : ""}>
                     <ChangelogItem 
@@ -57,7 +57,7 @@ export default function ChangelogSection({ changelogData }) {
                     setShowChangelog(false);
                     setVisibleCount(4);
                     }}
-                    className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/60 border border-[#33343a] px-4 py-2 rounded"
+                    className="flex items-center gap-2 text-white hover:text-white hover:border-blue-500 transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/60 border border-[#33343a] px-4 py-2 rounded"
                 >
                     × Hide Changelog
                 </button>

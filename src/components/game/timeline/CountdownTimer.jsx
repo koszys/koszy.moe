@@ -5,43 +5,50 @@ export default function CountdownTimer({ endDate }) {
 
     useEffect(() => {
         const targetDate = new Date(endDate);
-        
-        // Initial calculation
         setTimeLeft(Math.max(0, targetDate - new Date()));
 
         const timerInterval = setInterval(() => {
-        const now = new Date();
-        const difference = targetDate - now;
-        
+        const difference = targetDate - new Date();
         if (difference <= 0) {
             clearInterval(timerInterval);
             setTimeLeft(0);
         } else {
             setTimeLeft(difference);
         }
-        }, 1000); // Update every second
+        }, 1000);
 
-        return () => clearInterval(timerInterval); // Cleanup on unmount
+        return () => clearInterval(timerInterval);
     }, [endDate]);
 
     if (timeLeft <= 0) {
-        return <span className="text-red-500 font-bold uppercase tracking-widest text-xs">Ended</span>;
+        return <div className="bg-gray-600 text-white text-xs font-bold px-2 py-0.5 rounded shadow-sm">Ended</div>;
     }
 
-    // Formatting milliseconds to d h m s
     const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
-    const seconds = Math.floor((timeLeft / 1000) % 60);
 
-    const formattedDays = days > 0 ? `${days}d ` : '';
-    const formattedHours = hours > 0 ? `${hours.toString().padStart(2, '0')}h ` : '';
-    const formattedMinutes = minutes.toString().padStart(2, '0') + 'm ';
-    const formattedSeconds = seconds.toString().padStart(2, '0') + 's';
+    // Days and Hours (or Hours and Minutes if < 1 day)
+    let displayTime = '';
+    if (days > 0) {
+        displayTime = `${days}d ${hours}h`;
+    } else if (hours > 0) {
+        displayTime = `${hours}h ${minutes}m`;
+    } else {
+        displayTime = `${minutes}m`;
+    }
+
+    // Determine the color based on the remaining days
+    let bgColorClass = "bg-[#2f855a]"; // Default Green (>= 4 days)
+    if (days < 2) {
+        bgColorClass = "bg-red-600";     // Red (< 2 days)
+    } else if (days < 4) {
+        bgColorClass = "bg-yellow-600";  // Yellow (>= 2 days AND < 4 days)
+    }
 
     return (
-        <span className="text-white font-black tracking-tight drop-shadow-md">
-        {formattedDays}{formattedHours}{formattedMinutes}{formattedSeconds}
-        </span>
+        <div className={`${bgColorClass} text-white text-[11px] md:text-xs font-bold px-2 py-0.5 rounded shadow-sm tracking-wide transition-colors duration-500`}>
+        {displayTime}
+        </div>
     );
 }

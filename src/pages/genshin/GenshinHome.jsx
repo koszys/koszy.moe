@@ -38,14 +38,21 @@ export default function GenshinHome() {
             redeemUrl={redeemUrl}
         />
         
-        {/* SECTION 3: Current & Upcoming Events (The Event Brain) */}
+        {/* SECTION 3: Current & Upcoming Events */}
         <EventTimeline 
             rawEvents={events} 
             gameTitle={gameTitle}
+            terms={{
+            character: "Character",
+            weapon: "Weapon",
+            fourStar: "Characters",
+            activeTitle: "Current Event Wishes",
+            upcomingTitle: "Upcoming Event Wishes"
+            }}
         />
         
-        {/* SECTION 4: Standard Changelog Section */}
-        <SectionHeader title="Genshin Updates" />
+        {/* SECTION 4: Changelog Section */}
+        <SectionHeader title="Changelog" />
         <ChangelogSection changelogData={CHANGELOG_DATA} />
 
         </div>
