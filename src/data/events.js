@@ -40,6 +40,15 @@ export const EVENT_LABELS = {
             start: "2026-03-16T10:00:00Z",
             end: "2026-03-26T03:59:00Z",
             image: "/genshin/eventimg/sightseeing_with_friends.webp",
+        },
+        {
+            id: "ge_tcg",
+            name: "Heated Battle Mode",
+            type: "event",
+            start: "2026-03-24T04:00:00Z",
+            end: "2026-03-30T09:00:00Z",
+            label: EVENT_LABELS.TCG,
+            image: "/genshin/eventimg/tcg.webp",
         }
     ]
 };
