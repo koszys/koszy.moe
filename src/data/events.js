@@ -1,10 +1,12 @@
+import { PLANNER_TAGS } from "./genshinplanner";
+
 export const EVENT_LABELS = {
     VERSION: { text: "New Version",  bgColor: "bg-teal-900/40", textColor: "text-teal-300" },
     WEB: { text: "Web Event", bgColor: "bg-emerald-900/40", textColor: "text-emerald-300" },
     STREAM: { text: "Livestream", bgColor: "bg-sky-900/40", textColor: "text-sky-300" },
-    WORLD_EXPL: { text: "World Exploration", bgColor: "bg-blue-900/40", textColor: "text-blue-300" },
-    LOGIN: { text: "Login Event", bgColor: "bg-blue-900/40", textColor: "text-blue-300" }, 
-    TCG: { text: "TCG", bgColor: "bg-blue-900/40", textColor: "text-blue-300" }, // Genshin
+    WORLD_EXPL: { text: "World Exploration", bgColor: "bg-green-900/40", textColor: "text-green-300" },
+    LOGIN: { text: "Login Event", bgColor: "bg-rose-900/40", textColor: "text-rose-300" },     
+    TCG: { text: "TCG", bgColor: "bg-teal-900/40", textColor: "text-teal-300" },
 };
 
 // bgColor: "bg-emerald-900/40", textColor: "text-emerald-300"
@@ -22,6 +24,7 @@ export const EVENT_LABELS = {
             start: "2026-03-17T04:00:00Z",
             end: "2026-04-07T17:59:59Z",
             image: "/genshin/ui-icon/genshin-wish.png", // The star icon on the left
+            tag: PLANNER_TAGS.WISHES,
             bannerData: {
                 featuredChars: [
                 { name: "Skirk", icon: "/genshin/charactericon/skirk-icon.png"},
@@ -38,7 +41,8 @@ export const EVENT_LABELS = {
             name: "Sightseeing With Friends",
             type: "event",
             start: "2026-03-16T10:00:00Z",
-            end: "2026-03-26T03:59:00Z",
+            end: "2026-03-26T08:59:00Z",
+            tag: PLANNER_TAGS.EVENTS,
             image: "/genshin/eventimg/sightseeing_with_friends.webp",
         },
         {
@@ -48,6 +52,7 @@ export const EVENT_LABELS = {
             start: "2026-03-24T04:00:00Z",
             end: "2026-03-30T09:00:00Z",
             label: EVENT_LABELS.TCG,
+            tag: PLANNER_TAGS.TCG,
             image: "/genshin/eventimg/tcg.webp",
         }
     ]

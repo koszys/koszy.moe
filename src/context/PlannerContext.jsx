@@ -3,55 +3,54 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 const PlannerContext = createContext();
 
 export function PlannerProvider({ children }) {
-    // 1. Initial State: Read from LocalStorage or default to empty
-    const [checkedGenshinPlanner, setCheckedGenshinPlanner] = useState(() => {
+  // Universal State: Stores ALL games in one LocalStorage key
+  // Format: { genshin: { task1: true }, hsr: { task2: true } }
+    const [checkedTasks, setCheckedTasks] = useState(() => {
         try {
-        const stored = localStorage.getItem('koszy-plnr-gi');
-        return stored ? JSON.parse(stored) : {}; // Object map: { id: boolean }
+        const stored = localStorage.getItem('koszy-planner-master');
+        return stored ? JSON.parse(stored) : {}; 
         } catch (e) {
-        console.error("Error reading planner data:", e);
         return {};
         }
     });
 
-    // 2. Settings: Which tags should be FILTERED OUT
     const [excludedTags, setExcludedTags] = useState(() => {
         try {
         const stored = localStorage.getItem('koszy-plnr-excl');
-        return stored ? JSON.parse(stored) : []; // Array of tag IDs to hide
+        return stored ? JSON.parse(stored) : []; 
         } catch (e) {
         return [];
         }
     });
 
-    // 3. Save to LocalStorage whenever either state changes
     useEffect(() => {
-        localStorage.setItem('koszy-plnr-gi', JSON.stringify(checkedGenshinPlanner));
-    }, [checkedGenshinPlanner]);
+        localStorage.setItem('koszy-planner-master', JSON.stringify(checkedTasks));
+    }, [checkedTasks]);
 
     useEffect(() => {
         localStorage.setItem('koszy-plnr-excl', JSON.stringify(excludedTags));
     }, [excludedTags]);
 
-    // 4. Action: Toggle checking an item
-    const toggleGenshinCheck = (id) => {
-        setCheckedGenshinPlanner(prev => ({
+    // niversal Toggle: Now requires the gameId to know which bucket to update
+    const toggleTask = (gameId, taskId) => {
+        setCheckedTasks(prev => ({
         ...prev,
-        [id]: !prev[id] // Invert the boolean
+        [gameId]: {
+            ...(prev[gameId] || {}), // Keep existing tasks for this game
+            [taskId]: !(prev[gameId]?.[taskId]) // Flip the specific task boolean
+        }
         }));
     };
 
-    // 5. Action: Toggle tag exclusion
     const toggleTagExclusion = (tagId) => {
         setExcludedTags(prev => 
         prev.includes(tagId) ? prev.filter(id => id !== tagId) : [...prev, tagId]
         );
     };
 
-    // Provide everything to the app
     return (
         <PlannerContext.Provider value={{ 
-        checkedGenshinPlanner, toggleGenshinCheck, 
+        checkedTasks, toggleTask, 
         excludedTags, toggleTagExclusion 
         }}>
         {children}
@@ -59,5 +58,4 @@ export function PlannerProvider({ children }) {
     );
 }
 
-// Custom Hook for easy access
 export const usePlanner = () => useContext(PlannerContext);
