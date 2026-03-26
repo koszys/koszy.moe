@@ -80,7 +80,7 @@ const EventCard = ({ event, isCurrent }) => {
         </div>
 
         {/* RIGHT: Timer */}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-0 right-0 z-10">
             <CountdownTimer endDate={isCurrent ? event.end : event.start} />
         </div>
 

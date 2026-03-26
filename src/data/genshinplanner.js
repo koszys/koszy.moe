@@ -4,9 +4,9 @@ export const PLANNER_TAGS = {
     WISHES: { id: "wishes", text: "Event Wishes", bgColor: "bg-pink-900/40", textColor: "text-pink-300" },
     CHECK_IN: { id: "checkin", text: "Check In", bgColor: "bg-sky-900/40", textColor: "text-sky-300" },
     TCG: { id: "tcg", text: "TCG", bgColor: "bg-teal-900/40", textColor: "text-teal-300" },
-    QUEST: { id: "quest", text: "Quests", bgColor: "bg-purple-900/40", textColor: "text-purple-300" },
+    QUEST: { id: "quest", text: "Quests", bgColor: "bg-blue-900/40", textColor: "text-blue-300" },
     WORLD_EXPLORATION: { id: "world_exploration", text: "World Exploration", bgColor: "bg-green-900/40", textColor: "text-green-300" },
-    DAILY: { id: "daily", text: "Daily", bgColor: "bg-blue-900/40", textColor: "text-blue-300" }
+    DAILY: { id: "daily", text: "Daily", bgColor: "bg-purple-900/40", textColor: "text-purple-300" }
 };
     
 

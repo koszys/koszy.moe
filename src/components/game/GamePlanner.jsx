@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SectionHeader from "./SectionHeader";
 import CountdownTimer from "./timeline/CountdownTimer";
+import TimerRibbon from "./timeline/TimerRibbon";
 import { usePlanner } from "../../context/PlannerContext";
 
 // TIME CALCULATION HELPER 
@@ -181,16 +182,17 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                                 />
                             </div>
 
-                            {/* Smaller main icon on mobile */}
-                            <div className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center mr-2.5 md:mr-4 rounded-md overflow-hidden z-10">
+                            {/* Icon image */}
+                            <div className="w-7 h-8 md:w-10 md:h-12 flex-shrink-0 flex items-center justify-center mr-2.5 md:mr-4 rounded-md overflow-hidden z-10">
                                 <img
                                     src={task.icon}
                                     alt="Icon"
                                     className="w-full h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform"
                                 />
                             </div>
-
-                            <div className="flex flex-col flex-1 justify-center min-w-0 pr-16 md:pr-24 z-10">
+                            
+                            {/* Task Title and Label */}
+                            <div className="flex flex-col flex-1 justify-center min-w-0 pr-16 md:pr-24 z-10 mt-1 md:mt-1.5">
                                 <div className="flex items-center gap-1.5 md:gap-2 mb-1 md:mb-1.5">
                                     {task.label && (
                                         <div 
@@ -235,13 +237,14 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                             </div>
                             
                             {/* TIMER */}
-                            <div className="absolute top-1/2 -translate-y-1/2 right-2.5 md:right-3 z-10">
+                            <div className="absolute top-0 right-0 z-10">
                                 {showTimer ? (
                                     <CountdownTimer endDate={finalDeadline} />
                                 ) : (
-                                    <div className="bg-[#33343a] text-gray-400 text-[10px] md:text-xs font-medium px-2 py-0.5 rounded shadow-sm tracking-wide">
+                                    // Uses the default colors we set in TimerRibbon.jsx!
+                                    <TimerRibbon>
                                         {isChecked ? "Completed" : task.durationLabel || "Daily"}
-                                    </div>
+                                    </TimerRibbon>
                                 )}
                             </div>
                         </div>
@@ -254,7 +257,7 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                         <svg className="w-16 h-16 text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <p className="text-gray-300 font-bold mb-1">List is completely empty!</p>
+                        <p className="text-gray-300 font-bold mb-1">List is empty!</p>
                         <p className="text-gray-300 text-sm max-w-sm">There are no tasks available for this tab or all have been filtered out by your settings gear.</p>
                     </div>
                 )}

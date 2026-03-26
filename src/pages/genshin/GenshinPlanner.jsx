@@ -19,7 +19,7 @@ export default function GenshinPlanner() {
             tag: event.tag || PLANNER_TAGS.EVENTS,            
             title: event.name,
             icon: event.image, // Uses the event image as the square icon
-            // If its not a banner, use the image as a faint background blend
+            // If its not a banner, use the image as a background
             bgImage: event.type !== 'banner' ? event.image : null, 
 
             // If the event has a specific label, use it. Otherwise, default it to something

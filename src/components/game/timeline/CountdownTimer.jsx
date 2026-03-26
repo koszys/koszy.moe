@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TimerRibbon from './TimerRibbon'; //
 
 export default function CountdownTimer({ endDate }) {
     const [timeLeft, setTimeLeft] = useState(0);
@@ -21,14 +22,14 @@ export default function CountdownTimer({ endDate }) {
     }, [endDate]);
 
     if (timeLeft <= 0) {
-        return <div className="bg-gray-600 text-white text-xs font-bold px-2 py-0.5 rounded shadow-sm">Ended</div>;
+        return <TimerRibbon bgColor="bg-gray-600" textColor="text-white">ENDED</TimerRibbon>;
     }
 
     const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
 
-    // Days and Hours (or Hours and Minutes if < 1 day)
+    // Days and hours and Minutes if < 1 day
     let displayTime = '';
     if (days > 0) {
         displayTime = `${days}d ${hours}h`;
@@ -38,17 +39,17 @@ export default function CountdownTimer({ endDate }) {
         displayTime = `${minutes}m`;
     }
 
-    // Determine the color based on the remaining days
-    let bgColorClass = "bg-[#2f855a]"; // Default Green (>= 4 days)
+    //  Remaining time color 
+    let bgColorClass = "bg-emerald-600"; // Default Green
     if (days < 2) {
-        bgColorClass = "bg-red-600";     // Red (< 2 days)
+        bgColorClass = "bg-red-600";     // Red
     } else if (days < 4) {
-        bgColorClass = "bg-yellow-600";  // Yellow (>= 2 days AND < 4 days)
+        bgColorClass = "bg-yellow-600";  // Yellow
     }
 
     return (
-        <div className={`${bgColorClass} text-white text-[11px] md:text-xs font-bold px-2 py-0.5 rounded shadow-sm tracking-wide transition-colors duration-500`}>
-        {displayTime}
-        </div>
+        <TimerRibbon bgColor={bgColorClass} textColor="text-white">
+            {displayTime}
+        </TimerRibbon>
     );
 }
