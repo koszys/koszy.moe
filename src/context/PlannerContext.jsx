@@ -31,7 +31,7 @@ export function PlannerProvider({ children }) {
         localStorage.setItem('koszy-plnr-excl', JSON.stringify(excludedTags));
     }, [excludedTags]);
 
-    // niversal Toggle: Now requires the gameId to know which bucket to update
+    // Universal Toggle: Requires the gameId to know which bucket to update
     const toggleTask = (gameId, taskId) => {
         setCheckedTasks(prev => ({
         ...prev,
