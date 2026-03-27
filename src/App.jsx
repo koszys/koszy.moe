@@ -7,6 +7,7 @@ import { GAME_CONFIG } from './data/games';
 import Home from './pages/Home';
 import GenshinHome from './pages/genshin/GenshinHome';
 import GenshinPlanner from './pages/genshin/GenshinPlanner';
+import Settings from './pages/Settings';
 
 // Components
 import GameLayout from './components/GameLayout';
@@ -27,6 +28,11 @@ export default function App() {
       name: 'Planner', 
       path: '/genshin/planner', 
       icon: <img src={genshinPlannerIcon} alt="Planner" className="w-5 h-5 object-contain" /> 
+    },
+    {
+      name: 'Settings',
+      path: '/genshin/settings',
+      icon: <img src="/genshin/ui-icon/settings-icon.webp" alt="Settings" className="w-5 h-5 object-contain scale-150" />  
     }
   ];
 
@@ -46,6 +52,7 @@ export default function App() {
       }>
         <Route index element={<GenshinHome />} />
         <Route path="planner" element={<GenshinPlanner />} />
+        <Route path="settings" element={<Settings />} />x
       </Route>
     </Routes>
   );
