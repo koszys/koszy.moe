@@ -36,7 +36,7 @@ export function SettingsProvider({ children }) {
     // --- ACCOUNT ACTIONS ---
     const addAccount = () => {
         const newId = `account_${Date.now()}`;
-        const newAccount = { ...defaultAccount, id: newId, name: `Alt ${accounts.length + 1}` };
+        const newAccount = { ...defaultAccount, id: newId, name: `Account ${accounts.length + 1}` };
         setAccounts([...accounts, newAccount]);
         setActiveAccountId(newId); // Auto-switch to new account
     };

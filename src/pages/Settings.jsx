@@ -5,16 +5,24 @@ import driveIcon from '../assets/googledriveicon.png';
 
 const GAME_TERMS = {
     genshin: { 
-        ar: "AR", wl: "WL", 
+        ar: "AR", arFull: "Adventure Rank", maxAr: 60,
+        wl: "WL", wlFull: "World Level", wlOptions: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
         mcTitle: "Traveler", mcMale: "Aether", mcFemale: "Lumine" 
     },
     hsr: { 
-        ar: "TB Level", wl: "EQ Level", 
+        ar: "TL", arFull: "Trailblaze Level", maxAr: 70, 
+        wl: "EQ Level", wlFull: "Equilibrium Level", wlOptions: ["0", "1", "2", "3", "4", "5", "6"],
         mcTitle: "Trailblazer", mcMale: "Caelus", mcFemale: "Stelle" 
     },
     wuwa: { 
-        ar: "Union Level", wl: "SOL3 Phase", 
+        ar: "UL", arFull: "Union Level", maxAr: 80,
+        wl: "SP", wlFull: "SOL3 Phase", wlOptions: ["1", "2", "3", "4", "5", "6", "7", "8"],
         mcTitle: "Rover", mcMale: "Male", mcFemale: "Female" 
+    },
+    zzz: {
+        ar: "IL", arFull: "Inter-Knot Level", maxAr: 60,
+        wl: "IR", wlFull: "Inter-Knot Reputation", wlOptions: ["Novice Proxy (0)", "Certified Proxy (1)", "Senior Proxy (2)", "Elite Proxy (3)", "Legendary Proxy (4)"],
+        mcTitle: "Proxy", mcMale: "Wise", mcFemale: "Belle"
     },
     default: { 
         ar: "Level", wl: "World Level", 
@@ -78,7 +86,6 @@ export default function Settings({ gameId = 'genshin' }) {
                     <p className="text-sm font-bold text-white mb-4">Importing will overwrite the selected account data.</p>
                     
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                        
                         <div className="flex flex-wrap items-center gap-2">
                             <button 
                                 onClick={addAccount}
@@ -142,28 +149,60 @@ export default function Settings({ gameId = 'genshin' }) {
                 <div className="bg-[#24252a] border border-[#33343a] rounded-xl p-4 md:p-6 shadow-sm">
                     <h3 className="text-xs font-black text-gray-400 uppercase tracking-wider mb-4">Account Settings</h3>
                     <div className="flex flex-wrap items-end gap-4 md:gap-6">
+
+                        {/* Account Level */}
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-xs text-gray-400 font-bold uppercase">{terms.ar}</label>
+                            {/* Custom Tooltip Wrapper */}
+                            <div className="relative group/tooltip w-max">
+                                <label className="text-xs text-gray-400 font-bold uppercase border-b border-dashed border-gray-500 cursor-help">
+                                    {terms.ar}
+                                </label>
+                                {/* Tooltip Box */}
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-[#121212] border border-[#33343a] text-white text-[10px] md:text-xs font-bold rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-xl">
+                                    {terms.arFull}
+                                </div>
+                            </div>
                             <input 
                                 type="number" 
+                                min="1"
+                                max={terms.maxAr}
                                 value={activeAccount.ar}
-                                onChange={(e) => updateActiveAccount('ar', e.target.value)}
+                                onChange={(e) => {
+                                    let val = parseInt(e.target.value, 10);
+                                    if (isNaN(val)) val = '';
+                                    else if (val > terms.maxAr) val = terms.maxAr;
+                                    updateActiveAccount('ar', val);
+                                }}
                                 className="bg-[#1c1d21] border border-[#33343a] text-white text-sm rounded-lg px-3 py-2 w-20 focus:outline-none focus:border-blue-500" 
                             />
                         </div>
+                        
+                        {/* World Level */}
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-xs text-gray-400 font-bold uppercase">{terms.wl}</label>
+                            {/* Custom Tooltip Wrapper */}
+                            <div className="relative group/tooltip w-max">
+                                <label className="text-xs text-gray-400 font-bold uppercase border-b border-dashed border-gray-500 cursor-help">
+                                    {terms.wl}
+                                </label>
+                                {/* Tooltip Box */}
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-[#121212] border border-[#33343a] text-white text-[10px] md:text-xs font-bold rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-xl">
+                                    {terms.wlFull}
+                                </div>
+                            </div>
                             <select 
                                 value={activeAccount.wl}
                                 onChange={(e) => updateActiveAccount('wl', e.target.value)}
-                                className="bg-[#1c1d21] border border-[#33343a] text-white text-sm rounded-lg px-3 py-2 w-20 focus:outline-none focus:border-blue-500 appearance-none"
+                                className="bg-[#1c1d21] border border-[#33343a] text-white text-sm rounded-lg px-3 py-2 min-w-[5rem] focus:outline-none focus:border-blue-500 appearance-none"
                             >
-                                <option>9</option>
-                                <option>8</option>
-                                <option>7</option>
-                                <option>6</option>
+                                {terms.wlOptions.map((opt) => (
+                                    <option key={opt} value={opt}>
+                                        {opt}
+                                    </option>
+                                ))}
                             </select>
                         </div>
+                        
+                        {/* Account Server */}
                         <div className="flex flex-col gap-1.5">
                             <label className="text-xs text-gray-400 font-bold">Server</label>
                             <select 
@@ -228,7 +267,7 @@ export default function Settings({ gameId = 'genshin' }) {
                 </div>
 
                 {/* Footer Sync */}
-                <div className="bg-[#24252a] border border-[#33343a] rounded-xl p-4 md:p-6 shadow-sm mt-8">
+                {/* <div className="bg-[#24252a] border border-[#33343a] rounded-xl p-4 md:p-6 shadow-sm mt-8">
                     <p className="text-sm text-gray-300 mb-4 leading-relaxed">
                         koszy.moe can use Google Drive to save and sync your settings and data <strong className="text-white">from all accounts</strong>. We can only read and write to files that the website creates and no data is sent to other external servers.
                     </p>
@@ -236,7 +275,7 @@ export default function Settings({ gameId = 'genshin' }) {
                         <img src={driveIcon} alt="Google Drive" className="w-5 h-5 object-contain" />
                         Sign in Google Drive
                     </button>
-                </div>
+                </div> */}
 
             </div>
         </div>

@@ -1,59 +1,79 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { useSettings } from './SettingsContext';
 
 const PlannerContext = createContext();
 
 export function PlannerProvider({ children }) {
-  // Universal State: Stores ALL games in one LocalStorage key
-  // Format: { genshin: { task1: true }, hsr: { task2: true } }
-    const [checkedTasks, setCheckedTasks] = useState(() => {
-        try {
-        const stored = localStorage.getItem('koszy-planner-master');
-        return stored ? JSON.parse(stored) : {}; 
-        } catch (e) {
+    // Grab the active account from settings context
+    const { activeAccountId } = useSettings();
+
+    // Load ALL checked tasks for ALL accounts
+    const [allCheckedTasks, setAllCheckedTasks] = useState(() => {
+        const saved = localStorage.getItem('koszy-checked-tasks');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            return parsed;
+        }
         return {};
-        }
     });
 
+    // Load excluded tags (Global for all accounts currently)
     const [excludedTags, setExcludedTags] = useState(() => {
-        try {
-        const stored = localStorage.getItem('koszy-plnr-excl');
-        return stored ? JSON.parse(stored) : []; 
-        } catch (e) {
-        return [];
-        }
+        const saved = localStorage.getItem('koszy-excluded-tags');
+        return saved ? JSON.parse(saved) : [];
     });
 
+    // Save tasks and tags whenever they change
     useEffect(() => {
-        localStorage.setItem('koszy-planner-master', JSON.stringify(checkedTasks));
-    }, [checkedTasks]);
+        localStorage.setItem('koszy-checked-tasks', JSON.stringify(allCheckedTasks));
+    }, [allCheckedTasks]);
 
     useEffect(() => {
-        localStorage.setItem('koszy-plnr-excl', JSON.stringify(excludedTags));
+        localStorage.setItem('koszy-excluded-tags', JSON.stringify(excludedTags));
     }, [excludedTags]);
 
-    // Universal Toggle: Requires the gameId to know which bucket to update
+    // Pass down the data for the ACTIVE account
+    const checkedTasks = allCheckedTasks[activeAccountId] || {};
+
+    // Update the toggle function to save the task under the correct account
     const toggleTask = (gameId, taskId) => {
-        setCheckedTasks(prev => ({
-        ...prev,
-        [gameId]: {
-            ...(prev[gameId] || {}), // Keep existing tasks for this game
-            [taskId]: !(prev[gameId]?.[taskId]) // Flip the specific task boolean
-        }
-        }));
+        setAllCheckedTasks(prev => {
+            // Get the current accounts data (or empty object)
+            const accountData = prev[activeAccountId] || {};
+            // Get the current games data within that account (or empty object)
+            const gameData = accountData[gameId] || {};
+            
+            const isCurrentlyChecked = !!gameData[taskId];
+            
+            return {
+                ...prev, // Keep other accounts exactly the same
+                [activeAccountId]: {
+                    ...accountData, // Keep other games in this account exactly the same
+                    [gameId]: {
+                        ...gameData,
+                        [taskId]: !isCurrentlyChecked // Flip the checkbox
+                    }
+                }
+            };
+        });
     };
 
     const toggleTagExclusion = (tagId) => {
         setExcludedTags(prev => 
-        prev.includes(tagId) ? prev.filter(id => id !== tagId) : [...prev, tagId]
+            prev.includes(tagId) 
+                ? prev.filter(id => id !== tagId)
+                : [...prev, tagId]
         );
     };
 
     return (
         <PlannerContext.Provider value={{ 
-        checkedTasks, toggleTask, 
-        excludedTags, toggleTagExclusion 
+            checkedTasks, 
+            toggleTask, 
+            excludedTags, 
+            toggleTagExclusion 
         }}>
-        {children}
+            {children}
         </PlannerContext.Provider>
     );
 }
