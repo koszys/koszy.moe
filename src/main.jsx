@@ -6,13 +6,16 @@ import './index.css'
 
 // Import providers
 import { PlannerProvider } from './context/PlannerContext' 
+import { SettingsProvider } from './context/SettingsContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <PlannerProvider> 
-        <App />
-      </PlannerProvider>
+      <SettingsProvider>
+        <PlannerProvider> 
+          <App />
+        </PlannerProvider>
+      </SettingsProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

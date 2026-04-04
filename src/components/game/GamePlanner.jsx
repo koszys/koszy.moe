@@ -3,12 +3,12 @@ import SectionHeader from "./SectionHeader";
 import CountdownTimer from "./timeline/CountdownTimer";
 import TimerRibbon from "./timeline/TimerRibbon";
 import { usePlanner } from "../../context/PlannerContext";
+import { useSettings } from "../../context/SettingsContext";
 
 // TIME CALCULATION HELPER 
-const getNextReset = (rule) => {
+const getNextReset = (rule, resetHourUTC) => {
     const now = new Date();
-    const resetHourUTC = 9; // 9 AM UTC = 4 AM EST
-
+    
     let target = new Date();
     target.setUTCHours(resetHourUTC, 0, 0, 0);
 
@@ -42,6 +42,11 @@ const getNextReset = (rule) => {
 
 export default function GamePlanner({ gameId, title, rawData, tags }) {
     const { checkedTasks, toggleTask, excludedTags, toggleTagExclusion } = usePlanner();
+
+    // Grabs the exact UTC number based on the settings
+    const { getServerResetUTC } = useSettings(); 
+    const currentResetHour = getServerResetUTC();
+
     const gameCheckedTasks = checkedTasks[gameId] || {};
 
     const [activeTab, setActiveTab] = useState("All");
@@ -68,7 +73,7 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
     // SORT BY DEADLINE PRIORITY
     const listWithDeadlines = currentList.map((task) => {
         const finalDeadline = task.resetRule 
-            ? getNextReset(task.resetRule) 
+            ? getNextReset(task.resetRule, currentResetHour) 
             : task.deadline;
         return { ...task, finalDeadline };
     });
