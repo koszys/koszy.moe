@@ -58,7 +58,7 @@ export function SettingsProvider({ children }) {
     const getServerResetUTC = () => {
         switch(activeAccount.server) {
             case 'Europe': return 3; 
-            case 'Asia': return 19; 
+            case 'Asia': return 20; 
             case 'America':
             default: return 9; 
         }

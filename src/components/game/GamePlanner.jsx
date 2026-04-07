@@ -5,32 +5,44 @@ import TimerRibbon from "./timeline/TimerRibbon";
 import { usePlanner } from "../../context/PlannerContext";
 import { useSettings } from "../../context/SettingsContext";
 
-// TIME CALCULATION HELPER 
-const getNextReset = (rule, resetHourUTC) => {
+// Time calculations for recurring tasks based on the Reset Hour and server timezone
+const getNextReset = (rule, resetHourUTC, server) => {
     const now = new Date();
-    
     let target = new Date();
+    
+    // Set the target to the correct UTC hour first
     target.setUTCHours(resetHourUTC, 0, 0, 0);
+    if (now >= target) target.setUTCDate(target.getUTCDate() + 1);
 
-    if (now >= target) {
-        target.setUTCDate(target.getUTCDate() + 1);
-    }
+    // Helper to get what day it CURRENTLY is in the target server's timezone
+    const getServerDate = (dateObj) => {
+        let offset = -5; // America
+        if (server === 'Europe') offset = 1;
+        if (server === 'Asia') offset = 8;
+        
+        // Create a temporary date shifted by the timezone to accurately check the day/date
+        const shifted = new Date(dateObj.getTime() + (offset * 60 * 60 * 1000));
+        return {
+            day: shifted.getUTCDay(),
+            date: shifted.getUTCDate()
+        };
+    };
 
     switch (rule) {
         case 'daily':
             break;
         case 'weekly': 
-            while (target.getUTCDay() !== 1) {
+            while (getServerDate(target).day !== 1) { // 1 = Monday
                 target.setUTCDate(target.getUTCDate() + 1);
             }
             break;
         case 'monthly': 
-            while (target.getUTCDate() !== 1) {
+            while (getServerDate(target).date !== 1) {
                 target.setUTCDate(target.getUTCDate() + 1);
             }
             break;
         case 'monthly-16th': 
-            while (target.getUTCDate() !== 16) {
+            while (getServerDate(target).date !== 16) {
                 target.setUTCDate(target.getUTCDate() + 1);
             }
             break;
@@ -43,9 +55,10 @@ const getNextReset = (rule, resetHourUTC) => {
 export default function GamePlanner({ gameId, title, rawData, tags }) {
     const { checkedTasks, toggleTask, excludedTags, toggleTagExclusion } = usePlanner();
 
-    // Grabs the exact UTC number based on the settings
-    const { getServerResetUTC } = useSettings(); 
+    // Grab both the Reset Hour AND the active account server
+    const { getServerResetUTC, activeAccount } = useSettings(); 
     const currentResetHour = getServerResetUTC();
+    const server = activeAccount?.server || 'America';
 
     const gameCheckedTasks = checkedTasks[gameId] || {};
 
@@ -70,11 +83,23 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
         currentList = currentList.filter((t) => !excludedTags.includes(t.tag.id));
     }
 
-    // SORT BY DEADLINE PRIORITY
+    // Sort by deadline priority
     const listWithDeadlines = currentList.map((task) => {
-        const finalDeadline = task.resetRule 
-            ? getNextReset(task.resetRule, currentResetHour) 
-            : task.deadline;
+        let finalDeadline = null;
+
+        if (task.resetRule) {
+            // Recurring task (e.g. Daily Commissions) - uses the Reset Hour setting
+            finalDeadline = getNextReset(task.resetRule, currentResetHour, server);
+        } else if (task.deadline) {
+            // Hard deadline (e.g. an Event ending) - apply the timezone offset
+            let offset = "-05:00";
+            if (server === 'Europe') offset = "+01:00";
+            if (server === 'Asia') offset = "+08:00";
+            
+            // Generate the exact UTC string for this specific server
+            finalDeadline = new Date(`${task.deadline}${offset}`).toISOString();
+        }
+
         return { ...task, finalDeadline };
     });
 
@@ -182,12 +207,10 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                                     type="checkbox"
                                     checked={isChecked}
                                     onChange={() => toggleTask(gameId, task.id)}
-                                    // Smaller checkbox on mobile
                                     className="w-4 h-4 md:w-5 md:h-5 cursor-pointer rounded border-[#4b4c53] bg-[#121212] accent-blue-500 transition-colors"
                                 />
                             </div>
 
-                            {/* Icon image */}
                             <div className="w-7 h-8 md:w-10 md:h-12 flex-shrink-0 flex items-center justify-center mr-2.5 md:mr-4 rounded-md overflow-hidden z-10">
                                 <img
                                     src={task.icon}
@@ -196,7 +219,6 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                                 />
                             </div>
                             
-                            {/* Task Title and Label */}
                             <div className="flex flex-col flex-1 justify-center min-w-0 pr-16 md:pr-24 z-10 mt-1 md:mt-1.5">
                                 <div className="flex items-center gap-1.5 md:gap-2 mb-1 md:mb-1.5">
                                     {task.label && (
@@ -246,7 +268,6 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                                 {showTimer ? (
                                     <CountdownTimer endDate={finalDeadline} />
                                 ) : (
-                                    // Uses the default colors we set in TimerRibbon.jsx!
                                     <TimerRibbon>
                                         {isChecked ? "Completed" : task.durationLabel || "Daily"}
                                     </TimerRibbon>
