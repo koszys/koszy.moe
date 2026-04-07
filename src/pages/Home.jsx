@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+// Icons
 import kofiLogo from '../assets/kofilogo.webp';
 import discordLogo from '../assets/discordlogo.png';
 
+// Components
 import GameCard from '../components/GameCard';
 import ChangelogItem from '../components/ChangelogItem';
 import Footer from '../components/Footer';
 import ChangelogSection from '../components/ChangelogSection';
 
+// Data
 import { CHANGELOG_DATA } from '../data/changelogs/mainchangelog';
 import { GAME_CONFIG } from '../data/games'; 
+
+// Context
+import { useAuth } from '../context/AuthContext';
 
 //Map backgrounds dynamically from config
 const BACKGROUNDS = GAME_CONFIG.map(game => game.bgUrl);
@@ -19,6 +25,8 @@ export default function Home() {
   const [currentBg, setCurrentBg] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); 
+
+  const { user, openModal, logout } = useAuth();
 
   {/* Game background */}
   useEffect(() => {
@@ -96,7 +104,27 @@ export default function Home() {
               <span>Ko-fi</span>
             </button>
 
-            <button className="ml-2 px-5 py-2 bg-blue-500 hover:bg-inherit hover:border-blue-500 text-white rounded text-sm font-bold transition-colors">Sign In</button>
+            {/* User Auth Buttons */}
+            {user ? (
+                <div className="flex items-center gap-3 ml-2">
+                    <span className="text-sm font-bold text-white hidden sm:block">
+                        {user.name}
+                    </span>
+                    <button 
+                        onClick={logout}
+                        className="px-5 py-2 bg-red-900/50 hover:bg-red-900/80 text-red-400 border border-red-900/50 hover:border-red-500 rounded text-sm font-bold transition-colors"
+                    >
+                        Sign Out
+                    </button>
+                </div>
+            ) : (
+                <button 
+                    onClick={openModal} 
+                    className="ml-2 px-5 py-2 bg-blue-500 border border-transparent hover:bg-transparent hover:border-blue-500 text-white rounded text-sm font-bold transition-colors"
+                >
+                    Sign In
+                </button>
+            )}
           </div>
 
         </header>

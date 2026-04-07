@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
+
+// Components
 import SectionHeader from '../components/game/SectionHeader';
+
+// Context
 import { useSettings } from '../context/SettingsContext';
-import driveIcon from '../assets/googledriveicon.png';
+import { useAuth } from '../context/AuthContext'; 
+
+// Assets
 
 const GAME_TERMS = {
     genshin: { 
@@ -37,6 +43,9 @@ export default function Settings({ gameId = 'genshin' }) {
         accounts, activeAccountId, setActiveAccountId, activeAccount, 
         addAccount, updateActiveAccount, deleteActiveAccount 
     } = useSettings();
+
+    // Grab the auth state and functions
+    const { user, openModal, logout } = useAuth();
 
     const [isRenaming, setIsRenaming] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -77,6 +86,40 @@ export default function Settings({ gameId = 'genshin' }) {
                     </div>
                 </div>
             )}
+
+            {/* Auth Account Block */}
+            <div className="bg-[#24252a] border border-[#33343a] rounded-xl p-4 md:p-6 shadow-sm mb-8">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-wider mb-4">Site Account</h3>
+
+                {user ? (
+                    // Logged in state
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg ${user.provider === 'Discord' ? 'bg-[#5865F2]' : 'bg-blue-600'}`}>
+                                {user.name.charAt(0)}
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-white">{user.name}</p>
+                                <p className="text-xs text-gray-400">Signed in via {user.provider}</p>
+                            </div>
+                        </div>
+                        <button onClick={logout} className="px-4 py-2 border bg-red-900/30 hover:bg-red-900/60 text-red-400 border-red-900/50 hover:border-red-500 rounded-lg text-sm font-bold transition-colors w-max">
+                            Sign Out
+                        </button>
+                    </div>
+                ) : (
+                    // Logged out state
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <p className="text-sm font-bold text-white mb-1">You are not signed in.</p>
+                            <p className="text-xs text-gray-400">Sign in to automatically save and sync your data.</p>
+                        </div>
+                        <button onClick={openModal} className="px-6 py-2 bg-blue-600 hover:bg-blue-500 hover:border-white text-white rounded-lg text-sm font-bold transition-colors shadow-md w-full sm:w-auto">
+                            Sign In
+                        </button>
+                    </div>
+                )}
+            </div>
 
             <div className="space-y-4">
                 
@@ -265,17 +308,6 @@ export default function Settings({ gameId = 'genshin' }) {
                         </select>
                     </div>
                 </div>
-
-                {/* Footer Sync */}
-                {/* <div className="bg-[#24252a] border border-[#33343a] rounded-xl p-4 md:p-6 shadow-sm mt-8">
-                    <p className="text-sm text-gray-300 mb-4 leading-relaxed">
-                        koszy.moe can use Google Drive to save and sync your settings and data <strong className="text-white">from all accounts</strong>. We can only read and write to files that the website creates and no data is sent to other external servers.
-                    </p>
-                    <button className="flex items-center gap-2.5 bg-gray-200 hover:bg-white hover:border-blue-500 text-gray-900 px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-md">
-                        <img src={driveIcon} alt="Google Drive" className="w-5 h-5 object-contain" />
-                        Sign in Google Drive
-                    </button>
-                </div> */}
 
             </div>
         </div>

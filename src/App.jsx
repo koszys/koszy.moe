@@ -11,6 +11,7 @@ import Settings from './pages/Settings';
 
 // Components
 import GameLayout from './components/GameLayout';
+import AuthModal from './components/AuthModal';
 
 // Genshin Icons
 import genshinPlannerIcon from './assets/genshin/genshin-quest.png';
@@ -40,20 +41,24 @@ export default function App() {
   const genshinData = GAME_CONFIG.find(game => game.id === 'genshin');
 
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
+    <> 
+      <AuthModal />
       
-      <Route path="/genshin" element={
-        <GameLayout 
-          gameTitle={genshinData.name} 
-          currentGameBgUrl={genshinData.bgUrl} // Pulls dynamically from games.js
-          navLinks={genshinLinks} 
-        />
-      }>
-        <Route index element={<GenshinHome />} />
-        <Route path="planner" element={<GenshinPlanner />} />
-        <Route path="settings" element={<Settings />} />x
-      </Route>
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        
+        <Route path="/genshin" element={
+          <GameLayout 
+            gameTitle={genshinData.name} 
+            currentGameBgUrl={genshinData.bgUrl} 
+            navLinks={genshinLinks} 
+          />
+        }>
+          <Route index element={<GenshinHome />} />
+          <Route path="planner" element={<GenshinPlanner />} />
+          <Route path="settings" element={<Settings gameId="genshin" />} /> 
+        </Route>
+      </Routes>
+    </>
   );
 }

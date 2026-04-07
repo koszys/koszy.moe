@@ -7,15 +7,18 @@ import './index.css'
 // Import providers
 import { PlannerProvider } from './context/PlannerContext' 
 import { SettingsProvider } from './context/SettingsContext'
+import { AuthProvider } from './context/AuthContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <SettingsProvider>
-        <PlannerProvider> 
-          <App />
-        </PlannerProvider>
-      </SettingsProvider>
+      <AuthProvider>
+        <SettingsProvider>
+          <PlannerProvider> 
+            <App />
+          </PlannerProvider>
+        </SettingsProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )
