@@ -8,7 +8,6 @@ import { useSettings } from '../context/SettingsContext';
 import { useAuth } from '../context/AuthContext'; 
 
 // Assets
-import driveIcon from '../assets/googledriveicon.png';
 
 const GAME_TERMS = {
     genshin: { 
