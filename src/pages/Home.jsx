@@ -24,9 +24,10 @@ const BACKGROUNDS = GAME_CONFIG.map(game => game.bgUrl);
 export default function Home() {
   const [currentBg, setCurrentBg] = useState(null);
   const [scrolled, setScrolled] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false); 
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
-  const { user, openModal, logout } = useAuth();
+  const { user, openModal, triggerLogout } = useAuth();
 
   {/* Game background */}
   useEffect(() => {
@@ -106,21 +107,47 @@ export default function Home() {
 
             {/* User Auth Buttons */}
             {user ? (
-                <div className="flex items-center gap-3 ml-2">
-                    <span className="text-sm font-bold text-white hidden sm:block">
-                        {user.name}
-                    </span>
+                <div className="relative z-50 ml-2">
+                    {/* Trigger Button */}
                     <button 
-                        onClick={logout}
-                        className="px-5 py-2 bg-red-900/50 hover:bg-red-900/80 text-red-400 border border-red-900/50 hover:border-red-500 rounded text-sm font-bold transition-colors"
+                        onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                        className="flex items-center gap-2 bg-[#1c1d21]/80 hover:bg-[#24252a] border border-[#33343a] hover:border-gray-500 rounded-full py-1 pr-3 pl-1 transition-all"
                     >
-                        Sign Out
+                        {user.avatar ? (
+                            <img src={user.avatar} alt="Profile" className="w-7 h-7 rounded-full object-cover" />
+                        ) : (
+                            <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white">
+                                {user.name.charAt(0).toUpperCase()}
+                            </div>
+                        )}
+                        <span className="text-sm font-bold text-blue-400">{user.name}</span>
+                        <svg className={`w-4 h-4 text-blue-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
                     </button>
+
+                    {/* Dropdown Menu */}
+                    {isUserMenuOpen && (
+                        <>
+                            {/* Invisible background overlay to close menu when clicking outside */}
+                            <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)}></div>
+                            
+                            <div className="absolute right-0 mt-2 w-48 bg-[#1c1d21] border border-[#33343a] hover:border-blue-500 rounded-lg shadow-2xl z-50 overflow-hidden flex flex-col">
+                                <button 
+                                    onClick={() => { setIsUserMenuOpen(false); triggerLogout(); }} 
+                                    className="flex items-center gap-2 px-4 py-3 text-sm font-bold text-red-400 hover:text-red-300 hover:bg-[#24252a] hover:border-transparent transition-colors text-left w-full"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                                    Sign out
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
             ) : (
                 <button 
                     onClick={openModal} 
-                    className="ml-2 px-5 py-2 bg-blue-500 border border-transparent hover:bg-transparent hover:border-blue-500 text-white rounded text-sm font-bold transition-colors"
+                    className="ml-2 px-5 py-2 bg-blue-500 border border-transparent hover:bg-transparent hover:border-blue-500 text-white rounded text-sm font-bold transition-colors shadow-md"
                 >
                     Sign In
                 </button>
