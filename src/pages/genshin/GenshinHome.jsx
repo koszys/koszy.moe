@@ -3,7 +3,7 @@ import React from 'react';
 // Data Imports
 import { CHANGELOG_DATA } from '../../data/changelogs/genshinchangelog';
 import { ACTIVE_CODES } from '../../data/codes';
-import { GLOBAL_EVENTS } from '../../data/events';
+import { GLOBAL_EVENTS } from '../../data/gameevents';
 
 // Standardized Components
 import ChangelogSection from '../../components/ChangelogSection';

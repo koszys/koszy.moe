@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SectionHeader from "./SectionHeader";
 import CountdownTimer from "./timeline/CountdownTimer";
 import TimerRibbon from "./timeline/TimerRibbon";
@@ -64,6 +64,24 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
 
     const [activeTab, setActiveTab] = useState("All");
     const [showSettings, setShowSettings] = useState(false);
+    const settingsRef = useRef(null);
+
+    useEffect(() => {
+        if (!showSettings) return;
+
+        const handleOutsideClick = (event) => {
+            if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+                setShowSettings(false);
+            }
+        };
+
+        if (showSettings) {
+            document.addEventListener("mousedown", handleOutsideClick);
+        }
+
+        return () => document.removeEventListener("mousedown", handleOutsideClick);
+
+    }, [showSettings]);
 
     const TABS = ["All", "Permanent", "Events", "Completed"];
 
@@ -148,9 +166,9 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                 </div>
                 
                 {/* SETTINGS BUTTON */}
-                <div className="relative flex-shrink-0">
+                <div ref={settingsRef} className="relative flex-shrink-0">
                     <button
-                        onClick={() => setShowSettings(!showSettings)}
+                        onClick={() => setShowSettings((prev) => !prev)}
                         className="p-2.5 rounded-full text-gray-400 hover:text-white hover:bg-[#1c1d21]/40 border border-[#33343a] hover:border-blue-500 transition-all"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
