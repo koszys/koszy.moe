@@ -1,11 +1,11 @@
 import GamePlanner from '../../components/game/GamePlanner';
 import { PLANNER_DATA, PLANNER_TAGS } from '../../data/genshinplanner';
-import { GLOBAL_EVENTS } from '../../data/events'; // Import the events!
+import { GLOBAL_EVENTS } from '../../data/gameevents'; 
 
 export default function GenshinPlanner() {
     const now = new Date();
 
-    // Automatically pull current events from events.js
+    // Automatically pull current events from the gameevents module
     const activeEventsToTasks = (GLOBAL_EVENTS.genshin || [])
         .filter(event => {
         // Only get currently active events
