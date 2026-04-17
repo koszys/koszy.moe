@@ -130,7 +130,6 @@ export function SettingsProvider({ children }) {
         if (!user) return alert("You must be signed in to sync to the cloud.");
         
         try {
-            setLoading(true);
             const localAccounts = JSON.parse(localStorage.getItem('koszy-accounts')) || [];
             const localTasks = JSON.parse(localStorage.getItem('koszy-checked-tasks')) || {};
             const localTags = JSON.parse(localStorage.getItem('koszy-excluded-tags')) || [];
@@ -165,13 +164,10 @@ export function SettingsProvider({ children }) {
             const { data: updatedAccounts } = await supabase.from('game_accounts').select('*').eq('user_id', user.id);
             if (updatedAccounts) setAccounts(updatedAccounts);
             
-            alert("Local data successfully merged into your cloud account!");
         } catch (error) {
             console.error("Sync Error:", error);
-            alert("Failed to sync data. Please try again.");
-        } finally {
-            setLoading(false);
-        }
+            throw error; 
+        } 
     };
 
     // Helper: UTC Reset Math

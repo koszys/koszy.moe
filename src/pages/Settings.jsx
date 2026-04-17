@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Components
 import SectionHeader from '../components/game/SectionHeader';
@@ -49,7 +49,44 @@ export default function Settings({ gameId = 'genshin' }) {
 
     const [isRenaming, setIsRenaming] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [toast, setToast] = useState(null);
+    const [isSyncing, setIsSyncing] = useState(false);
 
+    const [cooldown, setCooldown] = useState(() => {
+        const savedExpiration = localStorage.getItem('koszy-sync-cooldown');
+        if (savedExpiration) {
+            const remainingSeconds = Math.floor((parseInt(savedExpiration, 10) - Date.now()) / 1000);
+            return remainingSeconds > 0 ? remainingSeconds : 0;
+        }
+        return 0;
+    });
+
+    useEffect(() => {
+        if (cooldown > 0) {
+            const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+            return () => clearTimeout(timer);
+        } else if (cooldown === 0) {
+            localStorage.removeItem('koszy-sync-cooldown');
+        }
+    }, [cooldown]);
+
+    const handleSyncClick = async () => {
+        setIsSyncing(true); 
+        try {
+            await syncLocalToCloud();
+            setToast({ type: 'success', message: 'Data synced successfully!' });
+            
+            // Set cooldown to 60s AND save the exact future expiration time
+            setCooldown(10);
+            localStorage.setItem('koszy-sync-cooldown', Date.now() + 10000);
+            
+        } catch (err) {
+            setToast({ type: 'error', message: 'Failed to sync data. Please try again.' });
+        }
+        setIsSyncing(false); 
+        setTimeout(() => setToast(null), 3000);
+    };
+    
     const handleRenameSubmit = (e) => {
         if (e.key === 'Enter') setIsRenaming(false);
     };
@@ -174,13 +211,21 @@ export default function Settings({ gameId = 'genshin' }) {
                             <p className="text-sm font-bold text-white mb-0.5">Sync Local Data to Cloud</p>
                             <p className="text-xs text-gray-400">Merge any un-synced data from this browser into your cloud account.</p>
                         </div>
+
                         <button 
-                            onClick={syncLocalToCloud}
-                            disabled={!user}
-                            className="px-4 py-2 bg-[#33343a] hover:bg-[#4b4c53] disabled:opacity-50 disabled:hover:bg-[#33343a] text-white border border-[#4b4c53] hover:border-blue-500 rounded-lg text-sm font-bold transition-colors shadow-sm whitespace-nowrap"
+                            type="button"
+                            onClick={handleSyncClick}
+                            disabled={!user || isSyncing || cooldown > 0} 
+                            className="px-4 py-2 bg-[#33343a] hover:bg-[#4b4c53] disabled:opacity-50 disabled:hover:bg-[#33343a] text-white border border-[#4b4c53] hover:border-blue-500 rounded-lg text-sm font-bold transition-colors shadow-sm whitespace-nowrap min-w-[120px]"
                         >
-                            Sync to Cloud
+                            {isSyncing 
+                                ? 'Syncing...' 
+                                : cooldown > 0 
+                                    ? `Synced (${cooldown}s)` 
+                                    : 'Sync to Cloud'
+                            }
                         </button>
+                        
                     </div>
 
                     {/* Local Backup Block (placeholder for now) */}
@@ -386,6 +431,19 @@ export default function Settings({ gameId = 'genshin' }) {
                 </div>
 
             </div>
+
+            {/* Toast Notification */}
+            {toast && (
+                <div className={`fixed bottom-6 right-6 px-4 py-3 rounded-lg shadow-xl text-sm font-bold z-[200] flex items-center gap-2 transition-all duration-300 animate-fade-in-up ${toast.type === 'success' ? 'bg-green-600/90 border border-green-500 text-white' : 'bg-red-600/90 border border-red-500 text-white'}`}>
+                    {toast.type === 'success' ? (
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                    ) : (
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
+                    )}
+                    {toast.message}
+                </div>
+            )}
+            
         </div>
     );
 }
