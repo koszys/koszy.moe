@@ -11,16 +11,27 @@ export function SettingsProvider({ children }) {
     const [activeAccountId, setActiveAccountId] = useState('account_1');
     const [loading, setLoading] = useState(true);
 
+    const sortAccounts = (accountList) => {
+        return [...accountList].sort((a, b) => {
+            if (a.created_at && b.created_at) {
+                return new Date(a.created_at) - new Date(b.created_at);
+            }
+            if (a.created_at) return -1;
+            if (b.created_at) return 1;
+            return 0;
+        });
+    };
+
     // Fetch Data & Handle First-Time Migration
     useEffect(() => {
         const loadSettings = async () => {
             if (user) {
                 const { data: profileData } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-                const { data: accountsData } = await supabase.from('game_accounts').select('*').eq('user_id', user.id);
+                const { data: accountsData } = await supabase.from('game_accounts').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
                 
                 if (accountsData && accountsData.length > 0) {
                     // Existing users, load cloud data normally
-                    setAccounts(accountsData);
+                    setAccounts(sortAccounts(accountsData));
                     setActiveAccountId(profileData?.active_account_id || accountsData[0].id);
                 } else {
                     // For a new user, migrate local guest data to the cloud
@@ -160,8 +171,8 @@ export function SettingsProvider({ children }) {
             }
 
             // Refresh state to show merged data
-            const { data: updatedAccounts } = await supabase.from('game_accounts').select('*').eq('user_id', user.id);
-            if (updatedAccounts) setAccounts(updatedAccounts);
+            const { data: updatedAccounts } = await supabase.from('game_accounts').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
+            if (updatedAccounts) setAccounts(sortAccounts(updatedAccounts));
             
         } catch (error) {
             console.error("Sync Error:", error);
