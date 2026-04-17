@@ -14,7 +14,6 @@ export function SettingsProvider({ children }) {
     // Fetch Data & Handle First-Time Migration
     useEffect(() => {
         const loadSettings = async () => {
-            setLoading(true);
             if (user) {
                 const { data: profileData } = await supabase.from('profiles').select('*').eq('id', user.id).single();
                 const { data: accountsData } = await supabase.from('game_accounts').select('*').eq('user_id', user.id);
