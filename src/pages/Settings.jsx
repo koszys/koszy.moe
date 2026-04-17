@@ -41,7 +41,7 @@ export default function Settings({ gameId = 'genshin' }) {
     
     const { 
         accounts, activeAccountId, setActiveAccountId, activeAccount, 
-        addAccount, updateActiveAccount, deleteActiveAccount 
+        addAccount, updateActiveAccount, deleteActiveAccount, syncLocalToCloud 
     } = useSettings();
 
     // Grab the auth state and functions
@@ -132,7 +132,7 @@ export default function Settings({ gameId = 'genshin' }) {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 md:p-5 bg-[#1c1d21] border border-[#33343a] rounded-lg">
                         <div className="flex items-center gap-3">
                             {user.avatar ? (
-                                <img src={user.avatar} alt="Profile" className="w-10 h-10 rounded-full object-cover border border-[#33343a]" />
+                                <img src={user.avatar} alt="Profile" referrerPolicy="no-referrer" className="w-10 h-10 rounded-full object-cover border border-[#33343a]" />
                             ) : (
                                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg bg-blue-600">
                                     {user.name.charAt(0).toUpperCase()}
@@ -140,7 +140,8 @@ export default function Settings({ gameId = 'genshin' }) {
                             )}
                             <div>
                                 <p className="text-sm font-bold text-white">{user.name}</p>
-                                <p className="text-xs text-blue-400 cursor-pointer hover:underline w-max">Edit Display Name</p>
+                                <p className="text-xs text-gray-400">{user.email}</p>
+                                <p className="text-[10px] text-blue-400 cursor-pointer hover:underline w-max mt-0.5">Edit Display Name</p>
                             </div>
                         </div>
                         {/* Sign Out Button */}
@@ -160,6 +161,40 @@ export default function Settings({ gameId = 'genshin' }) {
                         </button>
                     </div>
                 )}
+            </div>
+
+            {/* Data Management Section */}
+            <div className="bg-[#24252a] border border-[#33343a] rounded-xl p-4 md:p-6 shadow-sm mb-8">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-wider mb-4">Data Management</h3>
+                <div className="flex flex-col gap-3">
+                    
+                    {/* Manual Sync Block */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-[#1c1d21] border border-[#33343a] rounded-lg">
+                        <div>
+                            <p className="text-sm font-bold text-white mb-0.5">Sync Local Data to Cloud</p>
+                            <p className="text-xs text-gray-400">Merge any un-synced data from this browser into your cloud account.</p>
+                        </div>
+                        <button 
+                            onClick={syncLocalToCloud}
+                            disabled={!user}
+                            className="px-4 py-2 bg-[#33343a] hover:bg-[#4b4c53] disabled:opacity-50 disabled:hover:bg-[#33343a] text-white border border-[#4b4c53] hover:border-blue-500 rounded-lg text-sm font-bold transition-colors shadow-sm whitespace-nowrap"
+                        >
+                            Sync to Cloud
+                        </button>
+                    </div>
+
+                    {/* Local Backup Block (placeholder for now) */}
+                    {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-[#1c1d21] border border-[#33343a] rounded-lg opacity-60">
+                        <div>
+                            <p className="text-sm font-bold text-white mb-0.5">Create Local Backup</p>
+                            <p className="text-xs text-gray-400">Download a .json file of your current planner progress.</p>
+                        </div>
+                        <button disabled className="px-4 py-2 bg-transparent text-gray-400 border border-[#33343a] hover:border-blue-500 rounded-lg text-sm font-bold whitespace-nowrap cursor-not-allowed">
+                            Export Backup
+                        </button>
+                    </div> */}
+
+                </div>
             </div>
 
             <div className="space-y-4">

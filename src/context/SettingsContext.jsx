@@ -11,25 +11,54 @@ export function SettingsProvider({ children }) {
     const [activeAccountId, setActiveAccountId] = useState('account_1');
     const [loading, setLoading] = useState(true);
 
-    // Fetch Data (Cloud if logged in, Local if not logged in)
+    // Fetch Data & Handle First-Time Migration
     useEffect(() => {
         const loadSettings = async () => {
             setLoading(true);
             if (user) {
-                // Fetch from Supabase
                 const { data: profileData } = await supabase.from('profiles').select('*').eq('id', user.id).single();
                 const { data: accountsData } = await supabase.from('game_accounts').select('*').eq('user_id', user.id);
                 
                 if (accountsData && accountsData.length > 0) {
+                    // Existing users, load cloud data normally
                     setAccounts(accountsData);
                     setActiveAccountId(profileData?.active_account_id || accountsData[0].id);
                 } else {
-                    // Create default cloud account if they have none
-                    const defaultAcc = { id: `acc_${Date.now()}`, user_id: user.id, name: 'Main', server: 'America', ar: 1, wl: '0', gender: 'M' };
-                    await supabase.from('game_accounts').insert(defaultAcc);
-                    await supabase.from('profiles').upsert({ id: user.id, active_account_id: defaultAcc.id });
-                    setAccounts([defaultAcc]);
-                    setActiveAccountId(defaultAcc.id);
+                    // For a new user, migrate local guest data to the cloud
+                    console.log("New user detected. Migrating local data to cloud...");
+                    
+                    // Grab local data (or use defaults if empty)
+                    const localAccounts = JSON.parse(localStorage.getItem('koszy-accounts')) || [{ id: `acc_${Date.now()}`, name: 'Main', server: 'America', ar: 1, wl: '0', gender: 'M' }];
+                    const localActiveId = localStorage.getItem('koszy-active-account') || localAccounts[0].id;
+                    const localTags = JSON.parse(localStorage.getItem('koszy-excluded-tags')) || [];
+                    const localTasks = JSON.parse(localStorage.getItem('koszy-checked-tasks')) || {};
+
+                    // Push Accounts
+                    const accountsToInsert = localAccounts.map(acc => ({ ...acc, user_id: user.id }));
+                    await supabase.from('game_accounts').insert(accountsToInsert);
+
+                    // Push Profile & Tags
+                    await supabase.from('profiles').upsert({ id: user.id, active_account_id: localActiveId, excluded_tags: localTags });
+
+                    // Push Tasks (Flattening the nested object into SQL rows)
+                    const tasksToInsert = [];
+                    Object.keys(localTasks).forEach(accId => {
+                        Object.keys(localTasks[accId]).forEach(gameId => {
+                            Object.keys(localTasks[accId][gameId]).forEach(taskId => {
+                                if (localTasks[accId][gameId][taskId]) {
+                                    tasksToInsert.push({ user_id: user.id, account_id: accId, game_id: gameId, task_id: taskId });
+                                }
+                            });
+                        });
+                    });
+                    
+                    if (tasksToInsert.length > 0) {
+                        await supabase.from('completed_tasks').insert(tasksToInsert);
+                    }
+
+                    // Set the state
+                    setAccounts(localAccounts);
+                    setActiveAccountId(localActiveId);
                 }
             } else {
                 // Fetch from LocalStorage
@@ -96,6 +125,55 @@ export function SettingsProvider({ children }) {
         if (!user) localStorage.setItem('koszy-accounts', JSON.stringify(newAccounts));
     };
 
+    // Manual Cloud Sync
+    const syncLocalToCloud = async () => {
+        if (!user) return alert("You must be signed in to sync to the cloud.");
+        
+        try {
+            setLoading(true);
+            const localAccounts = JSON.parse(localStorage.getItem('koszy-accounts')) || [];
+            const localTasks = JSON.parse(localStorage.getItem('koszy-checked-tasks')) || {};
+            const localTags = JSON.parse(localStorage.getItem('koszy-excluded-tags')) || [];
+
+            // Sync Accounts
+            if (localAccounts.length > 0) {
+                const accountsToUpsert = localAccounts.map(acc => ({ ...acc, user_id: user.id }));
+                await supabase.from('game_accounts').upsert(accountsToUpsert);
+            }
+
+            // Sync Profile & Tags
+            await supabase.from('profiles').upsert({ id: user.id, excluded_tags: localTags });
+
+            // Sync Tasks
+            const tasksToInsert = [];
+            Object.keys(localTasks).forEach(accId => {
+                Object.keys(localTasks[accId]).forEach(gameId => {
+                    Object.keys(localTasks[accId][gameId]).forEach(taskId => {
+                        if (localTasks[accId][gameId][taskId]) {
+                            tasksToInsert.push({ user_id: user.id, account_id: accId, game_id: gameId, task_id: taskId });
+                        }
+                    });
+                });
+            });
+            
+            if (tasksToInsert.length > 0) {
+                // Upsert on the unique constraint to avoid duplicate errors
+                await supabase.from('completed_tasks').upsert(tasksToInsert, { onConflict: 'account_id, game_id, task_id' });
+            }
+
+            // Refresh state to show merged data
+            const { data: updatedAccounts } = await supabase.from('game_accounts').select('*').eq('user_id', user.id);
+            if (updatedAccounts) setAccounts(updatedAccounts);
+            
+            alert("Local data successfully merged into your cloud account!");
+        } catch (error) {
+            console.error("Sync Error:", error);
+            alert("Failed to sync data. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Helper: UTC Reset Math
     const getServerResetUTC = () => {
         const activeAcc = accounts.find(acc => acc.id === activeAccountId);
@@ -116,7 +194,8 @@ export function SettingsProvider({ children }) {
             addAccount, 
             updateActiveAccount, 
             deleteActiveAccount,
-            getServerResetUTC
+            getServerResetUTC,
+            syncLocalToCloud
         }}>
             {!loading && children}
         </SettingsContext.Provider>
