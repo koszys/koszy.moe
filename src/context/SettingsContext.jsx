@@ -1,75 +1,124 @@
 import { createContext, useState, useEffect, useContext } from 'react';
+import { supabase } from '../lib/supabase';
+import { useAuth } from './AuthContext';
 
 const SettingsContext = createContext();
 
 export function SettingsProvider({ children }) {
-    // Default starting account so the app never crashes
-    const defaultAccount = { 
-        id: 'account_1', 
-        name: 'Main', 
-        server: 'America', 
-        ar: 60, 
-        wl: 9, 
-        gender: 'M' 
-    };
+    const { user } = useAuth();
+    
+    const [accounts, setAccounts] = useState([]);
+    const [activeAccountId, setActiveAccountId] = useState('account_1');
+    const [loading, setLoading] = useState(true);
 
-    // Load accounts array or set default
-    const [accounts, setAccounts] = useState(() => {
-        const saved = localStorage.getItem('koszy-accounts');
-        return saved ? JSON.parse(saved) : [defaultAccount];
-    });
-
-    // Load active account ID
-    const [activeAccountId, setActiveAccountId] = useState(() => {
-        return localStorage.getItem('koszy-active-account') || 'account_1';
-    });
-
-    // Save to local storage whenever they change
+    // Fetch Data (Cloud if logged in, Local if not logged in)
     useEffect(() => {
-        localStorage.setItem('koszy-accounts', JSON.stringify(accounts));
-        localStorage.setItem('koszy-active-account', activeAccountId);
-    }, [accounts, activeAccountId]);
+        const loadSettings = async () => {
+            setLoading(true);
+            if (user) {
+                // Fetch from Supabase
+                const { data: profileData } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+                const { data: accountsData } = await supabase.from('game_accounts').select('*').eq('user_id', user.id);
+                
+                if (accountsData && accountsData.length > 0) {
+                    setAccounts(accountsData);
+                    setActiveAccountId(profileData?.active_account_id || accountsData[0].id);
+                } else {
+                    // Create default cloud account if they have none
+                    const defaultAcc = { id: `acc_${Date.now()}`, user_id: user.id, name: 'Main', server: 'America', ar: 1, wl: '0', gender: 'M' };
+                    await supabase.from('game_accounts').insert(defaultAcc);
+                    await supabase.from('profiles').upsert({ id: user.id, active_account_id: defaultAcc.id });
+                    setAccounts([defaultAcc]);
+                    setActiveAccountId(defaultAcc.id);
+                }
+            } else {
+                // Fetch from LocalStorage
+                const localAccounts = JSON.parse(localStorage.getItem('koszy-accounts')) || [{ id: 'account_1', name: 'Main', server: 'America', ar: 60, wl: '9', gender: 'M' }];
+                const localActiveId = localStorage.getItem('koszy-active-account') || 'account_1';
+                setAccounts(localAccounts);
+                setActiveAccountId(localActiveId);
+            }
+            setLoading(false);
+        };
+        loadSettings();
+    }, [user]);
 
-    // Helper to get the actual active account object
-    const activeAccount = accounts.find(acc => acc.id === activeAccountId) || accounts[0];
-
-    // User actions for managing accounts
-    const addAccount = () => {
-        const newId = `account_${Date.now()}`;
-        const newAccount = { ...defaultAccount, id: newId, name: `Account ${accounts.length + 1}` };
-        setAccounts([...accounts, newAccount]);
-        setActiveAccountId(newId); // Auto-switch to new account
-    };
-
-    const updateActiveAccount = (key, value) => {
-        setAccounts(accounts.map(acc => 
-            acc.id === activeAccountId ? { ...acc, [key]: value } : acc
-        ));
-    };
-
-    const deleteActiveAccount = () => {
-        if (accounts.length <= 1) return; // Prevent deleting the last account
-        const remaining = accounts.filter(acc => acc.id !== activeAccountId);
-        setAccounts(remaining);
-        setActiveAccountId(remaining[0].id); // Switch to the first available account
-    };
-
-    // Reads dynamically from the active account
-    const getServerResetUTC = () => {
-        switch(activeAccount.server) {
-            case 'Europe': return 3; 
-            case 'Asia': return 20; 
-            case 'America':
-            default: return 9; 
+    // Save Active Account ID changes
+    const changeActiveAccount = async (newId) => {
+        setActiveAccountId(newId);
+        if (user) {
+            await supabase.from('profiles').upsert({ id: user.id, active_account_id: newId });
+        } else {
+            localStorage.setItem('koszy-active-account', newId);
         }
     };
 
+    // Update Account Details (AR, Server, WL)
+    const updateActiveAccount = async (key, value) => {
+        const updatedAccounts = accounts.map(acc => acc.id === activeAccountId ? { ...acc, [key]: value } : acc);
+        setAccounts(updatedAccounts);
+        
+        if (user) {
+            await supabase.from('game_accounts').update({ [key]: value }).eq('id', activeAccountId);
+        } else {
+            localStorage.setItem('koszy-accounts', JSON.stringify(updatedAccounts));
+        }
+    };
+
+    // Add New Account
+    const addAccount = async () => {
+        const newId = `acc_${Date.now()}`;
+        const newAcc = { id: newId, name: `Alt ${accounts.length + 1}`, server: 'America', ar: 1, wl: '0', gender: 'M' };
+        
+        if (user) {
+            newAcc.user_id = user.id;
+            await supabase.from('game_accounts').insert(newAcc);
+        }
+        
+        const newAccounts = [...accounts, newAcc];
+        setAccounts(newAccounts);
+        changeActiveAccount(newId);
+        if (!user) localStorage.setItem('koszy-accounts', JSON.stringify(newAccounts));
+    };
+
+    // Delete Account
+    const deleteActiveAccount = async () => {
+        if (accounts.length <= 1) return;
+        const newAccounts = accounts.filter(acc => acc.id !== activeAccountId);
+        const nextId = newAccounts[0].id;
+        
+        if (user) {
+            await supabase.from('game_accounts').delete().eq('id', activeAccountId);
+        }
+        
+        setAccounts(newAccounts);
+        changeActiveAccount(nextId);
+        if (!user) localStorage.setItem('koszy-accounts', JSON.stringify(newAccounts));
+    };
+
+    // Helper: UTC Reset Math
+    const getServerResetUTC = () => {
+        const activeAcc = accounts.find(acc => acc.id === activeAccountId);
+        const server = activeAcc?.server || 'America';
+        if (server === 'Europe') return 3;
+        if (server === 'Asia') return 20;
+        return 9; // America default
+    };
+
+    const activeAccount = accounts.find(acc => acc.id === activeAccountId) || accounts[0];
+
     return (
         <SettingsContext.Provider value={{ 
-            accounts, activeAccountId, setActiveAccountId, activeAccount, 
-            addAccount, updateActiveAccount, deleteActiveAccount, getServerResetUTC 
+            accounts, 
+            activeAccountId, 
+            setActiveAccountId: changeActiveAccount, 
+            activeAccount, 
+            addAccount, 
+            updateActiveAccount, 
+            deleteActiveAccount,
+            getServerResetUTC
         }}>
-            {children}
+            {!loading && children}
         </SettingsContext.Provider>
     );
 }
