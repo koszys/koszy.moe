@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ChangelogItem from './ChangelogItem';
 
 export default function ChangelogSection({ changelogData }) {

@@ -9,7 +9,6 @@ export const PLANNER_TAGS = {
     DAILY: { id: "daily", text: "Daily", bgColor: "bg-purple-900/40", textColor: "text-purple-300" }
 };
     
-
     // bgColor: "bg-emerald-900/40", textColor: "text-emerald-300"
     // bgColor: "bg-sky-900/40", textColor: "text-sky-300"
     // bgColor: "bg-purple-900/40", textColor: "text-purple-300"

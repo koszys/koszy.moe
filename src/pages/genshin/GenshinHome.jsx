@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Data Imports
 import { CHANGELOG_DATA } from '../../data/changelogs/genshinchangelog';
 import { ACTIVE_CODES } from '../../data/codes';

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 
 const SettingsContext = createContext();
 
@@ -33,7 +33,7 @@ export function SettingsProvider({ children }) {
     // Helper to get the actual active account object
     const activeAccount = accounts.find(acc => acc.id === activeAccountId) || accounts[0];
 
-    // --- ACCOUNT ACTIONS ---
+    // User actions for managing accounts
     const addAccount = () => {
         const newId = `account_${Date.now()}`;
         const newAccount = { ...defaultAccount, id: newId, name: `Account ${accounts.length + 1}` };

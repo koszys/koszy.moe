@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import TimerRibbon from './TimerRibbon'; //
+import { useState, useEffect } from 'react';
+import TimerRibbon from './TimerRibbon'; 
 
 export default function CountdownTimer({ endDate }) {
     const [timeLeft, setTimeLeft] = useState(0);
