@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function ActiveCodes({ codes, redeemUrl }) {
     if (!codes || codes.length === 0) return null;
 
