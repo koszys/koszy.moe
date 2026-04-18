@@ -23,13 +23,15 @@ export function PlannerProvider({ children }) {
                 setExcludedTags(profile?.excluded_tags || []);
 
                 // Fetch checked tasks for this specific account
-                const { data: tasks } = await supabase.from('completed_tasks').select('game_id, task_id').eq('account_id', activeAccountId);
+                const { data: tasks } = await supabase.from('completed_tasks')
+                    .select('game_id, task_id, created_at')
+                    .eq('account_id', activeAccountId);
                 
-                // Rebuild the { genshin: { daily_commissions: true } } format for the UI
+                // Rebuild the { genshin: { daily_commissions: { completedAt } } } format for the UI
                 const formattedTasks = {};
                 tasks?.forEach(t => {
                     if (!formattedTasks[t.game_id]) formattedTasks[t.game_id] = {};
-                    formattedTasks[t.game_id][t.task_id] = true;
+                    formattedTasks[t.game_id][t.task_id] = { completedAt: t.created_at };
                 });
                 setCheckedTasks(formattedTasks);
             } else {
@@ -44,11 +46,14 @@ export function PlannerProvider({ children }) {
 
     // Toggle Task (Insert/Delete Row)
     const toggleTask = async (gameId, taskId) => {
-        const isCurrentlyChecked = checkedTasks[gameId]?.[taskId];
+        const isCurrentlyChecked = !!checkedTasks[gameId]?.[taskId];
         
-        // Optimistic UI Update
-        const newGameState = { ...checkedTasks[gameId], [taskId]: !isCurrentlyChecked };
-        if (isCurrentlyChecked) delete newGameState[taskId]; // Clean up object if false
+        const newGameState = { ...checkedTasks[gameId] };
+        if (isCurrentlyChecked) {
+            delete newGameState[taskId];
+        } else {
+            newGameState[taskId] = { completedAt: new Date().toISOString() };
+        }
         
         const newCheckedTasks = { ...checkedTasks, [gameId]: newGameState };
         setCheckedTasks(newCheckedTasks);
@@ -71,6 +76,26 @@ export function PlannerProvider({ children }) {
         }
     };
 
+    const clearCompletedTask = async (gameId, taskId) => {
+        if (!checkedTasks[gameId]?.[taskId]) return;
+
+        const newGameState = { ...checkedTasks[gameId] };
+        delete newGameState[taskId];
+
+        const newCheckedTasks = { ...checkedTasks, [gameId]: newGameState };
+        setCheckedTasks(newCheckedTasks);
+
+        if (user) {
+            await supabase.from('completed_tasks')
+                .delete()
+                .match({ account_id: activeAccountId, game_id: gameId, task_id: taskId });
+        } else {
+            const masterLocal = JSON.parse(localStorage.getItem('koszy-checked-tasks')) || {};
+            masterLocal[activeAccountId] = newCheckedTasks;
+            localStorage.setItem('koszy-checked-tasks', JSON.stringify(masterLocal));
+        }
+    };
+
     // Toggle Tag Exclusion
     const toggleTagExclusion = async (tagId) => {
         const isExcluded = excludedTags.includes(tagId);
@@ -86,7 +111,7 @@ export function PlannerProvider({ children }) {
     };
 
     return (
-        <PlannerContext.Provider value={{ checkedTasks, toggleTask, excludedTags, toggleTagExclusion }}>
+        <PlannerContext.Provider value={{ checkedTasks, toggleTask, clearCompletedTask, excludedTags, toggleTagExclusion }}>
             {children}
         </PlannerContext.Provider>
     );
