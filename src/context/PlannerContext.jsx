@@ -14,34 +14,55 @@ export function PlannerProvider({ children }) {
 
     // Fetch Tasks & Tags based on the active account
     useEffect(() => {
+        let isMounted = true; // PREVENTS RACE CONDITIONS
+
         const loadPlannerData = async () => {
             if (!activeAccountId) return;
+
+            // Stops old account data from leaking visually
+            setCheckedTasks({});
 
             if (user) {
                 // Fetch tags from profiles
                 const { data: profile } = await supabase.from('profiles').select('excluded_tags').eq('id', user.id).single();
-                setExcludedTags(profile?.excluded_tags || []);
+                
+                if (isMounted) {
+                    setExcludedTags(profile?.excluded_tags || []);
+                }
 
                 // Fetch checked tasks for this specific account
                 const { data: tasks } = await supabase.from('completed_tasks')
-                    .select('game_id, task_id, created_at')
+                    .select('game_id, task_id, completed_at') // Note: Using completed_at from our previous fix!
                     .eq('account_id', activeAccountId);
                 
                 // Rebuild the { genshin: { daily_commissions: { completedAt } } } format for the UI
                 const formattedTasks = {};
                 tasks?.forEach(t => {
                     if (!formattedTasks[t.game_id]) formattedTasks[t.game_id] = {};
-                    formattedTasks[t.game_id][t.task_id] = { completedAt: t.created_at };
+                    formattedTasks[t.game_id][t.task_id] = { completedAt: t.completed_at };
                 });
-                setCheckedTasks(formattedTasks);
+                
+                // Only set state if the user hasnt switched accounts again during the fetch
+                if (isMounted) {
+                    setCheckedTasks(formattedTasks);
+                }
             } else {
                 // Fetch from LocalStorage
                 const allLocalTasks = JSON.parse(localStorage.getItem('koszy-checked-tasks')) || {};
-                setCheckedTasks(allLocalTasks[activeAccountId] || {});
-                setExcludedTags(JSON.parse(localStorage.getItem('koszy-excluded-tags')) || []);
+                
+                if (isMounted) {
+                    setCheckedTasks(allLocalTasks[activeAccountId] || {});
+                    setExcludedTags(JSON.parse(localStorage.getItem('koszy-excluded-tags')) || []);
+                }
             }
         };
+        
         loadPlannerData();
+
+        // If activeAccountId changes, this invalidates the old fetch
+        return () => {
+            isMounted = false;
+        };
     }, [user, activeAccountId]);
 
     // Toggle Task (Insert/Delete Row)
