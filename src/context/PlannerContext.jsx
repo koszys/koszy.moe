@@ -14,7 +14,7 @@ export function PlannerProvider({ children }) {
 
     // Fetch Tasks & Tags based on the active account
     useEffect(() => {
-        let isMounted = true; // PREVENTS RACE CONDITIONS
+        let isMounted = true; // Prevents race conditions
 
         const loadPlannerData = async () => {
             if (!activeAccountId) return;

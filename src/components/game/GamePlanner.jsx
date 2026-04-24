@@ -364,7 +364,7 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                     );
                 })}
 
-                {/* EMPTY LIST MESSAGE */}
+                {/* Empty list message */}
                 {currentList.length === 0 && (
                     <div className="flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-[#33343a] rounded-xl bg-[#1c1d21]/80">
                         <svg className="w-16 h-16 text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
