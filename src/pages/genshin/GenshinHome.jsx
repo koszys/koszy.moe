@@ -1,6 +1,5 @@
 // Data Imports
 import { CHANGELOG_DATA } from '../../data/changelogs/genshinchangelog';
-import { ACTIVE_CODES } from '../../data/codes';
 import { GLOBAL_EVENTS } from '../../data/gameevents';
 
 // Standardized Components
@@ -18,7 +17,6 @@ export default function GenshinHome() {
     const redeemUrl = 'https://genshin.hoyoverse.com/en/gift'; 
     
     // Data Extraction (simple filtering based on the consistent game ID)
-    const codes = ACTIVE_CODES[gameId];
     const events = GLOBAL_EVENTS[gameId];
     
     return (
