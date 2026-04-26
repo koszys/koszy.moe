@@ -49,7 +49,7 @@ export default function GenshinHome() {
         
         {/* Changelog Section */}
         <SectionHeader title="Changelog" />
-        <ChangelogSection changelogData={CHANGELOG_DATA} />
+        <ChangelogSection game={gameId} />
 
         </div>
     );
