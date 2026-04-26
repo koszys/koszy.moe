@@ -1,5 +1,4 @@
 // Data Imports
-import { CHANGELOG_DATA } from '../../data/changelogs/genshinchangelog';
 import { GLOBAL_EVENTS } from '../../data/gameevents';
 
 // Standardized Components
