@@ -53,7 +53,7 @@ const getNextReset = (rule, resetHourUTC, server) => {
 };
 
 export default function GamePlanner({ gameId, title, rawData, tags }) {
-    const { checkedTasks, toggleTask, excludedTags, toggleTagExclusion } = usePlanner();
+    const { checkedTasks, toggleTask, excludedTags, toggleTagExclusion, clearCompletedTask } = usePlanner();
 
     // Grab both the Reset Hour AND the active account server
     const { getServerResetUTC, activeAccount } = useSettings(); 
@@ -61,6 +61,75 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
     const server = activeAccount?.server || 'America';
 
     const gameCheckedTasks = checkedTasks[gameId] || {};
+
+    const getNextResetAfter = (baseDate, rule, resetHourUTC, server) => {
+        const target = new Date(baseDate);
+        target.setUTCHours(resetHourUTC, 0, 0, 0);
+        if (target <= baseDate) target.setUTCDate(target.getUTCDate() + 1);
+
+        const getServerDate = (dateObj) => {
+            let offset = -5;
+            if (server === 'Europe') offset = 1;
+            if (server === 'Asia') offset = 8;
+            const shifted = new Date(dateObj.getTime() + (offset * 60 * 60 * 1000));
+            return {
+                day: shifted.getUTCDay(),
+                date: shifted.getUTCDate(),
+            };
+        };
+
+        switch (rule) {
+            case 'daily':
+                break;
+            case 'weekly':
+                while (getServerDate(target).day !== 1) {
+                    target.setUTCDate(target.getUTCDate() + 1);
+                }
+                break;
+            case 'monthly':
+                while (getServerDate(target).date !== 1) {
+                    target.setUTCDate(target.getUTCDate() + 1);
+                }
+                break;
+            case 'monthly-16th':
+                while (getServerDate(target).date !== 16) {
+                    target.setUTCDate(target.getUTCDate() + 1);
+                }
+                break;
+            default:
+                break;
+        }
+
+        return target;
+    };
+
+    const getCompletionTimestamp = (taskId) => {
+        const entry = gameCheckedTasks[taskId];
+        if (!entry) return null;
+        if (typeof entry === 'object' && entry.completedAt) return new Date(entry.completedAt);
+        return null;
+    };
+
+    const isTaskCompleted = (task) => {
+        if (!gameCheckedTasks[task.id]) return false;
+        const completedAt = getCompletionTimestamp(task.id);
+        if (!task.resetRule || !completedAt) return true;
+        return new Date() < getNextResetAfter(completedAt, task.resetRule, currentResetHour, server);
+    };
+
+    const isTaskExpired = (task) => {
+        const completedAt = getCompletionTimestamp(task.id);
+        if (!task.resetRule || !completedAt) return false;
+        return new Date() >= getNextResetAfter(completedAt, task.resetRule, currentResetHour, server);
+    };
+
+    useEffect(() => {
+        rawData.forEach((task) => {
+            if (gameCheckedTasks[task.id] && isTaskExpired(task)) {
+                clearCompletedTask(gameId, task.id);
+            }
+        });
+    }, [rawData, gameCheckedTasks, currentResetHour, server, clearCompletedTask, gameId]);
 
     const [activeTab, setActiveTab] = useState("All");
     const [showSettings, setShowSettings] = useState(false);
@@ -86,8 +155,8 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
     const TABS = ["All", "Permanent", "Events", "Completed"];
 
     // FILTERING LOGIC 
-    const allActiveTasks = rawData.filter((task) => !gameCheckedTasks[task.id]);
-    const allCompletedTasks = rawData.filter((task) => gameCheckedTasks[task.id]);
+    const allActiveTasks = rawData.filter((task) => !isTaskCompleted(task));
+    const allCompletedTasks = rawData.filter((task) => isTaskCompleted(task));
 
     let currentList = [];
     if (activeTab === "Completed") {
@@ -209,7 +278,7 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
             {/* PLANNER LIST */}
             <div className="flex flex-col gap-2">
                 {listWithDeadlines.map((task) => {
-                    const isChecked = gameCheckedTasks[task.id] || false;
+                    const isChecked = isTaskCompleted(task);
                     const finalDeadline = task.finalDeadline;
                     const showTimer = !isChecked && finalDeadline;
 
@@ -295,7 +364,7 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                     );
                 })}
 
-                {/* EMPTY LIST MESSAGE */}
+                {/* Empty list message */}
                 {currentList.length === 0 && (
                     <div className="flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-[#33343a] rounded-xl bg-[#1c1d21]/80">
                         <svg className="w-16 h-16 text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
