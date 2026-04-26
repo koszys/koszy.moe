@@ -24,19 +24,19 @@ export default function GenshinHome() {
     return (
         <div className="w-full max-w-[1200px] mx-auto pb-20">
         
-        {/* SECTION 1: Standard Intro Header */}
+        {/* Intro Header */}
         <GameIntro 
             text="A planner to keep up to date with new banners, events, and updates in Genshin Impact. "
         />
         
-        {/* SECTION 2: Active Codes */}
+        {/* Active Codes */}
         <SectionHeader title="Active Codes (Redeem Code Links)" />
         <ActiveCodes 
-            codes={codes} 
+            game={gameId}  
             redeemUrl={redeemUrl}
         />
         
-        {/* SECTION 3: Current & Upcoming Events */}
+        {/* Current & Upcoming Events */}
         <EventTimeline 
             rawEvents={events} 
             gameTitle={gameTitle}
@@ -49,7 +49,7 @@ export default function GenshinHome() {
             }}
         />
         
-        {/* SECTION 4: Changelog Section */}
+        {/* Changelog Section */}
         <SectionHeader title="Changelog" />
         <ChangelogSection changelogData={CHANGELOG_DATA} />
 
