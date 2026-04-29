@@ -1,5 +1,4 @@
 // Data Imports
-import { CHANGELOG_DATA } from '../../data/changelogs/genshinchangelog';
 import { GLOBAL_EVENTS } from '../../data/gameevents';
 
 // Standardized Components
@@ -49,7 +48,7 @@ export default function GenshinHome() {
         
         {/* Changelog Section */}
         <SectionHeader title="Changelog" />
-        <ChangelogSection changelogData={CHANGELOG_DATA} />
+        <ChangelogSection game={gameId} />
 
         </div>
     );
