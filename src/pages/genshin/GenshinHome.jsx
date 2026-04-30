@@ -35,7 +35,7 @@ export default function GenshinHome() {
         
         {/* Current & Upcoming Events */}
         <EventTimeline 
-            rawEvents={events} 
+            game={gameId}
             gameTitle={gameTitle}
             terms={{
             character: "Character",
