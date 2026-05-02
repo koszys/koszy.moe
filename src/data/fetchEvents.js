@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { EVENT_LABELS } from '../data/gameevents/eventlabels'; 
+import { GAME_TAGS } from '../data/tags'; 
 
 export async function fetchEvents(game) {
     const { data, error } = await supabase
@@ -13,18 +13,18 @@ export async function fetchEvents(game) {
         return [];
     }
     
-    // Map through the database rows and attach the local styling objects
+    // Map through the database rows and attach the tag objects from GAME_TAGS
+    const gameTags = GAME_TAGS[game] || {};
     const formattedData = data.map((event) => {
         
-        // If the database has a label_key (e.g., "TCG"), grab the matching colors for this game
-        let labelObject = null;
-        if (event.label_key && EVENT_LABELS[game]) {
-            labelObject = EVENT_LABELS[game][event.label_key];
-        }
+        // Parse tag_key to get the tag object(s)
+        const eventTags = event.tag_key 
+            ? event.tag_key.split(',').map(k => gameTags[k.trim().toUpperCase()]).filter(Boolean)
+            : [gameTags.EVENTS || gameTags.WISHES]; // Fallback based on event type
 
         return {
             ...event,
-            label: labelObject 
+            tags: eventTags
         };
     });
 

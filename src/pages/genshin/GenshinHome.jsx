@@ -1,6 +1,3 @@
-// Data Imports
-import { GLOBAL_EVENTS } from '../../data/gameevents';
-
 // Standardized Components
 import ChangelogSection from '../../components/ChangelogSection';
 import SectionHeader from '../../components/game/SectionHeader';
@@ -14,9 +11,6 @@ export default function GenshinHome() {
     
     // Custom URL (can be moved to games.js later)
     const redeemUrl = 'https://genshin.hoyoverse.com/en/gift'; 
-    
-    // Data Extraction (simple filtering based on the consistent game ID)
-    const events = GLOBAL_EVENTS[gameId];
     
     return (
         <div className="w-full max-w-[1200px] mx-auto pb-20">

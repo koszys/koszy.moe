@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { PLANNER_TAGS } from './genshinplanner';
+import { GAME_TAGS } from './tags';
 
 export async function fetchTasks(game) {
     const { data, error } = await supabase
@@ -13,11 +13,12 @@ export async function fetchTasks(game) {
     }
     
     // Map the database text strings back into your React objects
+    const gameTags = GAME_TAGS[game] || {};
     return data.map(task => {
         // Split the string by comma, trim spaces, make uppercase, and find the matching objects
         const parsedTags = task.tag_key 
-            ? task.tag_key.split(',').map(k => PLANNER_TAGS[k.trim().toUpperCase()]).filter(Boolean)
-            : [PLANNER_TAGS.DAILY]; // Fallback to an array
+            ? task.tag_key.split(',').map(k => gameTags[k.trim().toUpperCase()]).filter(Boolean)
+            : [gameTags.DAILY]; // Fallback to an array
 
         return {
             ...task,

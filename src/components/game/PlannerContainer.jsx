@@ -28,20 +28,13 @@ export default function PlannerContainer({ gameId, title, tags }) {
 
             // Format the standard tasks
             const formattedTasks = tasksData.map(task => {
-                const parsedTags = task.tag_key 
-                    ? task.tag_key.split(',').map(k => tags[k.trim().toUpperCase()]).filter(Boolean)
-                    : [tags.DAILY];
-
                 return {
                     ...task,
                     icon: getCdnUrl(task.icon_path),
                     resetRule: task.reset_rule, 
-                    tags: parsedTags,
-
-                    // 
-                    label: task.label || parsedTags[0]?.text || "Task",
-                    labelBg: parsedTags[0]?.bgColor || null,
-                    labelColor: parsedTags[0]?.textColor || null
+                    label: task.label || task.tags?.[0]?.text || "Task",
+                    labelBg: task.tags?.[0]?.bgColor || null,
+                    labelColor: task.tags?.[0]?.textColor || null
                 };
             });
 
@@ -53,21 +46,17 @@ export default function PlannerContainer({ gameId, title, tags }) {
                     return now >= start && now <= end;
                 })
                 .map(event => {
-                    const parsedTags = event.tag_key 
-                        ? event.tag_key.split(',').map(k => tags[k.trim().toUpperCase()]).filter(Boolean)
-                        : [event.type === 'banner' ? tags.WISHES : tags.EVENTS];
-
                     return {
                         id: event.id,
                         type: "event",
-                        tags: parsedTags,
+                        tags: event.tags, 
                         title: event.name,
                         icon: getCdnUrl(event.image_path), 
                         bgImage: event.type !== 'banner' ? getCdnUrl(event.image_path) : null, 
                         
-                        label: parsedTags[0]?.text || "Event",            
-                        labelBg: parsedTags[0]?.bgColor || null, 
-                        labelColor: parsedTags[0]?.textColor || null,
+                        label: event.tags?.[0]?.text || "Event",            
+                        labelBg: event.tags?.[0]?.bgColor || null, 
+                        labelColor: event.tags?.[0]?.textColor || null,
                         
                         deadline: event.end,
                         
