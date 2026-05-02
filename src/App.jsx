@@ -15,6 +15,7 @@ import AuthModal from './components/AuthModal';
 // Genshin Icons
 import genshinPlannerIcon from './assets/genshin/genshin-quest.png';
 import genshinLogoIcon from './assets/genshin/genshin-logo.webp';
+import genshinSettingsIcon from './assets/genshin/settings-icon.webp';
 
 export default function App() {
   
@@ -32,7 +33,7 @@ export default function App() {
     {
       name: 'Settings',
       path: '/genshin/settings',
-      icon: <img src="/genshin/ui-icon/settings-icon.webp" alt="Settings" className="w-5 h-5 object-contain scale-150" />  
+      icon: <img src={genshinSettingsIcon} alt="Settings" className="w-5 h-5 object-contain scale-150" />  
     }
   ];
 
