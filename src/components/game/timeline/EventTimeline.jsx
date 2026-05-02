@@ -2,15 +2,28 @@ import { useState, useEffect } from 'react';
 import SectionHeader from '../SectionHeader';
 import CountdownTimer from './CountdownTimer';
 
+import { fetchEvents } from '../../../data/fetchEvents';
+import { ASSET_BASE_URL } from '../../../config/constants';
+
+// Helper to safely build CDN URLs (works for both local paths and full web URLs)
+const getCdnUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http') || path.startsWith('data:')) return path;
+    return `${ASSET_BASE_URL}${path}`;
+};
+
 const EventCard = ({ event, isCurrent }) => {
-    const hasImage = !!event.image;
-    const isBanner = event.type === 'banner';
+    // 2. Use the helper to attach your CDN domain to the database image_path
+    const fullImageUrl = getCdnUrl(event.image_path || event.image);
+    const hasImage = !!fullImageUrl;
+    
+    // Safety check just in case it's typed as "Banner" or "banner" in the DB
+    const isBanner = event.type?.toLowerCase() === 'banner';
 
     return (
         <div className="relative flex items-center bg-[#1c1d21]/80 border border-[#33343a] rounded-xl p-3 min-h-[6rem] shadow-sm hover:border-[#4b4c53] transition-colors group">
         
         {/* LEFT: Event/Banner Image */}
-        {/* Banners get a square. Regular events get a landscape box */}
         <div className={`flex-shrink-0 flex items-center justify-center mr-4 overflow-hidden ${
             isBanner 
             ? 'w-12 h-12 md:w-14 md:h-14 rounded-md' 
@@ -18,7 +31,7 @@ const EventCard = ({ event, isCurrent }) => {
         }`}>
             {hasImage && (
             <img 
-                src={event.image} 
+                src={fullImageUrl} 
                 alt={event.name} 
                 className={`w-full h-full drop-shadow-md group-hover:scale-105 transition-transform ${
                 isBanner ? 'object-contain' : 'object-cover'
@@ -28,10 +41,8 @@ const EventCard = ({ event, isCurrent }) => {
         </div>
 
         {/* MIDDLE: Content */}
-        {/* Right padding (pr-20) so long titles dont slide under the timer */}
         <div className="flex flex-col flex-1 justify-center min-w-0 pr-20">
             
-            {/* Banners side by side, Label is above Title */}
             <div className={`flex ${isBanner ? 'items-center gap-2 mb-1.5' : 'flex-col items-start gap-1.5'}`}>
             {event.label && !isBanner && (
                 <span className={`text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded w-max ${event.label.bgColor} ${event.label.textColor}`}>
@@ -51,7 +62,7 @@ const EventCard = ({ event, isCurrent }) => {
                 {event.bannerData.featuredChars?.map((char, idx) => (
                 <div key={`char-${idx}`} className="relative group/tooltip flex-shrink-0">
                     <img 
-                    src={char.icon} 
+                    src={getCdnUrl(char.icon)} 
                     alt={char.name} 
                     className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-orange-400 bg-orange-200/20 object-cover shadow-sm cursor-help" 
                     />
@@ -65,7 +76,7 @@ const EventCard = ({ event, isCurrent }) => {
                 {event.bannerData.featuredWeapons?.map((weapon, idx) => (
                 <div key={`weapon-${idx}`} className="relative group/tooltip flex-shrink-0">
                     <img 
-                    src={weapon.icon} 
+                    src={getCdnUrl(weapon.icon)} 
                     alt={weapon.name} 
                     className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-orange-400 bg-orange-200/20 object-cover shadow-sm cursor-help" 
                     />
@@ -88,9 +99,22 @@ const EventCard = ({ event, isCurrent }) => {
     );
 };
 
-    export default function EventTimeline({ rawEvents }) {
+export default function EventTimeline({ game }) {
+    const [rawEvents, setRawEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [currentEvents, setCurrentEvents] = useState([]);
     const [upcomingEvents, setUpcomingEvents] = useState([]);
+
+    // Fetch the database data when the game ID loads
+    useEffect(() => {
+        async function loadEvents() {
+            setLoading(true);
+            const data = await fetchEvents(game);
+            setRawEvents(data);
+            setLoading(false);
+        }
+        if (game) loadEvents();
+    }, [game]);
 
     useEffect(() => {
         if (!rawEvents || rawEvents.length === 0) return;
@@ -99,13 +123,13 @@ const EventCard = ({ event, isCurrent }) => {
         const upcoming = [];
 
         rawEvents.forEach(event => {
-        const startDate = new Date(event.start);
-        const endDate = new Date(event.end);
-        if (now > startDate && now < endDate) {
-            current.push(event);
-        } else if (now < startDate) {
-            upcoming.push(event);
-        }
+            const startDate = new Date(event.start);
+            const endDate = new Date(event.end);
+            if (now > startDate && now < endDate) {
+                current.push(event);
+            } else if (now < startDate) {
+                upcoming.push(event);
+            }
         });
 
         current.sort((a, b) => new Date(a.end) - new Date(b.end));
@@ -115,12 +139,32 @@ const EventCard = ({ event, isCurrent }) => {
         setUpcomingEvents(upcoming);
     }, [rawEvents]);
 
+    // Fetch the database data when the game ID loads
+    useEffect(() => {
+        async function loadEvents() {
+            setLoading(true);
+            const data = await fetchEvents(game);
+            setRawEvents(data);
+            setLoading(false);
+        }
+        
+        // If a game string exists, fetch the data
+        if (game) {
+            loadEvents();
+        } else {
+            // If the game prop is missing, turn off loading so it doesn't spin forever!
+            console.warn("EventTimeline is missing the 'game' prop!");
+            setLoading(false);
+        }
+    }, [game]);
+
+    // Loading state catch
+    if (loading) return <div className="text-gray-400 p-4">Loading timeline...</div>;
     if ((!currentEvents.length && !upcomingEvents.length)) return null;
 
     return (
         <section>
         <SectionHeader title="Current Events" />
-        {/* 2-Column Grid */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 pb-8">
             {currentEvents.map(event => <EventCard key={event.id} event={event} isCurrent={true} />)}
         </div>
