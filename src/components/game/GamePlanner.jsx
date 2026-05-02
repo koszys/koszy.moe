@@ -167,7 +167,9 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
             currentList = currentList.filter((t) => t.type === "permanent");
         if (activeTab === "Events")
             currentList = currentList.filter((t) => t.type === "event");
-        currentList = currentList.filter((t) => !excludedTags.includes(t.tag.id));
+            
+        // Check the new tags array to see if any of them are excluded
+        currentList = currentList.filter((t) => !t.tags?.some(tag => excludedTags.includes(tag.id)));
     }
 
     // Sort by deadline priority
@@ -183,8 +185,9 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
             if (server === 'Europe') offset = "+01:00";
             if (server === 'Asia') offset = "+08:00";
             
-            // Generate the exact UTC string for this specific server
-            finalDeadline = new Date(`${task.deadline}${offset}`).toISOString();
+            // FIX: Strip the Supabase timezone before appending custom offset
+            const cleanDeadline = task.deadline.split('+')[0].replace('Z', '');
+            finalDeadline = new Date(`${cleanDeadline}${offset}`).toISOString();
         }
 
         return { ...task, finalDeadline };
@@ -311,7 +314,8 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                                     {task.label && (
                                         <div 
                                             title={task.label}
-                                            className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full flex-shrink-0 border-[2px] border-current ${task.labelColor || task.tag?.textColor || 'text-gray-400'} ${task.labelBg || task.tag?.bgColor || 'bg-gray-800'}`}
+                                            // UPDATED: Grab color from the tags array
+                                            className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full flex-shrink-0 border-[2px] border-current ${task.labelColor || task.tags?.[0]?.textColor || 'text-gray-400'} ${task.labelBg || task.tags?.[0]?.bgColor || 'bg-gray-800'}`}
                                         />
                                     )}
                                     <h3 className={`font-bold text-white text-[13px] md:text-base leading-tight truncate w-full ${isChecked && "line-through text-gray-600"}`}>
@@ -371,7 +375,7 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         <p className="text-gray-300 font-bold mb-1">List is empty!</p>
-                        <p className="text-gray-300 text-sm max-w-sm">There are no tasks available for this tab or all have been filtered out by your settings gear.</p>
+                        <p className="text-gray-300 text-sm max-w-sm">There are no tasks available for this tab or all have been filtered out by your toggles.</p>
                     </div>
                 )}
             </div>

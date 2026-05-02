@@ -1,45 +1,89 @@
+import { useState, useEffect } from 'react';
 import GamePlanner from '../../components/game/GamePlanner';
-import { PLANNER_DATA, PLANNER_TAGS } from '../../data/genshinplanner';
-import { GLOBAL_EVENTS } from '../../data/gameevents'; 
+import { PLANNER_TAGS } from '../../data/genshinplanner';
+import { fetchEvents } from '../../data/fetchEvents';
+import { fetchTasks } from '../../data/fetchTasks';
+import { ASSET_BASE_URL } from '../../config/constants';
+
+// Helper to safely build CDN URLs
+const getCdnUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http') || path.startsWith('data:')) return path;
+    return `${ASSET_BASE_URL}${path}`;
+};
 
 export default function GenshinPlanner() {
-    const now = new Date();
+    const [combinedData, setCombinedData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // Automatically pull current events from the gameevents module
-    const activeEventsToTasks = (GLOBAL_EVENTS.genshin || [])
-        .filter(event => {
-        // Only get currently active events
-        const start = new Date(event.start);
-        const end = new Date(event.end);
-        return now >= start && now <= end;
-        })
-        .map(event => ({
-            id: event.id, // Reuses the exact ID so checkmarks stay synced!
-            type: "event",
-            tag: event.tag || PLANNER_TAGS.EVENTS,            
-            title: event.name,
-            icon: event.image, // Uses the event image as the square icon
-            // If its not a banner, use the image as a background
-            bgImage: event.type !== 'banner' ? event.image : null, 
+    useEffect(() => {
+        async function loadPlannerData() {
+            setLoading(true);
+            const now = new Date();
+            const gameId = 'genshin';
 
-            // If the event has a specific label, use it. Otherwise, default it to something
-            label: event.label ? event.label.text : (event.tag ? event.tag.text : "Event"),            
-            labelBg: event.label ? event.label.bgColor : null, 
-            labelColor: event.label ? event.label.textColor : null,
+            // Fetch both tables simultaneously for maximum speed
+            const [tasksData, eventsData] = await Promise.all([
+                fetchTasks(gameId),
+                fetchEvents(gameId)
+            ]);
 
-            deadline: event.end,
-            bannerData: event.bannerData || null // Pass the banner data through for wishes, so the planner can render featured characters/weapons if needed
-        }));
+            // 1. Format the standard tasks (attach the CDN link)
+            const formattedTasks = tasksData.map(task => ({
+                ...task,
+                icon: getCdnUrl(task.icon_path),
+                resetRule: task.reset_rule // Map snake_case database to camelCase React prop
+            }));
 
-    // Combine manual planner tasks with the automatic events
-    const combinedData = [...PLANNER_DATA.genshin, ...activeEventsToTasks];
+            // 2. Filter and format the events into tasks
+            const activeEventsToTasks = eventsData
+                .filter(event => {
+                    const start = new Date(event.start);
+                    const end = new Date(event.end);
+                    return now >= start && now <= end;
+                })
+                .map(event => ({
+                    id: event.id,
+                    type: "event",
+                    tag: (event.tag_key ? PLANNER_TAGS[event.tag_key.toUpperCase()] : null) 
+                        || (event.type === 'banner' ? PLANNER_TAGS.WISHES : PLANNER_TAGS.EVENTS),            
+                    title: event.name,
+                    icon: getCdnUrl(event.image_path), 
+                    bgImage: event.type !== 'banner' ? getCdnUrl(event.image_path) : null, 
+                    label: event.label ? event.label.text : (event.tag ? event.tag.text : "Event"),            
+                    labelBg: event.label ? event.label.bgColor : null, 
+                    labelColor: event.label ? event.label.textColor : null,
+                    deadline: event.end,
+                    // If it's a banner, the icons inside bannerData already get mapped in GamePlanner/EventTimeline!
+                    bannerData: event.bannerData ? {
+                        ...event.bannerData,
+                        featuredChars: event.bannerData.featuredChars?.map(char => ({
+                            ...char, 
+                            icon: getCdnUrl(char.icon) 
+                        })),
+                        featuredWeapons: event.bannerData.featuredWeapons?.map(weapon => ({
+                            ...weapon, 
+                            icon: getCdnUrl(weapon.icon) 
+                        }))
+                    } : null                
+                }));
+
+            // Combine both lists and update the UI
+            setCombinedData([...formattedTasks, ...activeEventsToTasks]);
+            setLoading(false);
+        }
+
+        loadPlannerData();
+    }, []);
+
+    if (loading) return <div className="p-8 text-center text-gray-400 font-mono">Loading planner...</div>;
 
     return (
         <GamePlanner 
-        gameId="genshin" 
-        title="Genshin Impact Planner" 
-        rawData={combinedData} // Feed the combined list into the planner
-        tags={PLANNER_TAGS} 
+            gameId="genshin" 
+            title="Genshin Impact Planner" 
+            rawData={combinedData} 
+            tags={PLANNER_TAGS} 
         />
     );
 }
