@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { PLANNER_TAGS } from './genshinplanner'; // Adjust path if needed!
+import { PLANNER_TAGS } from './genshinplanner';
 
 export async function fetchTasks(game) {
     const { data, error } = await supabase

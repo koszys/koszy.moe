@@ -38,7 +38,7 @@ export default function ActiveCodes({ game, redeemUrl }) {
 
                 return (
                     <a 
-                        key={item.id || idx} // Better to use the database ID as the key!
+                        key={item.id || idx}
                         href={link} 
                         target="_blank" 
                         rel="noopener noreferrer"
