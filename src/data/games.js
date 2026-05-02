@@ -1,9 +1,14 @@
+import genshinBackground from '../assets/gamebackground/genshin_background.webp';
+import hsrBackground from '../assets/gamebackground/hsr_background.png';
+import zzzBackground from '../assets/gamebackground/zzz_background.jpg';
+import wuwaBackground from '../assets/gamebackground/wuwa_background.jpg';
+
 export const GAME_CONFIG = [
     {
         id: 'genshin',
         name: 'Genshin Impact',
         path: '/genshin',
-        bgUrl: '/gamebackground/genshin_background.webp', // Change this once to update all 
+        bgUrl: genshinBackground, // Change this once to update all 
         status: 'active',
         tags: []
     },
@@ -11,7 +16,7 @@ export const GAME_CONFIG = [
         id: 'hsr',
         name: 'Honkai: Star Rail',
         path: '#',
-        bgUrl: '/gamebackground/hsr_background.png',
+        bgUrl: hsrBackground,
         status: 'inactive',
         tags: []
     },
@@ -19,7 +24,7 @@ export const GAME_CONFIG = [
         id: 'zzz',
         name: 'Zenless Zone Zero',
         path: '#',
-        bgUrl: '/gamebackground/zzz_background.jpg',
+        bgUrl: zzzBackground,
         status: 'inactive',
         tags: []
     },
@@ -27,7 +32,7 @@ export const GAME_CONFIG = [
         id: 'wuwa',
         name: 'Wuthering Waves',
         path: '#',
-        bgUrl: '/gamebackground/wuwa_background.jpg',
+        bgUrl: wuwaBackground,
         status: 'inactive',
         tags: []
     }
