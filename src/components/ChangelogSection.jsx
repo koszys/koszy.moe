@@ -1,11 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ChangelogItem from './ChangelogItem';
+import { fetchChangelogs } from '../data/fetchChangelogs';
 
-export default function ChangelogSection({ changelogData }) {
+export default function ChangelogSection({ game }) {
+    const [changelogData, setChangelogData] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [showChangelog, setShowChangelog] = useState(false);
     const [visibleCount, setVisibleCount] = useState(4);
 
-    // Safety check in case no data is passed
+    useEffect(() => {
+        async function loadChangelogs() {
+            const data = await fetchChangelogs(game);
+            setChangelogData(data);
+            setLoading(false);
+        }
+        loadChangelogs();
+    }, [game]);
+
+    if (loading) return null;
     if (!changelogData || changelogData.length === 0) return null;
 
     return (

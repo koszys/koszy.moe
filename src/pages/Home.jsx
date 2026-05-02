@@ -12,7 +12,6 @@ import Footer from '../components/Footer';
 import ChangelogSection from '../components/ChangelogSection';
 
 // Data
-import { CHANGELOG_DATA } from '../data/changelogs/mainchangelog';
 import { GAME_CONFIG } from '../data/games'; 
 
 // Context
@@ -261,7 +260,7 @@ export default function Home() {
           </section>
         
           {/* Changelog */}
-          <ChangelogSection changelogData={CHANGELOG_DATA} />
+          <ChangelogSection game="main" />
 
           {/* Getting Started */}
           {/* <section className="mt-16 mb-20">

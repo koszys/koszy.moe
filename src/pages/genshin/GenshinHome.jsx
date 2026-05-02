@@ -1,8 +1,3 @@
-// Data Imports
-import { CHANGELOG_DATA } from '../../data/changelogs/genshinchangelog';
-import { ACTIVE_CODES } from '../../data/codes';
-import { GLOBAL_EVENTS } from '../../data/gameevents';
-
 // Standardized Components
 import ChangelogSection from '../../components/ChangelogSection';
 import SectionHeader from '../../components/game/SectionHeader';
@@ -17,28 +12,24 @@ export default function GenshinHome() {
     // Custom URL (can be moved to games.js later)
     const redeemUrl = 'https://genshin.hoyoverse.com/en/gift'; 
     
-    // Data Extraction (simple filtering based on the consistent game ID)
-    const codes = ACTIVE_CODES[gameId];
-    const events = GLOBAL_EVENTS[gameId];
-    
     return (
         <div className="w-full max-w-[1200px] mx-auto pb-20">
         
-        {/* SECTION 1: Standard Intro Header */}
+        {/* Intro Header */}
         <GameIntro 
             text="A planner to keep up to date with new banners, events, and updates in Genshin Impact. "
         />
         
-        {/* SECTION 2: Active Codes */}
+        {/* Active Codes */}
         <SectionHeader title="Active Codes (Redeem Code Links)" />
         <ActiveCodes 
-            codes={codes} 
+            game={gameId}  
             redeemUrl={redeemUrl}
         />
         
-        {/* SECTION 3: Current & Upcoming Events */}
+        {/* Current & Upcoming Events */}
         <EventTimeline 
-            rawEvents={events} 
+            game={gameId}
             gameTitle={gameTitle}
             terms={{
             character: "Character",
@@ -49,9 +40,9 @@ export default function GenshinHome() {
             }}
         />
         
-        {/* SECTION 4: Changelog Section */}
+        {/* Changelog Section */}
         <SectionHeader title="Changelog" />
-        <ChangelogSection changelogData={CHANGELOG_DATA} />
+        <ChangelogSection game={gameId} />
 
         </div>
     );
