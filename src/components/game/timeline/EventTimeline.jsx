@@ -21,7 +21,7 @@ const EventCard = ({ event, isCurrent }) => {
     const isBanner = event.type?.toLowerCase() === 'banner';
 
     return (
-        <div className="relative flex items-center bg-[#1c1d21]/80 border border-[#33343a] rounded-xl p-3 min-h-[6rem] shadow-sm hover:border-[#4b4c53] transition-colors group">
+        <div className={`relative flex items-center bg-[#1c1d21]/80 border border-[#33343a] rounded-xl p-3 min-h-[6rem] shadow-sm hover:border-[#4b4c53] transition-colors group ${!isCurrent ? 'opacity-70 hover:opacity-100 transition-opacity' : ''}`}>
         
         {/* LEFT: Event/Banner Image */}
         <div className={`flex-shrink-0 flex items-center justify-center mr-4 overflow-hidden ${
@@ -92,7 +92,11 @@ const EventCard = ({ event, isCurrent }) => {
 
         {/* RIGHT: Timer */}
         <div className="absolute top-0 right-0 z-10">
-            <CountdownTimer endDate={isCurrent ? event.end : event.start} />
+            <CountdownTimer
+                endDate={isCurrent ? event.end : event.start}
+                ribbonColor={!isCurrent ? 'bg-blue-500' : undefined}
+                expiredLabel={!isCurrent ? 'LIVE' : 'ENDED'}
+            />
         </div>
 
         </div>
@@ -172,7 +176,7 @@ export default function EventTimeline({ game }) {
         {upcomingEvents.length > 0 && (
             <>
             <SectionHeader title="Upcoming Events" />
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 opacity-70 hover:opacity-100 transition-opacity mt-8">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-8">
                 {upcomingEvents.map(event => <EventCard key={event.id} event={event} isCurrent={false} />)}
             </div>
             </>

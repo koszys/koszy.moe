@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import TimerRibbon from './TimerRibbon'; 
 
-export default function CountdownTimer({ endDate }) {
+export default function CountdownTimer({ endDate, ribbonColor, expiredLabel = 'ENDED' }) {
     const [timeLeft, setTimeLeft] = useState(0);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function CountdownTimer({ endDate }) {
     }, [endDate]);
 
     if (timeLeft <= 0) {
-        return <TimerRibbon bgColor="bg-gray-600" textColor="text-white">ENDED</TimerRibbon>;
+        return <TimerRibbon bgColor="bg-gray-600" textColor="text-white">{expiredLabel}</TimerRibbon>;
     }
 
     const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
@@ -48,7 +48,7 @@ export default function CountdownTimer({ endDate }) {
     }
 
     return (
-        <TimerRibbon bgColor={bgColorClass} textColor="text-white">
+        <TimerRibbon bgColor={ribbonColor || bgColorClass} textColor="text-white">
             {displayTime}
         </TimerRibbon>
     );
