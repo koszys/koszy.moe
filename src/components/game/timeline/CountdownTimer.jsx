@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import TimerRibbon from './TimerRibbon'; 
 
-export default function CountdownTimer({ endDate }) {
+export default function CountdownTimer({ endDate, ribbonColor }) {
     const [timeLeft, setTimeLeft] = useState(0);
 
     useEffect(() => {
@@ -48,7 +48,7 @@ export default function CountdownTimer({ endDate }) {
     }
 
     return (
-        <TimerRibbon bgColor={bgColorClass} textColor="text-white">
+        <TimerRibbon bgColor={ribbonColor || bgColorClass} textColor="text-white">
             {displayTime}
         </TimerRibbon>
     );

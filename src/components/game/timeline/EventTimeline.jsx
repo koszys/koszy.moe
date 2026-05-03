@@ -92,7 +92,10 @@ const EventCard = ({ event, isCurrent }) => {
 
         {/* RIGHT: Timer */}
         <div className="absolute top-0 right-0 z-10">
-            <CountdownTimer endDate={isCurrent ? event.end : event.start} />
+            <CountdownTimer
+                endDate={isCurrent ? event.end : event.start}
+                ribbonColor={!isCurrent ? 'bg-blue-500' : undefined}
+            />
         </div>
 
         </div>
