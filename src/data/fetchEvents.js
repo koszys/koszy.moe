@@ -7,6 +7,7 @@ export async function fetchEvents(game) {
         .from('game_events')
         .select('*')
         .eq('game', game)
+        .eq('active', true)
         .order('end', { ascending: true }); 
 
     if (error) {

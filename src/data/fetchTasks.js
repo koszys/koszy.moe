@@ -5,7 +5,8 @@ export async function fetchTasks(game) {
     const { data, error } = await supabase
         .from('game_tasks')
         .select('*')
-        .eq('game', game);
+        .eq('game', game)
+        .eq('active', true);
 
     if (error) {
         console.error("Error fetching tasks:", error);
@@ -22,7 +23,7 @@ export async function fetchTasks(game) {
 
         return {
             ...task,
-            tags: parsedTags, // Changed from 'tag' to 'tags'
+            tags: parsedTags,
         };
     });
 }
