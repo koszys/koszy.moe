@@ -95,6 +95,7 @@ const EventCard = ({ event, isCurrent }) => {
             <CountdownTimer
                 endDate={isCurrent ? event.end : event.start}
                 ribbonColor={!isCurrent ? 'bg-blue-500' : undefined}
+                expiredLabel={!isCurrent ? 'LIVE' : 'ENDED'}
             />
         </div>
 
