@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
-import kofiLogo from '../assets/kofilogo.webp';
-import discordLogo from '../assets/discordlogo.png';
-
 import Footer from './Footer';
+import SocialButton from './SocialButton';
 
 import { GAME_CONFIG } from '../data/games'; 
 
@@ -162,12 +160,8 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
 
             {/* Right Side Icons (Discord, Ko-fi) */}
             <div className="flex items-center gap-4">
-                <a href="#" className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity">
-                <img src={discordLogo} alt="Discord" className="w-full h-full object-contain" />
-                </a>
-                <a href="#" className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity">
-                <img src={kofiLogo} alt="Ko-fi" className="w-full h-full object-contain" />
-                </a>
+                <SocialButton type="discord" variant="icon" />
+                <SocialButton type="kofi" variant="icon" />
             </div>
             </header>
 
