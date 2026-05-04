@@ -27,8 +27,8 @@ export default function ActiveCodes({ game, redeemUrl }) {
     });
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Grid setup for columns (1 col on mobile, 2 on tablets, 3 on desktop) */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Grid setup for columns (2 cols on mobile, 3 on desktop) */}
             {sortedCodes.map((item, idx) => {
                 
                 // Auto-fill the code if it's a Hoyoverse link
