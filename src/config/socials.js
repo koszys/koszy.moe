@@ -4,7 +4,7 @@ import kofiLogo from '../assets/kofilogo.webp';
 export const SOCIAL_LINKS = {
     discord: {
         name: 'Discord',
-        url: 'YOUR_DISCORD_LINK_HERE',
+        url: null,
         icon: discordLogo,
         color: '#5865F2',
         bgClass: 'bg-[#5865F2]',
@@ -13,7 +13,7 @@ export const SOCIAL_LINKS = {
     },
     kofi: {
         name: 'Ko-fi',
-        url: 'YOUR_KOFI_LINK_HERE',
+        url: 'https://ko-fi.com/koszy',
         icon: kofiLogo,
         color: '#ff5e5b',
         bgClass: 'bg-red-500',
