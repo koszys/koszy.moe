@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-// Icons
-import kofiLogo from '../assets/kofilogo.webp';
-import discordLogo from '../assets/discordlogo.png';
-
 // Components
 import GameCard from '../components/GameCard';
 import ChangelogItem from '../components/ChangelogItem';
 import Footer from '../components/Footer';
 import ChangelogSection from '../components/ChangelogSection';
+import SocialCards from '../components/SocialCards';
+import SocialButton from '../components/SocialButton';
 
 // Data
 import { GAME_CONFIG } from '../data/games'; 
@@ -87,22 +85,20 @@ export default function Home() {
               KOSZY<span className="text-blue-500">.MOE</span>
             </Link>
             <nav className="hidden md:flex space-x-6 text-sm font-semibold">
-              <a href="#" className="text-white border-b-2 border-blue-500 pb-1">Home</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Global Planner</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Pinned Events</a>
+              <a href="#" className="text-white border-b-2 border-blue-500 hover:text-white pb-1">Home</a>
+              {/* <a href="#" className="text-gray-400 hover:text-white transition-colors">Global Planner</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Pinned Events</a> */}
             </nav>
           </div>
 
           <div className="flex items-center space-x-4">
-            <button className="flex hidden items-center gap-2 text-sm font-semibold text-white hover:text-white transition-colors sm:flex bg-[#5865F2] hover:bg-inherit hover:border-[#5865F2] px-3 py-2 rounded">
-              <img src={discordLogo} alt="Discord" className="w-5 h-5" />
-              <span>Discord</span>
-            </button>
+            <div className="hidden sm:flex">
+              <SocialButton type="discord" variant="full" />
+            </div>
 
-            <button className="flex hidden items-center gap-2 text-sm font-semibold text-white hover:text-white transition-colors sm:flex  bg-red-500 hover:bg-inherit hover:border-red-500 px-3 py-2 rounded">
-              <img src={kofiLogo} alt="Ko-fi" className="w-6 h-5" />
-              <span>Ko-fi</span>
-            </button>
+            <div className="hidden sm:flex">
+              <SocialButton type="kofi" variant="full" />
+            </div>
 
             {/* User Auth Buttons */}
             {user ? (
@@ -194,53 +190,7 @@ export default function Home() {
           </section>
 
           {/* Community & Support Section */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 mt-10">
-            
-            {/* Discord Card */}
-            <div className="bg-[#1c1d21]/70 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(88,101,242,0.15)]">
-              <div className="w-16 h-16 flex-shrink-0  rounded-full flex items-center justify-center p-3">
-                <img src={discordLogo} alt="Discord" className="w-full h-full object-contain" />
-              </div>
-
-              <div className="flex-1 text-center sm:text-left">
-                <h3 className="text-xl font-bold text-white mb-2">Join the Community</h3>
-                <p className="text-gray-350 text-sm mb-4">
-                  Join the discord server to share feedback, suggest features, and talk with other users! I appreciate any help on maintaining and improving the planner, so feel free to reach out if you want to contribute. Thank you!
-                </p>
-                <a
-                  href="YOUR_DISCORD_LINK_HERE"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-[#5865F2] border border-transparent hover:bg-inherit hover:border-[#5865F2] text-white hover:text-white text-sm font-bold rounded transition-colors"
-                >
-                  <img src={discordLogo} alt="Discord" className="w-5 h-5" />
-                  <span>Discord</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Ko-fi Card */}
-            <div className="bg-[#1c1d21]/70 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,94,91,0.15)]">
-              <div className="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center p-3">
-                <img src={kofiLogo} alt="Ko-fi" className="w-full h-full object-contain" />
-              </div>
-              <div className="flex-1 text-center sm:text-left">
-                <h3 className="text-xl font-bold text-white mb-2">Support the Project</h3>
-                <p className="text-gray-350 text-sm mb-4">
-                  koszy.moe currently runs ad-free and is being maintained by one person (me lol). If this planner helps you out with dailies and stuff, consider supporting me on Ko-fi. I appreciate it!
-                </p>
-                <a
-                  href="YOUR_KOFI_LINK_HERE"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-red-500 border border-transparent hover:bg-inherit hover:border-red-500 text-white hover:text-white text-sm font-bold rounded transition-colors"
-                >
-                  <img src={kofiLogo} alt="Ko-fi" className="w-6 h-5" />
-                  <span>Support on Ko-fi</span>
-                </a>
-              </div>
-            </div>
-          </section>
+          <SocialCards />
           
           {/* Upcoming Features */}
           <section className="mt-16">
