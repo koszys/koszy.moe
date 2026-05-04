@@ -60,7 +60,7 @@ export default function ActiveCodes({ game, redeemUrl }) {
                     return (
                         <div
                             key={item.id || idx}
-                            className="relative bg-[#1c1d21]/80 border border-[#33343a] rounded-lg p-6  transition-colors group overflow-hidden"
+                            className="relative bg-[#1c1d21]/80 border border-[#33343a] hover:border-[#4b4c53] rounded-lg p-6  transition-colors group overflow-hidden"
                         >
                             {item.is_new && (
                                 <div className="absolute top-0 right-0 bg-emerald-900/40 text-emerald-300 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase tracking-wider shadow-md">
