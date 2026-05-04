@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import SectionHeader from '../SectionHeader';
 import CountdownTimer from './CountdownTimer';
 
 import { fetchEvents } from '../../../data/fetchEvents';
@@ -103,7 +102,7 @@ const EventCard = ({ event, isCurrent }) => {
     );
 };
 
-export default function EventTimeline({ game }) {
+export default function EventTimeline({ game, type = 'all' }) {
     const [rawEvents, setRawEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentEvents, setCurrentEvents] = useState([]);
@@ -166,21 +165,17 @@ export default function EventTimeline({ game }) {
     if (loading) return <div className="text-gray-400 p-4">Loading timeline...</div>;
     if ((!currentEvents.length && !upcomingEvents.length)) return null;
 
-    return (
-        <section>
-        <SectionHeader title="Current Events" />
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 pb-8">
-            {currentEvents.map(event => <EventCard key={event.id} event={event} isCurrent={true} />)}
-        </div>
+    // Filter based on type prop
+    const eventsToShow = type === 'current' ? currentEvents : type === 'upcoming' ? upcomingEvents : currentEvents.concat(upcomingEvents);
 
-        {upcomingEvents.length > 0 && (
-            <>
-            <SectionHeader title="Upcoming Events" />
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-8">
-                {upcomingEvents.map(event => <EventCard key={event.id} event={event} isCurrent={false} />)}
-            </div>
-            </>
-        )}
-        </section>
+    if (!eventsToShow.length) return null;
+
+    return (
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            {eventsToShow.map(event => {
+                const isCurrent = currentEvents.some(e => e.id === event.id);
+                return <EventCard key={event.id} event={event} isCurrent={isCurrent} />;
+            })}
+        </div>
     );
 }

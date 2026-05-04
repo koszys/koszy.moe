@@ -1,6 +1,6 @@
 // Standardized Components
 import ChangelogSection from '../../components/ChangelogSection';
-import SectionHeader from '../../components/game/SectionHeader';
+import ToggleSection from '../../components/game/ToggleSection';
 import GameIntro from '../../components/game/GameIntro';
 import ActiveCodes from '../../components/game/ActiveCodes';
 import EventTimeline from '../../components/game/timeline/EventTimeline';
@@ -21,28 +21,36 @@ export default function GenshinHome() {
         />
         
         {/* Active Codes */}
-        <SectionHeader title="Active Codes (Redeem Code Links)" />
-        <ActiveCodes 
-            game={gameId}  
-            redeemUrl={redeemUrl}
-        />
+        <ToggleSection title="Active Codes (Redeem Code Links)" defaultOpen={true}>
+            <ActiveCodes 
+                game={gameId}  
+                redeemUrl={redeemUrl}
+            />
+        </ToggleSection>
         
-        {/* Current & Upcoming Events */}
-        <EventTimeline 
-            game={gameId}
-            gameTitle={gameTitle}
-            terms={{
-            character: "Character",
-            weapon: "Weapon",
-            fourStar: "Characters",
-            activeTitle: "Current Event Wishes",
-            upcomingTitle: "Upcoming Event Wishes"
-            }}
-        />
+        {/* Current Events */}
+        <ToggleSection title="Current Events" defaultOpen={true}>
+            <EventTimeline 
+                game={gameId}
+                type="current"
+            />
+        </ToggleSection>
+        
+        {/* Upcoming Events */}
+        <ToggleSection title="Upcoming Events" defaultOpen={true}>
+            <EventTimeline 
+                game={gameId}
+                type="upcoming"
+            />
+        </ToggleSection>
         
         {/* Changelog Section */}
-        <SectionHeader title="Changelog" />
-        <ChangelogSection game={gameId} />
+        <section className="mt-12">
+            <h2 className="text-xl font-bold text-white uppercase tracking-wider border-l-4 border-blue-500 pl-3 mb-6">
+                Changelog
+            </h2>
+            <ChangelogSection game={gameId} />
+        </section>
 
         </div>
     );
