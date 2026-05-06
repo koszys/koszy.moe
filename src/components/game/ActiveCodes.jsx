@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchCodes } from '../../data/fetchCodes';
 import { Copy, Check } from 'lucide-react';
+import { useSupabaseRealtime } from '../../hooks/useSupabaseRealtime';
 
 export default function ActiveCodes({ game, redeemUrl }) {
     const [codes, setCodes] = useState([]);
@@ -9,16 +10,23 @@ export default function ActiveCodes({ game, redeemUrl }) {
 
     const hasRedeemLink = typeof redeemUrl === 'string' && redeemUrl.trim().length > 0;
 
-    // Fetch the data dynamically when the component loads or the game changes
     useEffect(() => {
-        setLoading(true);
-        async function loadCodes() {
-            const data = await fetchCodes(game);
-            setCodes(data);
-            setLoading(false);
+        if (game) {
+            async function loadCodes() {
+                setLoading(true);
+                const data = await fetchCodes(game);
+                setCodes(data);
+                setLoading(false);
+            }
+            loadCodes();
         }
-        loadCodes();
     }, [game]);
+
+    // Listen to 'game_codes', run loadCodes on change, only if game exists
+    useSupabaseRealtime('codes', async () => {
+        const data = await fetchCodes(game);
+        setCodes(data);
+    }, !!game);
 
     const copyCode = async (code) => {
         try {
