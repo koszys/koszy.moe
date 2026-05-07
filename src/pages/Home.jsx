@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import kofiLogo from '../assets/kofilogo.webp';
-import discordLogo from '../assets/discordlogo.png';
-
+// Components
 import GameCard from '../components/GameCard';
 import ChangelogItem from '../components/ChangelogItem';
 import Footer from '../components/Footer';
+import ChangelogSection from '../components/ChangelogSection';
+import SocialCards from '../components/SocialCards';
+import SocialButton from '../components/SocialButton';
 
-import { CHANGELOG_DATA } from '../data/changelog';
+// Data
 import { GAME_CONFIG } from '../data/games'; 
+
+// Context
+import { useAuth } from '../context/AuthContext';
 
 //Map backgrounds dynamically from config
 const BACKGROUNDS = GAME_CONFIG.map(game => game.bgUrl);
@@ -17,9 +21,10 @@ const BACKGROUNDS = GAME_CONFIG.map(game => game.bgUrl);
 export default function Home() {
   const [currentBg, setCurrentBg] = useState(null);
   const [scrolled, setScrolled] = useState(false);
-  const [showChangelog, setShowChangelog] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false); 
-  const [visibleCount, setVisibleCount] = useState(4); 
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  const { user, openModal, triggerLogout } = useAuth();
 
   {/* Game background */}
   useEffect(() => {
@@ -80,24 +85,68 @@ export default function Home() {
               KOSZY<span className="text-blue-500">.MOE</span>
             </Link>
             <nav className="hidden md:flex space-x-6 text-sm font-semibold">
-              <a href="#" className="text-white border-b-2 border-blue-500 pb-1">Home</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Global Planner</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Pinned Events</a>
+              <a href="#" className="text-white border-b-2 border-blue-500 hover:text-white pb-1">Home</a>
+              {/* <a href="#" className="text-gray-400 hover:text-white transition-colors">Global Planner</a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">Pinned Events</a> */}
             </nav>
           </div>
 
           <div className="flex items-center space-x-4">
-            <button className="flex hidden items-center gap-2 text-sm font-semibold text-white hover:text-white transition-colors sm:flex bg-[#5865F2] hover:bg-inherit hover:border-[#5865F2] px-3 py-2 rounded">
-              <img src={discordLogo} alt="Discord" className="w-5 h-5" />
-              <span>Discord</span>
-            </button>
+            <div className="hidden sm:flex">
+              <SocialButton type="discord" variant="full" />
+            </div>
 
-            <button className="flex hidden items-center gap-2 text-sm font-semibold text-white hover:text-white transition-colors sm:flex  bg-red-500 hover:bg-inherit hover:border-red-500 px-3 py-2 rounded">
-              <img src={kofiLogo} alt="Ko-fi" className="w-6 h-5" />
-              <span>Ko-fi</span>
-            </button>
+            <div className="hidden sm:flex">
+              <SocialButton type="kofi" variant="full" />
+            </div>
 
-            <button className="ml-2 px-5 py-2 bg-blue-500 hover:bg-inherit hover:border-blue-500 text-white rounded text-sm font-bold transition-colors">Sign In</button>
+            {/* User Auth Buttons */}
+            {user ? (
+                <div className="relative z-50 ml-2">
+                    {/* Trigger Button */}
+                    <button 
+                        onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                        className="flex items-center gap-2 bg-[#1c1d21]/80 hover:bg-[#24252a] border border-[#33343a] hover:border-gray-500 rounded-full py-1 pr-3 pl-1 transition-all"
+                    >
+                        {user.avatar ? (
+                            <img src={user.avatar} alt="Profile" className="w-7 h-7 rounded-full object-cover" />
+                        ) : (
+                            <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white">
+                                {user.name.charAt(0).toUpperCase()}
+                            </div>
+                        )}
+                        <span className="text-sm font-bold text-blue-400">{user.name}</span>
+                        <svg className={`w-4 h-4 text-blue-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {isUserMenuOpen && (
+                        <>
+                            {/* Invisible background overlay to close menu when clicking outside */}
+                            <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)}></div>
+                            
+                            <div className="absolute right-0 mt-2 w-48 bg-[#1c1d21] border border-[#33343a] hover:border-blue-500 rounded-lg shadow-2xl z-50 overflow-hidden flex flex-col">
+                                <button 
+                                    onClick={() => { setIsUserMenuOpen(false); triggerLogout(); }} 
+                                    className="flex items-center gap-2 px-4 py-3 text-sm font-bold text-red-400 hover:text-red-300 hover:bg-[#24252a] hover:border-transparent transition-colors text-left w-full"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                                    Sign out
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            ) : (
+                <button 
+                    onClick={openModal} 
+                    className="ml-2 px-5 py-2 bg-blue-500 border border-transparent hover:bg-transparent hover:border-blue-500 text-white rounded text-sm font-bold transition-colors shadow-md"
+                >
+                    Sign In
+                </button>
+            )}
           </div>
 
         </header>
@@ -110,7 +159,7 @@ export default function Home() {
             <div className="relative w-full h-32 md:h-40 flex items-center justify-center group cursor-pointer">
               <div className="relative z-10 text-center px-4">
                 <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide uppercase"> KOSZY<span className="text-blue-500">.MOE</span></h1>
-                <p className="text-gray-350 text-sm md:text-base">
+                <p className="text-white text-sm md:text-base">
                   Your tracker for dailies, events, and other content for your gacha games. 
                   This is currently being maintained solo so I would appreciate any support and feedback!
                 </p>
@@ -141,53 +190,7 @@ export default function Home() {
           </section>
 
           {/* Community & Support Section */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 mt-10">
-            
-            {/* Discord Card */}
-            <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(88,101,242,0.15)]">
-              <div className="w-16 h-16 flex-shrink-0  rounded-full flex items-center justify-center p-3">
-                <img src={discordLogo} alt="Discord" className="w-full h-full object-contain" />
-              </div>
-
-              <div className="flex-1 text-center sm:text-left">
-                <h3 className="text-xl font-bold text-white mb-2">Join the Community</h3>
-                <p className="text-gray-350 text-sm mb-4">
-                  Join the discord server to share feedback, suggest features, and talk with other users! I appreciate any help on maintaining and improving the planner, so feel free to reach out if you want to contribute. Thank you!
-                </p>
-                <a
-                  href="YOUR_DISCORD_LINK_HERE"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-[#5865F2] border border-transparent hover:bg-inherit hover:border-[#5865F2] text-white hover:text-white text-sm font-bold rounded transition-colors"
-                >
-                  <img src={discordLogo} alt="Discord" className="w-5 h-5" />
-                  <span>Discord</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Ko-fi Card */}
-            <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-md p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,94,91,0.15)]">
-              <div className="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center p-3">
-                <img src={kofiLogo} alt="Ko-fi" className="w-full h-full object-contain" />
-              </div>
-              <div className="flex-1 text-center sm:text-left">
-                <h3 className="text-xl font-bold text-white mb-2">Support the Project</h3>
-                <p className="text-gray-350 text-sm mb-4">
-                  koszy.moe currently runs ad-free and is being maintained by one person (me lol). If this planner helps you out with dailies and stuff, consider supporting me on Ko-fi. I appreciate it!
-                </p>
-                <a
-                  href="YOUR_KOFI_LINK_HERE"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2 bg-red-500 border border-transparent hover:bg-inherit hover:border-red-500 text-white hover:text-white text-sm font-bold rounded transition-colors"
-                >
-                  <img src={kofiLogo} alt="Ko-fi" className="w-6 h-5" />
-                  <span>Support on Ko-fi</span>
-                </a>
-              </div>
-            </div>
-          </section>
+          <SocialCards />
           
           {/* Upcoming Features */}
           <section className="mt-16">
@@ -195,11 +198,11 @@ export default function Home() {
               Upcoming Features
             </h2>
             <div className="space-y-4">
-              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
+              <div className="bg-[#1c1d21]/70 border border-[#33343a] rounded-lg p-6">
                 <h4 className="text-white font-bold mb-2">✓ Multi-Account Support</h4>
                 <p className="text-gray-350 text-sm">Track multiple accounts across different platforms with ease.</p>
               </div>
-              <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6">
+              <div className="bg-[#1c1d21]/70 border border-[#33343a] rounded-lg p-6">
                 <h4 className="text-white font-bold mb-2">✓ Push Notifications</h4>
                 <p className="text-gray-350 text-sm">Get real-time alerts for event resets and important milestones.</p>
               </div>
@@ -207,65 +210,7 @@ export default function Home() {
           </section>
         
           {/* Changelog */}
-          <section className="mt-10 mb-20">
-            <button 
-              onClick={() => {
-                setShowChangelog(!showChangelog);
-                if (!showChangelog) setVisibleCount(4); 
-              }}
-              className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/40 border border-[#33343a] px-4 py-2 rounded mb-6"
-            >
-              {showChangelog ? '− Hide Changelog' : '+ View Changelog'}
-            </button>
-
-            {showChangelog && (
-              <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                {/* Main Card Container for all items */}
-                <div className="bg-[#1c1d21]/40 border border-[#33343a] rounded-lg p-6 space-y-6">
-                  {CHANGELOG_DATA.slice(0, visibleCount).map((entry, idx) => (
-                    <div key={idx} className={idx !== 0 ? "border-t border-[#33343a] pt-6" : ""}>
-                      <ChangelogItem 
-                        version={entry.version} 
-                        date={entry.date} 
-                        changes={entry.changes} 
-                      />
-                    </div>
-                  ))}
-
-                  {/* Control Buttons Container inside the card */}
-                  <div className="flex flex-wrap gap-4 pt-2">
-                    {visibleCount < CHANGELOG_DATA.length && (
-                      <button
-                        onClick={() => setVisibleCount(prev => prev + 4)}
-                        className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/60 border border-[#33343a] px-4 py-2 rounded"
-                      >
-                        ↓ Show more
-                      </button>
-                    )}
-
-                    {visibleCount > 4 && (
-                      <button
-                        onClick={() => setVisibleCount(prev => Math.max(4, prev - 4))}
-                        className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/60 border border-[#33343a] px-4 py-2 rounded"
-                      >
-                        ↑ Show less
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() => {
-                        setShowChangelog(false);
-                        setVisibleCount(4);
-                      }}
-                      className="flex items-center gap-2 text-white hover:text-white transition-colors text-sm font-bold uppercase tracking-widest bg-[#1c1d21]/60 border border-[#33343a] px-4 py-2 rounded"
-                    >
-                      × Hide Changelog
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </section>
+          <ChangelogSection game="main" />
 
           {/* Getting Started */}
           {/* <section className="mt-16 mb-20">

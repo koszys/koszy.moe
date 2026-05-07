@@ -1,14 +1,12 @@
-import React from 'react';
+import PlannerContainer from '../../components/game/PlannerContainer';
+import { GAME_TAGS } from '../../data/tags';
 
 export default function GenshinPlanner() {
     return (
-        <div className="animate-fade-in">
-        <h1 className="text-3xl font-bold text-white mb-6">Daily Planner</h1>
-        <div className="bg-[#1c1d21] border border-[#33343a] p-6 rounded-md">
-            <p className="text-gray-400">
-            This is where the actual checklist with countdown timers will go!
-            </p>
-        </div>
-        </div>
+        <PlannerContainer 
+            gameId="genshin" 
+            title="Genshin Impact Planner" 
+            tags={GAME_TAGS.genshin} 
+        />
     );
 }

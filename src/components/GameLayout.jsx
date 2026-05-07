@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
-import kofiLogo from '../assets/kofilogo.webp';
-import discordLogo from '../assets/discordlogo.png';
-
 import Footer from './Footer';
+import SocialButton from './SocialButton';
 
 import { GAME_CONFIG } from '../data/games'; 
 
@@ -21,9 +19,9 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     return (
         <div className="relative flex h-screen w-full bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
         
-        {/* Static Background Layer for Main Content */}
+        {/* Static Background Layer for Main Content. Commenting out will remove all backgrounds */}
         <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35 pointer-events-none"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 pointer-events-none"
             style={{ backgroundImage: currentGameBgUrl ? `url('${currentGameBgUrl}')` : 'none' }}
         />
 
@@ -162,12 +160,8 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
 
             {/* Right Side Icons (Discord, Ko-fi) */}
             <div className="flex items-center gap-4">
-                <a href="#" className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity">
-                <img src={discordLogo} alt="Discord" className="w-full h-full object-contain" />
-                </a>
-                <a href="#" className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity">
-                <img src={kofiLogo} alt="Ko-fi" className="w-full h-full object-contain" />
-                </a>
+                <SocialButton type="discord" variant="icon" />
+                <SocialButton type="kofi" variant="icon" />
             </div>
             </header>
 
@@ -210,7 +204,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
             {GAME_CONFIG.map(game => (
                 <Link
-                key={game.id} // Changed to game.id
+                key={game.id} 
                 to={game.path}
                 onClick={() => setIsGameSwitcherOpen(false)}
                 className="relative group block h-28 rounded-md overflow-hidden border border-[#33343a] hover:border-blue-500 transition-all shadow-md"
