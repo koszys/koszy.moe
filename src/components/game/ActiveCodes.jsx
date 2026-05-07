@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchCodes } from '../../data/fetchCodes';
 import { Copy, Check } from 'lucide-react';
+import { useSupabaseRealtime } from '../../hooks/useSupabaseRealtime';
 
 export default function ActiveCodes({ game, redeemUrl }) {
     const [codes, setCodes] = useState([]);
@@ -9,16 +10,23 @@ export default function ActiveCodes({ game, redeemUrl }) {
 
     const hasRedeemLink = typeof redeemUrl === 'string' && redeemUrl.trim().length > 0;
 
-    // Fetch the data dynamically when the component loads or the game changes
     useEffect(() => {
-        setLoading(true);
-        async function loadCodes() {
-            const data = await fetchCodes(game);
-            setCodes(data);
-            setLoading(false);
+        if (game) {
+            async function loadCodes() {
+                setLoading(true);
+                const data = await fetchCodes(game);
+                setCodes(data);
+                setLoading(false);
+            }
+            loadCodes();
         }
-        loadCodes();
     }, [game]);
+
+    // Listen to 'game_codes', run loadCodes on change, only if game exists
+    useSupabaseRealtime('codes', async () => {
+        const data = await fetchCodes(game);
+        setCodes(data);
+    }, !!game);
 
     const copyCode = async (code) => {
         try {
@@ -42,14 +50,7 @@ export default function ActiveCodes({ game, redeemUrl }) {
 
     return (
         <div>
-            {/* {!hasRedeemLink && (
-                <div className="mb-4 rounded-lg border border-[#33343a] bg-[#14151a]/80 p-4 text-sm text-gray-300">
-                    No redeem link is available for this game. Copy the code below and redeem it manually on the official site.
-                </div>
-            )} */}
-
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Grid setup for columns (2 cols on mobile, 3 on desktop) */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {sortedCodes.map((item, idx) => {
                     const redeemLink = hasRedeemLink
                         ? redeemUrl.includes('hoyoverse.com')
@@ -60,47 +61,58 @@ export default function ActiveCodes({ game, redeemUrl }) {
                     return (
                         <div
                             key={item.id || idx}
-                            className="relative bg-[#1c1d21]/80 border border-[#33343a] hover:border-[#4b4c53] rounded-lg p-6  transition-colors group overflow-hidden"
+                            className="relative bg-[#1c1d21]/80 border border-[#33343a] hover:border-[#4b4c53] rounded-lg p-4 sm:p-6 transition-colors group overflow-hidden"
                         >
+                            {/* TOP RIGHT RIBBON */}
                             {item.is_new && (
                                 <div className="absolute top-0 right-0 bg-emerald-900/40 text-emerald-300 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase tracking-wider shadow-md">
                                     New
                                 </div>
                             )}
 
-                            <div className="flex items-center gap-3 mb-2">
+                            {/* CODE TEXT */}
+                            <div className="mb-1 sm:mb-2">
                                 {hasRedeemLink ? (
                                     <a
                                         href={redeemLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="font-mono text-xl font-bold text-white hover:text-blue-300 transition-colors tracking-wide underline underline-offset-4 decoration-blue-500/50 hover:decoration-blue-400"
+                                        className="block min-w-0 truncate font-mono text-base sm:text-xl font-bold text-white hover:text-blue-300 transition-colors tracking-wide underline underline-offset-4 decoration-blue-500/50 hover:decoration-blue-400"
+                                        title={item.code} 
                                     >
                                         {item.code}
                                     </a>
                                 ) : (
-                                    <span className="font-mono text-xl font-bold text-white tracking-wide">
+                                    <span 
+                                        className="block min-w-0 truncate font-mono text-base sm:text-xl font-bold text-white tracking-wide"
+                                        title={item.code}
+                                    >
                                         {item.code}
                                     </span>
                                 )}
-
-                                <button
-                                    type="button"
-                                    onClick={() => copyCode(item.code)}
-                                    title="Copy code"
-                                    className="inline-flex items-center justify-center rounded-md border border-transparent bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:border-blue-500"
-                                >
-                                    {copiedCode === item.code ? (
-                                        <Check className="h-4 w-4 text-emerald-400" strokeWidth={3} />
-                                    ) : (
-                                        <Copy className="h-4 w-4 text-gray-300" strokeWidth={2} />
-                                    )}
-                                </button>
                             </div>
                             
-                            <p className="text-gray-300 text-sm">
+                            {/* REWARD TEXT */}
+                            <p 
+                                className="text-gray-300 text-xs sm:text-sm pr-10 line-clamp-2 sm:line-clamp-3"
+                                title={item.reward}
+                            >
                                 {item.reward}
                             </p>
+
+                            {/* BOTTOM RIGHT COPY BUTTON */}
+                            <button
+                                type="button"
+                                onClick={() => copyCode(item.code)}
+                                title="Copy code"
+                                className="absolute bottom-0 right-0 inline-flex items-center justify-center bg-white/10 p-2 sm:p-2.5 text-gray-300 transition-colors hover:bg-white/20 hover:text-white rounded-tl-lg"
+                            >
+                                {copiedCode === item.code ? (
+                                    <Check className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-400" strokeWidth={3} />
+                                ) : (
+                                    <Copy className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2} />
+                                )}
+                            </button>
                         </div>
                     );
                 })}
