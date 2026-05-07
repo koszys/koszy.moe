@@ -80,7 +80,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<img src="https://github.com/koszys/koszy.moe/blob/main/koszy.moe.png" alt="koszyhome">
+<img src="https://github.com/koszys/koszy.moe/blob/main/docs/koszy.moe.png" alt="koszyhome">
 
 Currently a solo project for now. May add more features or change up the stack later. 
 
