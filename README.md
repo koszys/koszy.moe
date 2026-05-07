@@ -122,7 +122,7 @@ You will need Node.js and npm installed on your machine.
 
 ### Installation
 
-1. Create a free [Supaabase](https://supabase.com) project and setup your database tables.
+1. Create a free [Supabase](https://supabase.com) project and setup your database tables.
 2. Clone the repo
    ```sh
     git clone [https://github.com/koszys/koszy.moe.git](https://github.com/koszys/koszy.moe.git)
@@ -132,7 +132,7 @@ You will need Node.js and npm installed on your machine.
     cd koszy.moe
    ```
 4. Install npm packages
-   ```js
+   ```sh
     npm install
    ```
 5. Create a .env file in the root directory and enter your Supabase URL and Anon Key
@@ -141,7 +141,7 @@ You will need Node.js and npm installed on your machine.
     VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY='YOUR_SUPABASE_PUBLISHABLE_DEFAULT_KEY'
    ```
 6. Start the Vite development server
-  ```sh
+   ```sh
     npm run dev
    ```
 
@@ -164,7 +164,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Roadmap
 - [ ] Character planner
   - [ ] May need to migrate off of Supabase and have a custom backend for this
-- [ ]
 <!-- 
 - [ ] 
     - [ ] Nested Feature -->
