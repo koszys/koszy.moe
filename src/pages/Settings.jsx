@@ -51,7 +51,6 @@ export default function Settings({ gameId = 'genshin' }) {
             await syncLocalToCloud();
             setToast({ type: 'success', message: 'Data synced successfully!' });
             
-            // Set cooldown to 60s AND save the exact future expiration time
             setCooldown(10);
             localStorage.setItem('koszy-sync-cooldown', Date.now() + 10000);
             
