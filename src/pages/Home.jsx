@@ -21,7 +21,6 @@ const BACKGROUNDS = GAME_CONFIG.map(game => game.bgUrl);
 export default function Home() {
   const [currentBg, setCurrentBg] = useState(null);
   const [scrolled, setScrolled] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const { user, openModal, triggerLogout } = useAuth();
