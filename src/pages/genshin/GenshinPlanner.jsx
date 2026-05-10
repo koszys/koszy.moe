@@ -1,5 +1,5 @@
 import PlannerContainer from '../../components/game/PlannerContainer';
-import { GAME_TAGS } from '../../data/tags';
+import { game_tags } from '../../data/labelsAndTags';
 
 export default function GenshinPlanner() {
     return (
