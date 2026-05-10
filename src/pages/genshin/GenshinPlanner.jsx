@@ -6,7 +6,7 @@ export default function GenshinPlanner() {
         <PlannerContainer 
             gameId="genshin" 
             title="Genshin Impact Planner" 
-            tags={GAME_TAGS.genshin} 
+            tags={game_tags.genshin} 
         />
     );
 }
