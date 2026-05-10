@@ -54,7 +54,7 @@ export default function Settings({ gameId = 'genshin' }) {
             setCooldown(10);
             localStorage.setItem('koszy-sync-cooldown', Date.now() + 10000);
             
-        } catch (err) {
+        } catch {
             setToast({ type: 'error', message: 'Failed to sync data. Please try again.' });
         }
         setIsSyncing(false); 
