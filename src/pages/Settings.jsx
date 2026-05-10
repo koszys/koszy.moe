@@ -9,35 +9,10 @@ import { useAuth } from '../context/AuthContext';
 
 // Assets
 
-const GAME_TERMS = {
-    genshin: { 
-        ar: "AR", arFull: "Adventure Rank", maxAr: 60,
-        wl: "WL", wlFull: "World Level", wlOptions: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-        mcTitle: "Traveler", mcMale: "Aether", mcFemale: "Lumine" 
-    },
-    hsr: { 
-        ar: "TL", arFull: "Trailblaze Level", maxAr: 70, 
-        wl: "EQ Level", wlFull: "Equilibrium Level", wlOptions: ["0", "1", "2", "3", "4", "5", "6"],
-        mcTitle: "Trailblazer", mcMale: "Caelus", mcFemale: "Stelle" 
-    },
-    wuwa: { 
-        ar: "UL", arFull: "Union Level", maxAr: 80,
-        wl: "SP", wlFull: "SOL3 Phase", wlOptions: ["1", "2", "3", "4", "5", "6", "7", "8"],
-        mcTitle: "Rover", mcMale: "Male", mcFemale: "Female" 
-    },
-    zzz: {
-        ar: "IL", arFull: "Inter-Knot Level", maxAr: 60,
-        wl: "IR", wlFull: "Inter-Knot Reputation", wlOptions: ["Novice Proxy (0)", "Certified Proxy (1)", "Senior Proxy (2)", "Elite Proxy (3)", "Legendary Proxy (4)"],
-        mcTitle: "Proxy", mcMale: "Wise", mcFemale: "Belle"
-    },
-    default: { 
-        ar: "Level", wl: "World Level", 
-        mcTitle: "Gender", mcMale: "Male", mcFemale: "Female" 
-    }
-};
+import { game_terms } from '../data/gameTerms';
 
 export default function Settings({ gameId = 'genshin' }) {
-    const terms = GAME_TERMS[gameId] || GAME_TERMS.genshin;
+    const terms = game_terms[gameId] || game_terms.genshin;
     
     const { 
         accounts, activeAccountId, setActiveAccountId, activeAccount, 
@@ -76,11 +51,10 @@ export default function Settings({ gameId = 'genshin' }) {
             await syncLocalToCloud();
             setToast({ type: 'success', message: 'Data synced successfully!' });
             
-            // Set cooldown to 60s AND save the exact future expiration time
             setCooldown(10);
             localStorage.setItem('koszy-sync-cooldown', Date.now() + 10000);
             
-        } catch (err) {
+        } catch {
             setToast({ type: 'error', message: 'Failed to sync data. Please try again.' });
         }
         setIsSyncing(false); 
@@ -178,7 +152,7 @@ export default function Settings({ gameId = 'genshin' }) {
                             <div>
                                 <p className="text-sm font-bold text-white">{user.name}</p>
                                 <p className="text-xs text-gray-400">{user.email}</p>
-                                <p className="text-[10px] text-blue-400 cursor-pointer hover:underline w-max mt-0.5">Edit Display Name</p>
+                                {/* <p className="text-[10px] text-blue-400 cursor-pointer hover:underline w-max mt-0.5">Edit Display Name</p> */}
                             </div>
                         </div>
                         {/* Sign Out Button */}
@@ -403,23 +377,9 @@ export default function Settings({ gameId = 'genshin' }) {
                     </div>
                 </div>
 
-                {/* Planner Settings */}
-                {/* <div className="bg-[#24252a] border border-[#33343a] rounded-xl p-4 md:p-6 shadow-sm opacity-50 pointer-events-none">
-                    <h3 className="text-xs font-black text-gray-400 uppercase tracking-wider mb-2">Planner Settings (WIP)</h3>
-                    ... your toggles ...
-                </div>
-                */}
-
                 {/* Other Settings */}
-                <div className="bg-[#24252a] border border-[#33343a] rounded-xl p-4 md:p-6 shadow-sm">
+                {/* <div className="bg-[#24252a] border border-[#33343a] rounded-xl p-4 md:p-6 shadow-sm">
                     <h3 className="text-xs font-black text-gray-400 uppercase tracking-wider mb-2">Other Settings</h3>
-                    
-                    {/* Hide Toggles */}
-                    {/* <div className="divide-y divide-[#33343a] mb-4">
-                        <Toggle label="Hide Artifacts from expanded Goals" checked={false} />
-                        <Toggle label="Hide Weapons from expanded Goals" checked={false} />
-                    </div> 
-                    */}
 
                     <div className="flex flex-col gap-1.5 w-max mt-4">
                         <label className="text-xs text-gray-400 font-bold">Hour Format</label>
@@ -428,7 +388,7 @@ export default function Settings({ gameId = 'genshin' }) {
                             <option>12 hours</option>
                         </select>
                     </div>
-                </div>
+                </div> */}
 
             </div>
 

@@ -7,7 +7,6 @@ import EventTimeline from '../../components/game/timeline/EventTimeline';
 
 export default function GenshinHome() {
     const gameId = 'genshin';
-    const gameTitle = 'Genshin Impact';
     
     // Custom URL (can be moved to games.js later)
     const redeemUrl = 'https://genshin.hoyoverse.com/en/gift'; 

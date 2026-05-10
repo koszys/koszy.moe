@@ -1,6 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { GAME_TAGS } from '../data/tags';
-import { EVENT_LABELS } from '../data/labels';
+import { game_tags, event_labels } from '../data/labelsAndTags';
 
 export async function fetchEvents(game) {
     const { data, error } = await supabase
@@ -16,8 +15,8 @@ export async function fetchEvents(game) {
     }
     
     // Map through the database rows and attach the tag objects from GAME_TAGS
-    const gameTags = GAME_TAGS[game] || {};
-    const gameLabels = EVENT_LABELS[game] || {};
+    const gameTags = game_tags[game] || {};
+    const gameLabels = event_labels[game] || {};
     const formattedData = data.map((event) => {
         // Parse tag_key to get the tag object(s)
         const eventTags = event.tag_key 
