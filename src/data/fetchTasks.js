@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { GAME_TAGS } from './tags';
+import { game_tags } from './labelsAndTags';
 
 export async function fetchTasks(game) {
     const { data, error } = await supabase
@@ -14,7 +14,7 @@ export async function fetchTasks(game) {
     }
     
     // Map the database text strings back into your React objects
-    const gameTags = GAME_TAGS[game] || {};
+    const gameTags = game_tags[game] || {};
     return data.map(task => {
         // Split the string by comma, trim spaces, make uppercase, and find the matching objects
         const parsedTags = task.tag_key 
