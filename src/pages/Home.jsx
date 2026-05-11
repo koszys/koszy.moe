@@ -54,16 +54,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white relative">
       
-     {/* Dynamic Background Layers */}
-      {BACKGROUNDS.map((bg) => (
-        <div 
-          key={bg}
-          className={`fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-in-out ${
-            currentBg === bg ? 'opacity-40' : 'opacity-0' // Background Opacity 
-          }`}
-          style={{ backgroundImage: `url('${bg}')` }}
+     {/* Dynamic Background Layer - Only render active background */}
+      {currentBg && (
+        <div
+          className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40"
+          style={{ backgroundImage: `url('${currentBg}')` }}
         />
-      ))}
+      )}
 
       {/* Main Content Container with higher z-index to sit above backgrounds */}
       <div className="relative z-10">

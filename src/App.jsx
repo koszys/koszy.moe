@@ -1,12 +1,13 @@
 import { Routes, Route } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 
-import { GAME_CONFIG } from './data/games'; 
+import { GAME_CONFIG } from './data/games';
 
-// Pages
-import Home from './pages/Home';
-import GenshinHome from './pages/genshin/GenshinHome';
-import GenshinPlanner from './pages/genshin/GenshinPlanner';
-import Settings from './pages/Settings';
+// Lazy load pages
+const Home = lazy(() => import('./pages/Home'));
+const GenshinHome = lazy(() => import('./pages/genshin/GenshinHome'));
+const GenshinPlanner = lazy(() => import('./pages/genshin/GenshinPlanner'));
+const Settings = lazy(() => import('./pages/Settings'));
 
 // Components
 import GameLayout from './components/GameLayout';
@@ -41,24 +42,30 @@ export default function App() {
   const genshinData = GAME_CONFIG.find(game => game.id === 'genshin');
 
   return (
-    <> 
+    <>
       <AuthModal />
-      
-      <Routes>
-        <Route path="/" element={<Home />} />
-        
-        <Route path="/genshin" element={
-          <GameLayout 
-            gameTitle={genshinData.name} 
-            currentGameBgUrl={genshinData.bgUrl} 
-            navLinks={genshinLinks} 
-          />
-        }>
-          <Route index element={<GenshinHome />} />
-          <Route path="planner" element={<GenshinPlanner />} />
-          <Route path="settings" element={<Settings gameId="genshin" />} /> 
-        </Route>
-      </Routes>
+
+      <Suspense fallback={
+        <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+          <div className="text-gray-400 text-lg">Loading...</div>
+        </div>
+      }>
+        <Routes>
+          <Route path="/" element={<Home />} />
+
+          <Route path="/genshin" element={
+            <GameLayout
+              gameTitle={genshinData.name}
+              currentGameBgUrl={genshinData.bgUrl}
+              navLinks={genshinLinks}
+            />
+          }>
+            <Route index element={<GenshinHome />} />
+            <Route path="planner" element={<GenshinPlanner />} />
+            <Route path="settings" element={<Settings gameId="genshin" />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </>
   );
 }
