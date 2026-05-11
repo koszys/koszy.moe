@@ -12,7 +12,7 @@ const getCdnUrl = (path) => {
 };
 
 const EventCard = memo(function EventCard({ event, isCurrent }) {
-    // Use the helper to attach your CDN domain to the database image_path
+// Use the helper to attach your CDN domain to the database image_path
     const fullImageUrl = getCdnUrl(event.image_path || event.image);
     const hasImage = !!fullImageUrl;
     
@@ -148,7 +148,7 @@ export default function EventTimeline({ game, type = 'all' }) {
         setUpcomingEvents(upcoming);
     }, [rawEvents]);
 
-    // Filter based on type prop - must be called before any early returns
+// Filter based on type prop - must be called before any early returns
     const eventsToShow = useMemo(() => {
         if (type === 'current') return currentEvents;
         if (type === 'upcoming') return upcomingEvents;
