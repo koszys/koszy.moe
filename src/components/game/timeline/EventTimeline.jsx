@@ -12,7 +12,7 @@ const getCdnUrl = (path) => {
 };
 
 const EventCard = memo(function EventCard({ event, isCurrent }) {
-    // 2. Use the helper to attach your CDN domain to the database image_path
+    // Use the helper to attach your CDN domain to the database image_path
     const fullImageUrl = getCdnUrl(event.image_path || event.image);
     const hasImage = !!fullImageUrl;
     
