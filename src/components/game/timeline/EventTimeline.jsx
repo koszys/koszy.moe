@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useMemo } from 'react';
 import CountdownTimer from './CountdownTimer';
 
 import { fetchEvents } from '../../../data/fetchEvents';
@@ -12,7 +12,7 @@ const getCdnUrl = (path) => {
 };
 
 const EventCard = memo(function EventCard({ event, isCurrent }) {
-    // 2. Use the helper to attach your CDN domain to the database image_path
+// Use the helper to attach your CDN domain to the database image_path
     const fullImageUrl = getCdnUrl(event.image_path || event.image);
     const hasImage = !!fullImageUrl;
     
@@ -148,13 +148,15 @@ export default function EventTimeline({ game, type = 'all' }) {
         setUpcomingEvents(upcoming);
     }, [rawEvents]);
 
+// Filter based on type prop - must be called before any early returns
+    const eventsToShow = useMemo(() => {
+        if (type === 'current') return currentEvents;
+        if (type === 'upcoming') return upcomingEvents;
+        return currentEvents.concat(upcomingEvents);
+    }, [type, currentEvents, upcomingEvents]);
+
     // Loading state catch
     if (loading) return <div className="text-gray-400 p-4">Loading timeline...</div>;
-    if ((!currentEvents.length && !upcomingEvents.length)) return null;
-
-    // Filter based on type prop
-    const eventsToShow = type === 'current' ? currentEvents : type === 'upcoming' ? upcomingEvents : currentEvents.concat(upcomingEvents);
-
     if (!eventsToShow.length) return null;
 
     return (
