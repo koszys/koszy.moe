@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import SectionHeader from "./SectionHeader";
 import { usePlanner } from "../../context/PlannerContext";
 import { useSettings } from "../../context/SettingsContext";
@@ -48,49 +48,53 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
 
     // Filter and sort logic
     const TABS = ["All", "Permanent", "Events", "Completed"];
-    const allActiveTasks = rawData.filter((task) => !isTaskCompleted(task));
-    const allCompletedTasks = rawData.filter((task) => isTaskCompleted(task));
 
-    let currentList = [];
-    if (activeTab === "Completed") {
-        currentList = allCompletedTasks;
-    } else {
-        currentList = allActiveTasks;
-        if (activeTab === "Permanent") {
-            currentList = currentList.filter((t) => t.type === "permanent" || t.type === "task");
+    const allActiveTasks = useMemo(() => rawData.filter((task) => !isTaskCompleted(task)), [rawData, isTaskCompleted]);
+    const allCompletedTasks = useMemo(() => rawData.filter((task) => isTaskCompleted(task)), [rawData, isTaskCompleted]);
+
+    const currentList = useMemo(() => {
+        let list = [];
+        if (activeTab === "Completed") {
+            list = allCompletedTasks;
+        } else {
+            list = allActiveTasks;
+            if (activeTab === "Permanent") {
+                list = list.filter((t) => t.type === "permanent" || t.type === "task");
+            }
+            if (activeTab === "Events") {
+                list = list.filter((t) => t.type === "event");
+            }
+
+            list = list.filter((t) => {
+                return !t.tags.some(tag =>
+                    excludedTags.includes(tag.id) ||
+                    (tag.parentId && excludedTags.includes(tag.parentId))
+                );
+            });
         }
-        if (activeTab === "Events") {
-            currentList = currentList.filter((t) => t.type === "event");
-        }
-        
-        // Exclude tasks if tag or parent is excluded
-        currentList = currentList.filter((t) => {
-            return !t.tags.some(tag => 
-                excludedTags.includes(tag.id) || 
-                (tag.parentId && excludedTags.includes(tag.parentId))
-            );
+        return list;
+    }, [activeTab, allCompletedTasks, allActiveTasks, excludedTags]);
+
+    const listWithDeadlines = useMemo(() => {
+        const withDeadlines = currentList.map((task) => {
+            let finalDeadline = null;
+
+            if (task.resetRule) {
+                finalDeadline = getNextReset(task.resetRule, currentResetHour, server);
+            } else if (task.deadline) {
+                finalDeadline = applyServerOffset(task.deadline, server);
+            }
+
+            return { ...task, finalDeadline };
         });
-    }
 
-    // Add deadlines and sort
-    const listWithDeadlines = currentList.map((task) => {
-        let finalDeadline = null;
-
-        if (task.resetRule) {
-            finalDeadline = getNextReset(task.resetRule, currentResetHour, server);
-        } else if (task.deadline) {
-            finalDeadline = applyServerOffset(task.deadline, server);
-        }
-
-        return { ...task, finalDeadline };
-    });
-
-    listWithDeadlines.sort((a, b) => {
-        if (!a.finalDeadline && !b.finalDeadline) return 0;
-        if (!a.finalDeadline) return 1;
-        if (!b.finalDeadline) return -1;
-        return new Date(a.finalDeadline) - new Date(b.finalDeadline);
-    });
+        return withDeadlines.sort((a, b) => {
+            if (!a.finalDeadline && !b.finalDeadline) return 0;
+            if (!a.finalDeadline) return 1;
+            if (!b.finalDeadline) return -1;
+            return new Date(a.finalDeadline) - new Date(b.finalDeadline);
+        });
+    }, [currentList, currentResetHour, server]);
 
     const completedCount = allCompletedTasks.length;
 
