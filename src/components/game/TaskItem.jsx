@@ -1,7 +1,8 @@
+import { memo } from "react";
 import CountdownTimer from "./timeline/CountdownTimer";
 import TimerRibbon from "./timeline/TimerRibbon";
 
-export function TaskItem({ task, gameId, isChecked, onToggleTask }) {
+export const TaskItem = memo(function TaskItem({ task, gameId, isChecked, onToggleTask }) {
     const finalDeadline = task.finalDeadline;
     const showTimer = !isChecked && finalDeadline;
 
@@ -85,4 +86,4 @@ export function TaskItem({ task, gameId, isChecked, onToggleTask }) {
             </div>
         </div>
     );
-}
+});

@@ -1,25 +1,10 @@
-import { useState, useEffect } from 'react';
-import TimerRibbon from './TimerRibbon'; 
+import { memo } from 'react';
+import { useTimer } from '../../../context/TimerContext';
+import TimerRibbon from './TimerRibbon';
 
-export default function CountdownTimer({ endDate, ribbonColor, expiredLabel = 'ENDED' }) {
-    const [timeLeft, setTimeLeft] = useState(0);
-
-    useEffect(() => {
-        const targetDate = new Date(endDate);
-        setTimeLeft(Math.max(0, targetDate - new Date()));
-
-        const timerInterval = setInterval(() => {
-        const difference = targetDate - new Date();
-        if (difference <= 0) {
-            clearInterval(timerInterval);
-            setTimeLeft(0);
-        } else {
-            setTimeLeft(difference);
-        }
-        }, 1000);
-
-        return () => clearInterval(timerInterval);
-    }, [endDate]);
+const CountdownTimer = memo(function CountdownTimer({ endDate, ribbonColor, expiredLabel = 'ENDED' }) {
+    const { getTimeLeft } = useTimer();
+    const timeLeft = getTimeLeft(endDate);
 
     if (timeLeft <= 0) {
         return <TimerRibbon bgColor="bg-gray-600" textColor="text-white">{expiredLabel}</TimerRibbon>;
@@ -29,7 +14,6 @@ export default function CountdownTimer({ endDate, ribbonColor, expiredLabel = 'E
     const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
 
-    // Days and hours and Minutes if < 1 day
     let displayTime = '';
     if (days > 0) {
         displayTime = `${days}d ${hours}h`;
@@ -39,12 +23,11 @@ export default function CountdownTimer({ endDate, ribbonColor, expiredLabel = 'E
         displayTime = `${minutes}m`;
     }
 
-    //  Remaining time color 
-    let bgColorClass = "bg-emerald-600"; // Default Green
+    let bgColorClass = "bg-emerald-600";
     if (days < 2) {
-        bgColorClass = "bg-red-600";     // Red
+        bgColorClass = "bg-red-600";
     } else if (days < 4) {
-        bgColorClass = "bg-yellow-600";  // Yellow
+        bgColorClass = "bg-yellow-600";
     }
 
     return (
@@ -52,4 +35,6 @@ export default function CountdownTimer({ endDate, ribbonColor, expiredLabel = 'E
             {displayTime}
         </TimerRibbon>
     );
-}
+});
+
+export default CountdownTimer;

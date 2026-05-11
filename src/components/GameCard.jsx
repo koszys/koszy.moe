@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function GameCard({ name, status, bgUrl, link, tags, onHover }) {
+export default memo(function GameCard({ name, status, bgUrl, link, tags, onHover }) {
     const isActive = status === 'active';
 
     // Use React Router's <Link> for active games, and a standard <div> for inactive ones
@@ -41,4 +42,4 @@ export default function GameCard({ name, status, bgUrl, link, tags, onHover }) {
         </div>
         </CardContainer>
     );
-}
+});

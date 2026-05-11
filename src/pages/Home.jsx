@@ -18,22 +18,32 @@ import { useAuth } from '../context/AuthContext';
 //Map backgrounds dynamically from config
 const BACKGROUNDS = GAME_CONFIG.map(game => game.bgUrl);
 
+const preloadImage = (src) => {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = src;
+    });
+};
+
 export default function Home() {
   const [currentBg, setCurrentBg] = useState(null);
+  const [isBgLoaded, setIsBgLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const { user, openModal, triggerLogout } = useAuth();
 
-  {/* Game background */}
+  {/* Preload background and set when ready */}
   useEffect(() => {
     const savedBg = localStorage.getItem('koszy-last-bg');
-    if (savedBg) {
-      setCurrentBg(savedBg);
-    } else {
-      const randomBg = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)];
-      setCurrentBg(randomBg);
-    }
+    const bgToUse = savedBg || BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)];
+
+    preloadImage(bgToUse).then(() => {
+        setCurrentBg(bgToUse);
+        setIsBgLoaded(true);
+    });
   }, []);
 
   {/* Handles scroll behavior */}
@@ -47,23 +57,26 @@ export default function Home() {
 
   {/* Handles hover behavior for game cards */}
   const handleHover = (bgUrl) => {
-    setCurrentBg(bgUrl);
-    localStorage.setItem('koszy-last-bg', bgUrl);
+    if (currentBg === bgUrl) return;
+
+    setIsBgLoaded(false);
+    preloadImage(bgUrl).then(() => {
+        setCurrentBg(bgUrl);
+        setIsBgLoaded(true);
+        localStorage.setItem('koszy-last-bg', bgUrl);
+    });
   };
 
   return (
     <div className="min-h-screen bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white relative">
       
-     {/* Dynamic Background Layers */}
-      {BACKGROUNDS.map((bg) => (
-        <div 
-          key={bg}
-          className={`fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-in-out ${
-            currentBg === bg ? 'opacity-40' : 'opacity-0' // Background Opacity 
-          }`}
-          style={{ backgroundImage: `url('${bg}')` }}
+     {/* Dynamic Background Layer - Only render when loaded */}
+      {currentBg && (
+        <div
+          className={`fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${isBgLoaded ? 'opacity-40' : 'opacity-0'}`}
+          style={{ backgroundImage: `url('${currentBg}')` }}
         />
-      ))}
+      )}
 
       {/* Main Content Container with higher z-index to sit above backgrounds */}
       <div className="relative z-10">

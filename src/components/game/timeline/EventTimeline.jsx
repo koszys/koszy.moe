@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import CountdownTimer from './CountdownTimer';
 
 import { fetchEvents } from '../../../data/fetchEvents';
@@ -11,7 +11,7 @@ const getCdnUrl = (path) => {
     return `${ASSET_BASE_URL}${path}`;
 };
 
-const EventCard = ({ event, isCurrent }) => {
+const EventCard = memo(function EventCard({ event, isCurrent }) {
     // 2. Use the helper to attach your CDN domain to the database image_path
     const fullImageUrl = getCdnUrl(event.image_path || event.image);
     const hasImage = !!fullImageUrl;
@@ -100,7 +100,7 @@ const EventCard = ({ event, isCurrent }) => {
 
         </div>
     );
-};
+});
 
 export default function EventTimeline({ game, type = 'all' }) {
     const [rawEvents, setRawEvents] = useState([]);
@@ -116,7 +116,13 @@ export default function EventTimeline({ game, type = 'all' }) {
             setRawEvents(data);
             setLoading(false);
         }
-        if (game) loadEvents();
+
+        if (game) {
+            loadEvents();
+        } else {
+            console.warn("EventTimeline is missing the 'game' prop!");
+            setLoading(false);
+        }
     }, [game]);
 
     useEffect(() => {
@@ -141,25 +147,6 @@ export default function EventTimeline({ game, type = 'all' }) {
         setCurrentEvents(current);
         setUpcomingEvents(upcoming);
     }, [rawEvents]);
-
-    // Fetch the database data when the game ID loads
-    useEffect(() => {
-        async function loadEvents() {
-            setLoading(true);
-            const data = await fetchEvents(game);
-            setRawEvents(data);
-            setLoading(false);
-        }
-        
-        // If a game string exists, fetch the data
-        if (game) {
-            loadEvents();
-        } else {
-            // If the game prop is missing, turn off loading so it doesn't spin forever!
-            console.warn("EventTimeline is missing the 'game' prop!");
-            setLoading(false);
-        }
-    }, [game]);
 
     // Loading state catch
     if (loading) return <div className="text-gray-400 p-4">Loading timeline...</div>;
