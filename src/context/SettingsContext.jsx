@@ -1,7 +1,8 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
-import { createExportData, parseImportedData, applyImportedAccount, buildTaskInsertRows } from '../utils/dataIO';
+import { createExportData, parseImportedData, applyImportedAccount, buildTaskInsertRows, sortAccounts, flattenTasksToRows } from '../utils/dataIO';
+import { getServerResetUTC } from '../utils/timeCalculations';
 
 const SettingsContext = createContext();
 
@@ -11,17 +12,6 @@ export function SettingsProvider({ children }) {
     const [accounts, setAccounts] = useState([]);
     const [activeAccountId, setActiveAccountId] = useState('account_1');
     const [loading, setLoading] = useState(true);
-
-    const sortAccounts = (accountList) => {
-        return [...accountList].sort((a, b) => {
-            if (a.created_at && b.created_at) {
-                return new Date(a.created_at) - new Date(b.created_at);
-            }
-            if (a.created_at) return -1;
-            if (b.created_at) return 1;
-            return 0;
-        });
-    };
 
     // Fetch Data & Handle First-Time Migration
     useEffect(() => {
@@ -51,17 +41,7 @@ export function SettingsProvider({ children }) {
                     // Push Profile & Tags
                     await supabase.from('profiles').upsert({ id: user.id, active_account_id: localActiveId, excluded_tags: localTags });
 
-                    // Push Tasks (Flattening the nested object into SQL rows)
-                    const tasksToInsert = [];
-                    Object.keys(localTasks).forEach(accId => {
-                        Object.keys(localTasks[accId]).forEach(gameId => {
-                            Object.keys(localTasks[accId][gameId]).forEach(taskId => {
-                                if (localTasks[accId][gameId][taskId]) {
-                                    tasksToInsert.push({ user_id: user.id, account_id: accId, game_id: gameId, task_id: taskId });
-                                }
-                            });
-                        });
-                    });
+                    const tasksToInsert = flattenTasksToRows(localTasks, user.id);
                     
                     if (tasksToInsert.length > 0) {
                         await supabase.from('completed_tasks').insert(tasksToInsert);
@@ -154,20 +134,9 @@ export function SettingsProvider({ children }) {
             // Sync Profile & Tags
             await supabase.from('profiles').upsert({ id: user.id, excluded_tags: localTags });
 
-            // Sync Tasks
-            const tasksToInsert = [];
-            Object.keys(localTasks).forEach(accId => {
-                Object.keys(localTasks[accId]).forEach(gameId => {
-                    Object.keys(localTasks[accId][gameId]).forEach(taskId => {
-                        if (localTasks[accId][gameId][taskId]) {
-                            tasksToInsert.push({ user_id: user.id, account_id: accId, game_id: gameId, task_id: taskId });
-                        }
-                    });
-                });
-            });
+            const tasksToInsert = flattenTasksToRows(localTasks, user.id);
             
             if (tasksToInsert.length > 0) {
-                // Upsert on the unique constraint to avoid duplicate errors
                 await supabase.from('completed_tasks').upsert(tasksToInsert, { onConflict: 'account_id, game_id, task_id' });
             }
 
@@ -181,13 +150,10 @@ export function SettingsProvider({ children }) {
         } 
     };
 
-    // Helper: UTC Reset Math
-    const getServerResetUTC = () => {
+    const getResetHour = () => {
         const activeAcc = accounts.find(acc => acc.id === activeAccountId);
         const server = activeAcc?.server || 'America';
-        if (server === 'Europe') return 3;
-        if (server === 'Asia') return 20;
-        return 9; // America default
+        return getServerResetUTC(server);
     };
 
     // Export single account data (account settings + task completions)
@@ -257,7 +223,7 @@ export function SettingsProvider({ children }) {
             addAccount, 
             updateActiveAccount, 
             deleteActiveAccount,
-            getServerResetUTC,
+            getResetHour,
             syncLocalToCloud,
             exportAccount,
             importAccount

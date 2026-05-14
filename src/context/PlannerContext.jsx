@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 import { useSettings } from './SettingsContext';
+import { formatTaskRows } from '../utils/dataIO';
 
 const PlannerContext = createContext();
 
@@ -30,19 +31,12 @@ export function PlannerProvider({ children }) {
                     setExcludedTags(profile?.excluded_tags || []);
                 }
 
-                // Fetch checked tasks for this specific account
                 const { data: tasks } = await supabase.from('completed_tasks')
-                    .select('game_id, task_id, completed_at') // Note: Using completed_at from our previous fix!
+                    .select('game_id, task_id, completed_at')
                     .eq('account_id', activeAccountId);
                 
-                // Rebuild the { genshin: { daily_commissions: { completedAt } } } format for the UI
-                const formattedTasks = {};
-                tasks?.forEach(t => {
-                    if (!formattedTasks[t.game_id]) formattedTasks[t.game_id] = {};
-                    formattedTasks[t.game_id][t.task_id] = { completedAt: t.completed_at };
-                });
+                const formattedTasks = formatTaskRows(tasks);
                 
-                // Only set state if the user hasnt switched accounts again during the fetch
                 if (isMounted) {
                     setCheckedTasks(formattedTasks);
                 }
