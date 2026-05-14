@@ -88,3 +88,10 @@ export const applyServerOffset = (deadline, server) => {
     const cleanDeadline = deadline.split('+')[0].replace('Z', '');
     return new Date(`${cleanDeadline}${offset}`).toISOString();
 };
+
+// Get UTC reset hour for a server
+export const getServerResetUTC = (server) => {
+    if (server === 'Europe') return 3;
+    if (server === 'Asia') return 20;
+    return 9; // America default
+};

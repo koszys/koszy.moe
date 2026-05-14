@@ -71,3 +71,42 @@ export const countImportedTasks = (tasks) => {
     }
     return count;
 };
+
+export const sortAccounts = (accountList) => {
+    return [...accountList].sort((a, b) => {
+        if (a.created_at && b.created_at) {
+            return new Date(a.created_at) - new Date(b.created_at);
+        }
+        if (a.created_at) return -1;
+        if (b.created_at) return 1;
+        return 0;
+    });
+};
+
+export const flattenTasksToRows = (tasksByAccount, userId) => {
+    const rows = [];
+    Object.keys(tasksByAccount).forEach(accId => {
+        Object.keys(tasksByAccount[accId]).forEach(gameId => {
+            Object.keys(tasksByAccount[accId][gameId]).forEach(taskId => {
+                if (tasksByAccount[accId][gameId][taskId]) {
+                    rows.push({
+                        user_id: userId,
+                        account_id: accId,
+                        game_id: gameId,
+                        task_id: taskId
+                    });
+                }
+            });
+        });
+    });
+    return rows;
+};
+
+export const formatTaskRows = (rows) => {
+    const formattedTasks = {};
+    rows?.forEach(t => {
+        if (!formattedTasks[t.game_id]) formattedTasks[t.game_id] = {};
+        formattedTasks[t.game_id][t.task_id] = { completedAt: t.completed_at };
+    });
+    return formattedTasks;
+};
