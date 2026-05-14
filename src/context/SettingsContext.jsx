@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
+import { createExportData, parseImportedData, applyImportedAccount, buildTaskInsertRows } from '../utils/dataIO';
 
 const SettingsContext = createContext();
 
@@ -189,6 +190,62 @@ export function SettingsProvider({ children }) {
         return 9; // America default
     };
 
+    // Export single account data (account settings + task completions)
+    const exportAccount = async (accountId) => {
+        const account = accounts.find(acc => acc.id === accountId);
+        if (!account) return null;
+
+        let tasks = {};
+        
+        if (user) {
+            const { data: taskRows } = await supabase.from('completed_tasks')
+                .select('game_id, task_id, completed_at')
+                .eq('account_id', accountId);
+            
+            if (taskRows) {
+                taskRows.forEach(t => {
+                    if (!tasks[t.game_id]) tasks[t.game_id] = {};
+                    tasks[t.game_id][t.task_id] = { completedAt: t.completed_at };
+                });
+            }
+        } else {
+            const allTasks = JSON.parse(localStorage.getItem('koszy-checked-tasks')) || {};
+            tasks = allTasks[accountId] || {};
+        }
+
+        return createExportData(account, tasks);
+    };
+
+    // Import account data (replaces account settings + task completions)
+    const importAccount = async (accountId, importData) => {
+        const { account: importedAccount, tasks: importedTasks } = parseImportedData(importData);
+
+        const updatedAccounts = applyImportedAccount(accounts, accountId, importedAccount);
+        setAccounts(updatedAccounts);
+
+        if (user) {
+            await supabase.from('game_accounts').update({
+                name: importedAccount.name,
+                server: importedAccount.server,
+                ar: importedAccount.ar,
+                wl: importedAccount.wl,
+                gender: importedAccount.gender
+            }).eq('id', accountId);
+
+            await supabase.from('completed_tasks').delete().eq('account_id', accountId);
+            
+            const tasksToInsert = buildTaskInsertRows(accountId, importedTasks, user.id);
+            if (tasksToInsert.length > 0) {
+                await supabase.from('completed_tasks').insert(tasksToInsert);
+            }
+        } else {
+            localStorage.setItem('koszy-accounts', JSON.stringify(updatedAccounts));
+            const allTasks = JSON.parse(localStorage.getItem('koszy-checked-tasks')) || {};
+            allTasks[accountId] = importedTasks;
+            localStorage.setItem('koszy-checked-tasks', JSON.stringify(allTasks));
+        }
+    };
+
     const activeAccount = accounts.find(acc => acc.id === activeAccountId) || accounts[0];
 
     return (
@@ -201,7 +258,9 @@ export function SettingsProvider({ children }) {
             updateActiveAccount, 
             deleteActiveAccount,
             getServerResetUTC,
-            syncLocalToCloud
+            syncLocalToCloud,
+            exportAccount,
+            importAccount
         }}>
             {!loading && children}
         </SettingsContext.Provider>
