@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 // Components
-import GameCard from '../components/GameCard';
-import ChangelogItem from '../components/ChangelogItem';
-import Footer from '../components/Footer';
-import ChangelogSection from '../components/ChangelogSection';
-import SocialCards from '../components/SocialCards';
-import SocialButton from '../components/SocialButton';
+import GameCard from '../components/game/GameCard';
+import ChangelogItem from '../components/changelog/ChangelogItem';
+import Footer from '../components/ui/Footer';
+import ChangelogSection from '../components/changelog/ChangelogSection';
+import SocialCards from '../components/social/SocialCards';
+import SocialButton from '../components/social/SocialButton';
 
 // Data
 import { GAME_CONFIG } from '../data/games'; 

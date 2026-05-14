@@ -10,8 +10,8 @@ const GenshinPlanner = lazy(() => import('./pages/genshin/GenshinPlanner'));
 const Settings = lazy(() => import('./pages/Settings'));
 
 // Components
-import GameLayout from './components/GameLayout';
-import AuthModal from './components/AuthModal';
+import GameLayout from './components/game/GameLayout';
+import AuthModal from './components/auth/AuthModal';
 
 // Genshin Icons
 import genshinPlannerIcon from './assets/genshin/genshin-quest.png';

@@ -1,5 +1,5 @@
 // Standardized Components
-import ChangelogSection from '../../components/ChangelogSection';
+import ChangelogSection from '../../components/changelog/ChangelogSection';
 import ToggleSection from '../../components/game/ToggleSection';
 import GameIntro from '../../components/game/GameIntro';
 import ActiveCodes from '../../components/game/ActiveCodes';

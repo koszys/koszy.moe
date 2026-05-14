@@ -1,4 +1,4 @@
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function AuthModal() {
     const { isModalOpen, closeModal, loginWithGoogle, loginWithDiscord } = useAuth();
