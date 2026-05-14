@@ -342,7 +342,7 @@ export default function Settings({ gameId = 'genshin' }) {
                         
                         {/* Account Server */}
                         <div className="flex flex-col gap-1.5">
-                            <label className="text-xs text-gray-400 font-bold">Server</label>
+                            <label className="text-xs text-gray-400 font-bold top-1">Server</label>
                             <select 
                                 value={activeAccount.server}
                                 onChange={(e) => updateActiveAccount('server', e.target.value)}
@@ -356,7 +356,7 @@ export default function Settings({ gameId = 'genshin' }) {
                         
                         {/* Dynamic Main Character Toggle */}
                         <div className="flex flex-col gap-1.5 min-w-[140px]">
-                            <label className="text-xs text-gray-400 font-bold uppercase">{terms.mcTitle}</label>
+                            <label className="text-xs text-gray-400 font-bold">{terms.mcTitle}</label>
                             <div className="flex items-center bg-[#1c1d21] border border-[#33343a] rounded-lg overflow-hidden h-[38px]">
                                 <button 
                                     onClick={() => updateActiveAccount('gender', 'M')}
