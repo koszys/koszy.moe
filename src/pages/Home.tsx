@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 // Components
 import GameCard from '../components/game/GameCard';
-import ChangelogItem from '../components/changelog/ChangelogItem';
 import Footer from '../components/ui/Footer';
 import ChangelogSection from '../components/changelog/ChangelogSection';
 import SocialCards from '../components/social/SocialCards';

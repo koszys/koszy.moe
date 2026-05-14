@@ -7,7 +7,7 @@ interface GameCardProps {
     bgUrl: string;
     link?: string;
     tags: Array<{ label: string; color: string }>;
-    onHover: (_bgUrl: string) => void;
+    onHover: (bgUrl: string) => void;
 }
 
 export default memo(function GameCard({ name, status, bgUrl, link, tags, onHover }: GameCardProps) {

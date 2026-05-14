@@ -9,15 +9,15 @@ import type { GameAccount, ExportData } from '../types';
 interface SettingsContextValue {
     accounts: GameAccount[];
     activeAccountId: string;
-    setActiveAccountId: (_id: string) => void;
+    setActiveAccountId: (id: string) => void;
     activeAccount: GameAccount | undefined;
     addAccount: () => Promise<void>;
-    updateActiveAccount: (_key: string, _value: unknown) => Promise<void>;
+    updateActiveAccount: (key: string, value: unknown) => Promise<void>;
     deleteActiveAccount: () => Promise<void>;
     getResetHour: () => number;
     syncLocalToCloud: () => Promise<void>;
-    exportAccount: (_accountId: string) => Promise<ExportData | null>;
-    importAccount: (_accountId: string, _importData: ExportData) => Promise<void>;
+    exportAccount: (accountId: string) => Promise<ExportData | null>;
+    importAccount: (accountId: string, importData: ExportData) => Promise<void>;
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);

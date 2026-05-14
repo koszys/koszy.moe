@@ -1,11 +1,6 @@
 import { useCallback } from 'react';
 import { getNextResetAfter } from '../utils/timeCalculations';
-import type { TaskMap, ResetRule, ServerRegion } from '../types';
-
-interface Task {
-    id: string;
-    resetRule?: ResetRule;
-}
+import type { TaskMap, ServerRegion } from '../types';
 
 interface UseTaskCompletionProps {
     gameCheckedTasks: TaskMap;

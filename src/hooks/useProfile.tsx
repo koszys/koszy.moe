@@ -17,10 +17,7 @@ export const useProfile = (userId?: string) => {
       const data = await profilesService.get(userId);
       setProfile(data);
     } catch (err) {
-      let errMessage = 'An error occurred while fetching the profile.';
-      if (err instanceof Error) {
-        errMessage = err.message;
-      }
+      setError(err instanceof Error ? err.message : 'An error occurred while fetching the profile.');
     } finally {
       setLoading(false);
     }
