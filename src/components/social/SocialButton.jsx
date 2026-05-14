@@ -1,4 +1,4 @@
-import { SOCIAL_LINKS } from '../config/socials';
+import { SOCIAL_LINKS } from '../../config/socials';
 
 export default function SocialButton({ type, variant = 'full' }) {
     const social = SOCIAL_LINKS[type];

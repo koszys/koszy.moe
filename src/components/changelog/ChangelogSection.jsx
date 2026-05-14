@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import ChangelogItem from './ChangelogItem';
-import { fetchChangelogs } from '../data/fetchChangelogs';
+import { fetchChangelogs } from '../../data/fetchChangelogs';
 
 export default function ChangelogSection({ game }) {
     const [changelogData, setChangelogData] = useState([]);

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
-import Footer from './Footer';
-import SocialButton from './SocialButton';
+import Footer from '../ui/Footer';
+import SocialButton from '../social/SocialButton';
 
-import { GAME_CONFIG } from '../data/games'; 
+import { GAME_CONFIG } from '../../data/games'; 
 
 export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     const location = useLocation();
