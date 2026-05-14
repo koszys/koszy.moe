@@ -1,8 +1,19 @@
 import { useCallback } from 'react';
 import { getNextResetAfter } from '../utils/timeCalculations';
+import type { TaskMap, ResetRule, ServerRegion } from '../types';
 
-// Custom hook for task completion and expiry logic
-export const useTaskCompletion = (gameCheckedTasks, currentResetHour, server) => {
+interface Task {
+    id: string;
+    resetRule?: ResetRule;
+}
+
+interface UseTaskCompletionProps {
+    gameCheckedTasks: TaskMap;
+    currentResetHour: number;
+    server: ServerRegion;
+}
+
+export const useTaskCompletion = ({ gameCheckedTasks, currentResetHour, server }: UseTaskCompletionProps) => {
     const getCompletionTimestamp = useCallback((taskId) => {
         const entry = gameCheckedTasks[taskId];
         if (!entry) return null;

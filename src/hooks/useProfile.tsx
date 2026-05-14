@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { profilesService } from '../services/profiles';
+import type { Profile } from '../types';
 
-export const useProfile = (userId) => {
-  const [profile, setProfile] = useState(null);
+export const useProfile = (userId?: string) => {
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchProfile = useCallback(async () => {
     if (!userId) return;
@@ -16,7 +17,10 @@ export const useProfile = (userId) => {
       const data = await profilesService.get(userId);
       setProfile(data);
     } catch (err) {
-      setError(err.message);
+      let errMessage = 'An error occurred while fetching the profile.';
+      if (err instanceof Error) {
+        errMessage = err.message;
+      }
     } finally {
       setLoading(false);
     }

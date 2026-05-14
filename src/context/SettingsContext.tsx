@@ -1,12 +1,28 @@
 import { createContext, useState, useEffect, useContext, useCallback } from 'react';
+import type { ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { accountsService, tasksService, profilesService, syncService } from '../services';
 import { createExportData, parseImportedData, applyImportedAccount } from '../utils/dataIO';
 import { getServerResetUTC } from '../utils/timeCalculations';
+import type { GameAccount, ExportData } from '../types';
 
-const SettingsContext = createContext();
+interface SettingsContextValue {
+    accounts: GameAccount[];
+    activeAccountId: string;
+    setActiveAccountId: (_id: string) => void;
+    activeAccount: GameAccount | undefined;
+    addAccount: () => Promise<void>;
+    updateActiveAccount: (_key: string, _value: unknown) => Promise<void>;
+    deleteActiveAccount: () => Promise<void>;
+    getResetHour: () => number;
+    syncLocalToCloud: () => Promise<void>;
+    exportAccount: (_accountId: string) => Promise<ExportData | null>;
+    importAccount: (_accountId: string, _importData: ExportData) => Promise<void>;
+}
 
-export function SettingsProvider({ children }) {
+const SettingsContext = createContext<SettingsContextValue | null>(null);
+
+export function SettingsProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
     
     const [accounts, setAccounts] = useState([]);
@@ -198,4 +214,10 @@ export function SettingsProvider({ children }) {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useSettings = () => useContext(SettingsContext);
+export const useSettings = () => {
+    const context = useContext(SettingsContext);
+    if (!context) {
+        throw new Error('useSettings must be used within a SettingsProvider');
+    }
+    return context;
+};

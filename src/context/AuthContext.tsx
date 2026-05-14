@@ -1,9 +1,25 @@
 import { createContext, useState, useEffect, useContext } from 'react';
+import type { ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
+import type { FormattedUser } from '../types';
 
-const AuthContext = createContext();
+interface AuthContextValue {
+    user: FormattedUser | null;
+    isModalOpen: boolean;
+    openModal: () => void;
+    closeModal: () => void;
+    isLogoutModalOpen: boolean;
+    triggerLogout: () => void;
+    cancelLogout: () => void;
+    confirmLogout: () => Promise<void>;
+    loginWithGoogle: () => Promise<void>;
+    loginWithDiscord: () => Promise<void>;
+    loading: boolean;
+}
 
-export function AuthProvider({ children }) {
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -79,4 +95,10 @@ export function AuthProvider({ children }) {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+};

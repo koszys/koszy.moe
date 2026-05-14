@@ -1,12 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchCodes } from '../../data/fetchCodes';
 import { Copy, Check } from 'lucide-react';
 import { useSupabaseRealtime } from '../../hooks/useSupabaseRealtime';
 
-export default function ActiveCodes({ game, redeemUrl }) {
-    const [codes, setCodes] = useState([]);
+interface CodeItem {
+    id: string;
+    code: string;
+    reward: string;
+    is_new: boolean;
+}
+
+interface ActiveCodesProps {
+    game: string;
+    redeemUrl?: string;
+}
+
+export default function ActiveCodes({ game, redeemUrl }: ActiveCodesProps) {
+    const [codes, setCodes] = useState<CodeItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [copiedCode, setCopiedCode] = useState(null);
+    const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
     const hasRedeemLink = typeof redeemUrl === 'string' && redeemUrl.trim().length > 0;
 
@@ -23,12 +35,16 @@ export default function ActiveCodes({ game, redeemUrl }) {
     }, [game]);
 
     // Listen to 'game_codes', run loadCodes on change, only if game exists
-    useSupabaseRealtime('codes', async () => {
-        const data = await fetchCodes(game);
-        setCodes(data);
-    }, !!game);
+    useSupabaseRealtime({
+        tables: 'codes',
+        callback: async () => {
+            const data = await fetchCodes(game);
+            setCodes(data);
+        },
+        enabled: !!game
+    });
 
-    const copyCode = async (code) => {
+    const copyCode = async (code: string) => {
         try {
             await navigator.clipboard.writeText(code);
             setCopiedCode(code);
@@ -56,7 +72,7 @@ export default function ActiveCodes({ game, redeemUrl }) {
                         ? redeemUrl.includes('hoyoverse.com')
                             ? `${redeemUrl}?code=${item.code}`
                             : redeemUrl
-                        : null;
+                        : undefined;
 
                     return (
                         <div

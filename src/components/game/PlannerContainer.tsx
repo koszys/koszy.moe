@@ -98,7 +98,11 @@ export default function PlannerContainer({ gameId, title, tags }) {
     }, [gameId, tags]);
 
     // Listen to BOTH tables and re-run loadPlannerData on any change
-    useSupabaseRealtime(['game_events', 'game_tasks'], loadPlannerData, !!gameId);
+    useSupabaseRealtime({
+        tables: ['game_events', 'game_tasks'],
+        callback: loadPlannerData,
+        enabled: !!gameId
+    });
 
     if (loading) return <div className="p-8 text-center text-gray-400 font-mono">Loading planner...</div>;
 

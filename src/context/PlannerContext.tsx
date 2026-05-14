@@ -1,11 +1,21 @@
 import { createContext, useState, useEffect, useContext, useCallback } from 'react';
+import type { ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { useSettings } from './SettingsContext';
 import { tasksService, profilesService } from '../services';
+import type { GameTaskMap } from '../types';
 
-const PlannerContext = createContext();
+interface PlannerContextValue {
+    checkedTasks: GameTaskMap;
+    toggleTask: (gameId: string, taskId: string) => Promise<void>;
+    clearCompletedTask: (gameId: string, taskId: string) => Promise<void>;
+    excludedTags: string[];
+    toggleTagExclusion: (tagId: string) => Promise<void>;
+}
 
-export function PlannerProvider({ children }) {
+const PlannerContext = createContext<PlannerContextValue | null>(null);
+
+export function PlannerProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
     const { activeAccountId } = useSettings();
     
@@ -110,4 +120,10 @@ export function PlannerProvider({ children }) {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const usePlanner = () => useContext(PlannerContext);
+export const usePlanner = () => {
+    const context = useContext(PlannerContext);
+    if (!context) {
+        throw new Error('usePlanner must be used within a PlannerProvider');
+    }
+    return context;
+};
