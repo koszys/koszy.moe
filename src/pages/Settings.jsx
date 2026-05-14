@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Components
 import SectionHeader from '../components/game/SectionHeader';
@@ -7,8 +7,10 @@ import SectionHeader from '../components/game/SectionHeader';
 import { useSettings } from '../context/SettingsContext';
 import { useAuth } from '../context/AuthContext'; 
 
-// Assets
+// Utils
+import { countImportedTasks } from '../utils/dataIO';
 
+// Assets
 import { game_terms } from '../data/gameTerms';
 
 export default function Settings({ gameId = 'genshin' }) {
@@ -16,7 +18,8 @@ export default function Settings({ gameId = 'genshin' }) {
     
     const { 
         accounts, activeAccountId, setActiveAccountId, activeAccount, 
-        addAccount, updateActiveAccount, deleteActiveAccount, syncLocalToCloud 
+        addAccount, updateActiveAccount, deleteActiveAccount, syncLocalToCloud,
+        exportAccount, importAccount
     } = useSettings();
 
     // Grab the auth state and functions
@@ -26,6 +29,8 @@ export default function Settings({ gameId = 'genshin' }) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [toast, setToast] = useState(null);
     const [isSyncing, setIsSyncing] = useState(false);
+    const [importModalData, setImportModalData] = useState(null);
+    const fileInputRef = useRef(null);
 
     const [cooldown, setCooldown] = useState(() => {
         const savedExpiration = localStorage.getItem('koszy-sync-cooldown');
@@ -60,6 +65,79 @@ export default function Settings({ gameId = 'genshin' }) {
         setIsSyncing(false); 
         setTimeout(() => setToast(null), 3000);
     };
+
+    const handleExportAccount = async () => {
+        try {
+            const data = await exportAccount(activeAccountId);
+            if (!data) {
+                setToast({ type: 'error', message: 'Failed to export account.' });
+                setTimeout(() => setToast(null), 3000);
+                return;
+            }
+
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const date = new Date().toISOString().split('T')[0];
+            a.href = url;
+            a.download = `koszy-${data.account.name.replace(/\s+/g, '-').toLowerCase()}-${date}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            setToast({ type: 'success', message: 'Account exported successfully!' });
+            setTimeout(() => setToast(null), 3000);
+        } catch (err) {
+            console.error('Export error:', err);
+            setToast({ type: 'error', message: 'Failed to export account.' });
+            setTimeout(() => setToast(null), 3000);
+        }
+    };
+
+    const handleImportClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        try {
+            const text = await file.text();
+            const data = JSON.parse(text);
+
+            if (!data.account || !data.version) {
+                throw new Error('Invalid format');
+            }
+
+            const taskCount = countImportedTasks(data.tasks);
+            setImportModalData({ data, taskCount });
+        } catch (err) {
+            console.error('Import parse error:', err);
+            setToast({ type: 'error', message: 'Invalid file format.' });
+            setTimeout(() => setToast(null), 3000);
+        }
+
+        e.target.value = '';
+    };
+
+    const handleConfirmImport = async () => {
+        if (!importModalData) return;
+
+        try {
+            await importAccount(activeAccountId, importModalData.data);
+            setToast({ type: 'success', message: 'Account imported successfully!' });
+            setTimeout(() => setToast(null), 3000);
+        } catch (err) {
+            console.error('Import error:', err);
+            setToast({ type: 'error', message: 'Failed to import account.' });
+            setTimeout(() => setToast(null), 3000);
+        }
+
+        setImportModalData(null);
+    };
     
     const handleRenameSubmit = (e) => {
         if (e.key === 'Enter') setIsRenaming(false);
@@ -92,6 +170,49 @@ export default function Settings({ gameId = 'genshin' }) {
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Import Confirmation Modal */}
+            {importModalData && (
+                <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
+                    <div className="bg-[#1c1d21] border border-[#33343a] p-6 rounded-xl max-w-sm w-full shadow-2xl">
+                        <h3 className="text-white font-bold text-lg mb-2">Import Account Data</h3>
+                        <p className="text-sm text-gray-400 mb-4">
+                            This will replace all data for <span className="text-white font-bold">{activeAccount.name}</span> with the imported data.
+                        </p>
+                        <div className="bg-[#24252a] rounded-lg p-3 mb-6">
+                            <p className="text-xs text-gray-400 mb-1">Account Name</p>
+                            <p className="text-sm text-white font-bold">{importModalData.data.account.name}</p>
+                            <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                                <div>
+                                    <p className="text-gray-500">AR / WL</p>
+                                    <p className="text-white">{importModalData.data.account.ar} / {importModalData.data.account.wl}</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-500">Server</p>
+                                    <p className="text-white">{importModalData.data.account.server}</p>
+                                </div>
+                            </div>
+                            <p className="mt-3 text-xs text-gray-500">
+                                {importModalData.taskCount} completed task{importModalData.taskCount !== 1 ? 's' : ''} will be imported
+                            </p>
+                        </div>
+                        <div className="flex gap-3 justify-end">
+                            <button 
+                                onClick={() => setImportModalData(null)} 
+                                className="px-4 py-2 text-gray-400 hover:text-white hover:border-blue-500 transition-colors font-medium"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={handleConfirmImport} 
+                                className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white border border-blue-500 px-5 py-2 rounded-lg font-bold transition-colors shadow-md"
+                            >
+                                Import
                             </button>
                         </div>
                     </div>
@@ -262,8 +383,15 @@ export default function Settings({ gameId = 'genshin' }) {
                         </div>
                         
                         <div className="flex flex-wrap items-center gap-2">
-                            <button className="bg-transparent border hover:border-blue-500 border-[#33343a] hover:bg-[#33343a] text-gray-300 px-3 py-1.5 rounded-md text-sm font-medium transition-colors">Export Account</button>
-                            <button className="bg-transparent border hover:border-blue-500 border-[#33343a] hover:bg-[#33343a] text-gray-300 px-3 py-1.5 rounded-md text-sm font-medium transition-colors">Import Account</button>
+                            <button onClick={handleExportAccount} className="bg-transparent border hover:border-blue-500 border-[#33343a] hover:bg-[#33343a] text-gray-300 px-3 py-1.5 rounded-md text-sm font-medium transition-colors">Export Account</button>
+                            <button onClick={handleImportClick} className="bg-transparent border hover:border-blue-500 border-[#33343a] hover:bg-[#33343a] text-gray-300 px-3 py-1.5 rounded-md text-sm font-medium transition-colors">Import Account</button>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".json"
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
                         </div>
                     </div>
 

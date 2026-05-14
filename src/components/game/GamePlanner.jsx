@@ -9,9 +9,9 @@ import { TaskItem } from "./TaskItem";
 
 export default function GamePlanner({ gameId, title, rawData, tags }) {
     const { checkedTasks, toggleTask, excludedTags, toggleTagExclusion, clearCompletedTask } = usePlanner();
-    const { getServerResetUTC, activeAccount } = useSettings(); 
+    const { getResetHour, activeAccount } = useSettings(); 
     
-    const currentResetHour = getServerResetUTC();
+    const currentResetHour = getResetHour();
     const server = activeAccount?.server || 'America';
     const gameCheckedTasks = checkedTasks[gameId] || {};
 
