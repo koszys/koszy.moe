@@ -125,7 +125,7 @@ You will need Node.js and npm installed on your machine.
 1. Create a free [Supabase](https://supabase.com) project and setup your database tables.
 2. Clone the repo
    ```sh
-    git clone [https://github.com/koszys/koszy.moe.git](https://github.com/koszys/koszy.moe.git)
+    git clone https://github.com/koszys/koszy.moe.git
    ```
 3. Navigate to the project directory
    ```sh
