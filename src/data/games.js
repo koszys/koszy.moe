@@ -3,14 +3,23 @@ import hsrBackground from '../assets/gamebackground/hsr_background.png';
 import zzzBackground from '../assets/gamebackground/zzz_background.jpg';
 import wuwaBackground from '../assets/gamebackground/wuwa_background.jpg';
 
+import genshinLogoIcon from '../assets/genshin/genshin-logo.webp';
+import genshinPlannerIcon from '../assets/genshin/genshin-quest.png';
+import genshinSettingsIcon from '../assets/genshin/settings-icon.webp';
+
 export const GAME_CONFIG = [
     {
         id: 'genshin',
         name: 'Genshin Impact',
         path: '/genshin',
-        bgUrl: genshinBackground, // Change this once to update all 
+        bgUrl: genshinBackground,
         status: 'active',
-        tags: []
+        tags: [],
+        navIcons: {
+            home: genshinLogoIcon,
+            planner: genshinPlannerIcon,
+            settings: genshinSettingsIcon
+        }
     },
     {
         id: 'hsr',
@@ -18,7 +27,8 @@ export const GAME_CONFIG = [
         path: '#',
         bgUrl: hsrBackground,
         status: 'inactive',
-        tags: []
+        tags: [],
+        navIcons: {}
     },
     {
         id: 'zzz',
@@ -26,7 +36,8 @@ export const GAME_CONFIG = [
         path: '#',
         bgUrl: zzzBackground,
         status: 'inactive',
-        tags: []
+        tags: [],
+        navIcons: {}
     },
     {
         id: 'wuwa',
@@ -34,6 +45,7 @@ export const GAME_CONFIG = [
         path: '#',
         bgUrl: wuwaBackground,
         status: 'inactive',
-        tags: []
+        tags: [],
+        navIcons: {}
     }
 ];

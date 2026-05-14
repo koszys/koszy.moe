@@ -3,67 +3,53 @@ import { lazy, Suspense } from 'react';
 
 import { GAME_CONFIG } from './data/games';
 
-// Lazy load pages
+import LoadingFallback from './components/ui/LoadingFallback';
+import GameLayout from './components/game/GameLayout';
+import AuthModal from './components/auth/AuthModal';
+
 const Home = lazy(() => import('./pages/Home'));
 const GenshinHome = lazy(() => import('./pages/genshin/GenshinHome'));
 const GenshinPlanner = lazy(() => import('./pages/genshin/GenshinPlanner'));
 const Settings = lazy(() => import('./pages/Settings'));
 
-// Components
-import GameLayout from './components/game/GameLayout';
-import AuthModal from './components/auth/AuthModal';
-
-// Genshin Icons
-import genshinPlannerIcon from './assets/genshin/genshin-quest.png';
-import genshinLogoIcon from './assets/genshin/genshin-logo.webp';
-import genshinSettingsIcon from './assets/genshin/settings-icon.webp';
+function getNavLinks(game) {
+  const { navIcons } = game;
+  return [
+    { name: 'Home', path: game.path, icon: <img src={navIcons.home} alt="Home" className="w-5 h-5 object-contain" /> },
+    { name: 'Planner', path: `${game.path}/planner`, icon: <img src={navIcons.planner} alt="Planner" className="w-5 h-5 object-contain" /> },
+    { name: 'Settings', path: `${game.path}/settings`, icon: <img src={navIcons.settings} alt="Settings" className="w-5 h-5 object-contain scale-150" /> }
+  ];
+}
 
 export default function App() {
-  
-  const genshinLinks = [
-    { 
-      name: 'Home', 
-      path: '/genshin', 
-      icon: <img src={genshinLogoIcon} alt="Home" className="w-5 h-5 object-contain" /> 
-    },
-    { 
-      name: 'Planner', 
-      path: '/genshin/planner', 
-      icon: <img src={genshinPlannerIcon} alt="Planner" className="w-5 h-5 object-contain" /> 
-    },
-    {
-      name: 'Settings',
-      path: '/genshin/settings',
-      icon: <img src={genshinSettingsIcon} alt="Settings" className="w-5 h-5 object-contain scale-150" />  
-    }
-  ];
-
-  // Find the Genshin data from master config
-  const genshinData = GAME_CONFIG.find(game => game.id === 'genshin');
+  const activeGames = GAME_CONFIG.filter(game => game.status === 'active');
 
   return (
     <>
       <AuthModal />
 
-      <Suspense fallback={
-        <div className="min-h-screen bg-[#121212] flex items-center justify-center">
-          <div className="text-gray-400 text-lg">Loading...</div>
-        </div>
-      }>
+      <Suspense fallback={<LoadingFallback />}>
         <Routes>
           <Route path="/" element={<Home />} />
 
-          <Route path="/genshin" element={
-            <GameLayout
-              gameTitle={genshinData.name}
-              currentGameBgUrl={genshinData.bgUrl}
-              navLinks={genshinLinks}
-            />
-          }>
-            <Route index element={<GenshinHome />} />
-            <Route path="planner" element={<GenshinPlanner />} />
-            <Route path="settings" element={<Settings gameId="genshin" />} />
-          </Route>
+          {activeGames.map(game => {
+            if (game.id === 'genshin') {
+              return (
+                <Route key={game.id} path={game.path} element={
+                  <GameLayout
+                    gameTitle={game.name}
+                    currentGameBgUrl={game.bgUrl}
+                    navLinks={getNavLinks(game)}
+                  />
+                }>
+                  <Route index element={<GenshinHome />} />
+                  <Route path="planner" element={<GenshinPlanner />} />
+                  <Route path="settings" element={<Settings gameId={game.id} />} />
+                </Route>
+              );
+            }
+            return null;
+          })}
         </Routes>
       </Suspense>
     </>
