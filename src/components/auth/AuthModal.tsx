@@ -8,7 +8,7 @@ export default function AuthModal() {
     const iconButtonClass = "absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-[#33343a] hover:border-blue-500 rounded-xl transition-colors";
 
     return (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
             {/* Click outside to close */}
             <div className="absolute inset-0" onClick={closeModal}></div>
             
