@@ -1,7 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 
-export function useSupabaseRealtime(tables, callback, enabled = true) {
+interface UseSupabaseRealtimeProps {
+    tables: string | string[];
+    callback: (payload: unknown) => void;
+    enabled?: boolean;
+}
+
+export function useSupabaseRealtime({ tables, callback, enabled = true }: UseSupabaseRealtimeProps) {
     // We store the callback in a ref. This guarantees the listener always 
     // fires the freshest version of your function without causing infinite re-renders.
     const callbackRef = useRef(callback);

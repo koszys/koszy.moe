@@ -2,8 +2,18 @@ import { useState, useEffect } from 'react';
 import ChangelogItem from './ChangelogItem';
 import { fetchChangelogs } from '../../data/fetchChangelogs';
 
-export default function ChangelogSection({ game }) {
-    const [changelogData, setChangelogData] = useState([]);
+interface ChangelogEntry {
+    version: string;
+    date: string;
+    changes: string[];
+}
+
+interface ChangelogSectionProps {
+    game: string;
+}
+
+export default function ChangelogSection({ game }: ChangelogSectionProps) {
+    const [changelogData, setChangelogData] = useState<ChangelogEntry[]>([]);
     const [loading, setLoading] = useState(true);
     const [showChangelog, setShowChangelog] = useState(false);
     const [visibleCount, setVisibleCount] = useState(4);

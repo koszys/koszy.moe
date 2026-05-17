@@ -13,10 +13,10 @@ export default function GamePlanner({ gameId, title, rawData, tags }) {
     
     const currentResetHour = getResetHour();
     const server = activeAccount?.server || 'America';
-    const gameCheckedTasks = checkedTasks[gameId] || {};
+    const gameCheckedTasks = useMemo(() => checkedTasks[gameId] || {}, [checkedTasks, gameId]);
 
     // Use custom hook for task completion logic
-    const { isTaskCompleted, isTaskExpired } = useTaskCompletion(gameCheckedTasks, currentResetHour, server);
+    const { isTaskCompleted, isTaskExpired } = useTaskCompletion({ gameCheckedTasks, currentResetHour, server });
 
     // State for UI
     const [activeTab, setActiveTab] = useState("All");

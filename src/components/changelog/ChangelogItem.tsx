@@ -1,4 +1,10 @@
-export default function ChangelogItem({ version, date, changes }) {
+interface ChangelogItemProps {
+    version: string;
+    date: string;
+    changes: string[];
+}
+
+export default function ChangelogItem({ version, date, changes }: ChangelogItemProps) {
     return (
         <div className="border-l border-[#33343a] ml-2 pl-6 relative pb-6 last:pb-0">
         <div className="absolute w-2 h-2 bg-blue-500 rounded-full -left-[4.5px] top-2" />

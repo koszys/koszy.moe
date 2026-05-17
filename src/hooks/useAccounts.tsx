@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { accountsService } from '../services/accounts';
 import { sortAccounts } from '../utils/dataIO';
+import type { GameAccount } from '../types';
 
-export const useAccounts = (userId) => {
-  const [accounts, setAccounts] = useState([]);
+export const useAccounts = (userId?: string) => {
+  const [accounts, setAccounts] = useState<GameAccount[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchAccounts = useCallback(async () => {
     if (!userId) return;

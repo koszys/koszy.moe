@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import GamePlanner from './GamePlanner';
 import { fetchEvents } from '../../data/fetchEvents';
 import { fetchTasks } from '../../data/fetchTasks';
@@ -16,7 +16,7 @@ export default function PlannerContainer({ gameId, title, tags }) {
     const [combinedData, setCombinedData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const loadPlannerData = async () => {
+    const loadPlannerData = useCallback(async () => {
         setLoading(true);
         const now = new Date();
 
@@ -90,15 +90,19 @@ export default function PlannerContainer({ gameId, title, tags }) {
 
         setCombinedData([...formattedTasks, ...activeEventsToTasks]);
         setLoading(false);
-    };
+    }, [gameId, tags]);
 
     // Fetch the initial data when the page loads or when gameId changes
     useEffect(() => {
         if (gameId) loadPlannerData();
-    }, [gameId, tags]);
+    }, [gameId, tags, loadPlannerData]);
 
     // Listen to BOTH tables and re-run loadPlannerData on any change
-    useSupabaseRealtime(['game_events', 'game_tasks'], loadPlannerData, !!gameId);
+    useSupabaseRealtime({
+        tables: ['game_events', 'game_tasks'],
+        callback: loadPlannerData,
+        enabled: !!gameId
+    });
 
     if (loading) return <div className="p-8 text-center text-gray-400 font-mono">Loading planner...</div>;
 
