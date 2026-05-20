@@ -6,6 +6,7 @@ import { GAME_CONFIG } from './data/games';
 import LoadingFallback from './components/ui/LoadingFallback';
 import GameLayout from './components/game/GameLayout';
 import AuthModal from './components/auth/AuthModal';
+import LogoutModal from './components/auth/LogoutModal';
 
 const Home = lazy(() => import('./pages/Home'));
 const GenshinHome = lazy(() => import('./pages/genshin/GenshinHome'));
@@ -27,6 +28,7 @@ export default function App() {
   return (
     <>
       <AuthModal />
+      <LogoutModal />
 
       <Suspense fallback={<LoadingFallback />}>
         <Routes>

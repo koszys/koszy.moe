@@ -17,7 +17,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     const iconButtonClass = "p-1.5 text-white bg-white/5 hover:bg-white/10 border border-transparent hover:border-blue-500 rounded-md transition-all flex items-center justify-center";
 
     return (
-        <div className="relative flex h-screen w-full bg-[#121212] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
+        <div className="relative flex h-screen w-full bg-[#09090b] text-gray-300 font-sans selection:bg-blue-500 selection:text-white overflow-hidden">
         
         {/* Static Background Layer for Main Content. Commenting out will remove all backgrounds */}
         <div 
@@ -35,14 +35,14 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
 
         {/* Left Sidebar */}
         <aside className={`
-            fixed md:static inset-y-0 left-0 z-50 bg-[#1c1d21] border-r border-[#33343a] flex flex-col flex-shrink-0
+            fixed md:static inset-y-0 left-0 z-50 bg-[#1c1d21] border-r border-[#52525b] flex flex-col flex-shrink-0
             transition-all duration-300 ease-in-out
             ${isMobileNavOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'}
             ${isSidebarCollapsed ? 'md:w-20' : 'md:w-64'}
         `}>
             
             {/* Sidebar Header: Logo ONLY */}
-            <div className="h-16 flex items-center justify-center px-4 border-b border-[#33343a] flex-shrink-0">
+            <div className="h-16 flex items-center justify-center px-4 border-b border-[#52525b] flex-shrink-0">
             {(!isSidebarCollapsed || isMobileNavOpen) ? (
                 <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
                 KOSZY<span className="text-blue-500">.MOE</span>
@@ -62,10 +62,10 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
             </div>
 
             {/* Game Switcher Button In Left Sidebar */}
-            <div className="p-3 border-b border-[#33343a] flex-shrink-0">
+            <div className="p-3 border-b border-[#52525b] flex-shrink-0">
             <button 
                 onClick={() => setIsGameSwitcherOpen(true)}
-                className={`group relative w-full rounded-md overflow-hidden border border-[#33343a] hover:border-blue-500 transition-all shadow-md
+                className={`group relative w-full rounded-md overflow-hidden border border-[#52525b] hover:border-blue-500 transition-all shadow-md
                 ${isSidebarCollapsed && !isMobileNavOpen ? 'h-12 flex items-center justify-center' : 'h-14 flex items-center'}
                 `}
                 title="Switch Game"
@@ -120,7 +120,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         <div className="flex-1 flex flex-col min-w-0 relative">
             
             {/* Global Top Header */}
-            <header className="h-16 flex-shrink-0 bg-[#1c1d21] border-b border-[#33343a] flex items-center justify-between px-4 z-30 shadow-sm">
+            <header className="h-16 flex-shrink-0 bg-[#1c1d21] border-b border-[#52525b] flex items-center justify-between px-4 z-30 shadow-sm">
             
             <div className="flex items-center gap-2 md:gap-4">
                 
@@ -181,11 +181,11 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
         )}
         
         <div className={`
-            fixed inset-y-0 left-0 z-[70] w-[85%] sm:w-80 bg-[#1c1d21] border-r border-[#33343a] shadow-2xl
+            fixed inset-y-0 left-0 z-[70] w-[85%] sm:w-80 bg-[#1c1d21] border-r border-[#52525b] shadow-2xl
             transform transition-transform duration-300 ease-in-out flex flex-col
             ${isGameSwitcherOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
-            <div className="p-5 border-b border-[#33343a] flex items-center justify-between">
+            <div className="p-5 border-b border-[#52525b] flex items-center justify-between">
             
             {/* Game Switcher Header */}
             <Link to="/" className="text-xl font-black text-white tracking-widest overflow-hidden whitespace-nowrap w-full text-left hover:text-blue-500 transition-colors">
@@ -207,7 +207,7 @@ export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
                 key={game.id} 
                 to={game.path}
                 onClick={() => setIsGameSwitcherOpen(false)}
-                className="relative group block h-28 rounded-md overflow-hidden border border-[#33343a] hover:border-blue-500 transition-all shadow-md"
+                className="relative group block h-28 rounded-md overflow-hidden border border-[#52525b] hover:border-blue-500 transition-all shadow-md"
                 >
                 <div 
                     className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
