@@ -1,4 +1,4 @@
-import { createPortal } from 'react-dom';
+import Modal from '../ui/Modal';
 
 interface DeleteModalProps {
     isOpen: boolean;
@@ -9,10 +9,9 @@ interface DeleteModalProps {
 export default function DeleteModal({ isOpen, onConfirm, onCancel }: DeleteModalProps) {
     if (!isOpen) return null;
 
-    return createPortal(
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-            <div className="absolute inset-0" onClick={onCancel}></div>
-            <div className="relative bg-[#18181b] border border-white/10 p-6 rounded-xl max-w-sm w-full shadow-2xl">
+    return (
+        <Modal onClose={onCancel}>
+            <div className="bg-[#18181b] border border-white/10 p-6 rounded-xl max-w-sm w-full shadow-2xl">
                 <h3 className="text-white font-bold text-lg mb-6">Are you sure you want to delete this account?</h3>
                 <div className="flex gap-3 justify-end">
                     <button
@@ -30,7 +29,6 @@ export default function DeleteModal({ isOpen, onConfirm, onCancel }: DeleteModal
                     </button>
                 </div>
             </div>
-        </div>,
-        document.body
+        </Modal>
     );
 }

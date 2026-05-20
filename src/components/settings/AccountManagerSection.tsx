@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 import { countImportedTasks } from '../../utils/dataIO';
-import DeleteModal from './DeleteModal';
 import { PlusIcon, PencilIcon, TrashIcon, DownloadIcon, UploadIcon } from './Icons';
 
 interface AccountManagerSectionProps {
     setToast: (toast: { type: 'success' | 'error'; message: string } | null) => void;
-    showDeleteModal: boolean;
     setShowDeleteModal: (show: boolean) => void;
 }
 
-export default function AccountManagerSection({ setToast, showDeleteModal, setShowDeleteModal }: AccountManagerSectionProps) {
+export default function AccountManagerSection({ setToast, setShowDeleteModal }: AccountManagerSectionProps) {
     const {
         accounts, activeAccountId, setActiveAccountId, activeAccount,
-        addAccount, updateActiveAccount, deleteActiveAccount, exportAccount, importAccount
+        addAccount, updateActiveAccount, exportAccount, importAccount
     } = useSettings();
 
     const [isRenaming, setIsRenaming] = useState(false);
@@ -21,11 +19,6 @@ export default function AccountManagerSection({ setToast, showDeleteModal, setSh
 
     const handleRenameSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') setIsRenaming(false);
-    };
-
-    const confirmDelete = () => {
-        deleteActiveAccount();
-        setShowDeleteModal(false);
     };
 
     const handleExportAccount = async () => {
@@ -108,12 +101,6 @@ export default function AccountManagerSection({ setToast, showDeleteModal, setSh
         <div className="bg-[#1c1d21] border border-[#52525b] rounded-xl p-4 md:p-6 shadow-lg">
             <p className="text-sm text-gray-300 mb-1">More than one account? Add it here.</p>
             <p className="text-sm font-bold text-white mb-4">Importing will overwrite the selected account data.</p>
-
-            <DeleteModal
-                isOpen={showDeleteModal}
-                onConfirm={confirmDelete}
-                onCancel={() => setShowDeleteModal(false)}
-            />
 
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-2">

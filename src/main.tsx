@@ -1,20 +1,20 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import App from './App.jsx'
+import App from './App'
 import './index.css'
 
 // Import providers
 import { PlannerProvider } from './context/PlannerContext'
 import { SettingsProvider } from './context/SettingsContext'
-import { AuthProvider } from './context/AuthContext.jsx'
-import { TimerProvider } from './context/TimerContext.jsx'
+import { AuthProvider } from './context/AuthContext'
+import { TimerProvider } from './context/TimerContext'
 
 // Import auth UI components
-import LoadingFallback from './components/ui/LoadingFallback.jsx'
-import LogoutModal from './components/auth/LogoutModal.jsx'
-import AuthModal from './components/auth/AuthModal.jsx'
-import { useAuth } from './context/AuthContext.jsx'
+import LoadingFallback from './components/ui/LoadingFallback'
+import LogoutModal from './components/auth/LogoutModal'
+import AuthModal from './components/auth/AuthModal'
+import { useAuth } from './context/AuthContext'
 
 function AppProviders() {
   const { loading } = useAuth()

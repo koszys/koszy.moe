@@ -1,3 +1,4 @@
+import Modal from '../ui/Modal';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LogoutModal() {
@@ -6,9 +7,8 @@ export default function LogoutModal() {
     if (!isLogoutModalOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-[#09090b]/50 z-[150] flex items-center justify-center p-4">
-            <div className="absolute inset-0" onClick={cancelLogout}></div>
-            <div className="relative bg-[#18181b] border border-white/10 p-6 rounded-xl max-w-sm w-full shadow-2xl">
+        <Modal onClose={cancelLogout} bgClass="bg-[#09090b]/50" zIndex="z-[150]">
+            <div className="bg-[#18181b] border border-white/10 p-6 rounded-xl max-w-sm w-full shadow-2xl">
                 <h3 className="text-white font-bold text-lg mb-6 text-center">Are you sure you want to sign out?</h3>
                 <div className="flex gap-3 justify-center">
                     <button
@@ -25,6 +25,6 @@ export default function LogoutModal() {
                     </button>
                 </div>
             </div>
-        </div>
+        </Modal>
     );
 }

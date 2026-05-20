@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import SectionHeader from '../components/game/SectionHeader';
-import AuthSection from '../components/settings/AuthSection';
+import AuthSection from '../components/auth/AuthSection';
 import DataManagementSection from '../components/settings/DataManagementSection';
 import AccountManagerSection from '../components/settings/AccountManagerSection';
 import AccountSettingsSection from '../components/settings/AccountSettingsSection';
 import Toast from '../components/settings/Toast';
 import DeleteModal from '../components/settings/DeleteModal';
 import { useSettings } from '../context/SettingsContext';
-import { game_terms } from '../data/gameTerms';
+import { game_terms } from '../config/gameTerms';
 
 export default function Settings({ gameId = 'genshin' }) {
     const terms = game_terms[gameId] || game_terms.genshin;
@@ -40,7 +40,6 @@ export default function Settings({ gameId = 'genshin' }) {
 
                 <AccountManagerSection
                     setToast={setToast}
-                    showDeleteModal={showDeleteModal}
                     setShowDeleteModal={setShowDeleteModal}
                 />
 

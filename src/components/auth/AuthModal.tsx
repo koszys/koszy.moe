@@ -1,3 +1,4 @@
+import Modal from '../ui/Modal';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AuthModal() {
@@ -8,11 +9,8 @@ export default function AuthModal() {
     const iconButtonClass = "absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors";
 
     return (
-        <div className="fixed inset-0 bg-[#09090b]/50 z-[100] flex items-center justify-center p-4">
-            <div className="absolute inset-0" onClick={closeModal}></div>
-
+        <Modal onClose={closeModal} bgClass="bg-[#09090b]/50">
             <div className="relative bg-[#18181b] border border-white/10 p-8 md:p-10 rounded-2xl max-w-sm w-full shadow-2xl flex flex-col items-center">
-
                 <button onClick={closeModal} className={iconButtonClass}>
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -40,6 +38,6 @@ export default function AuthModal() {
                     </button>
                 </div>
             </div>
-        </div>
+        </Modal>
     );
 }

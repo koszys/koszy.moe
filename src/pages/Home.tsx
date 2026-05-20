@@ -9,7 +9,7 @@ import SocialCards from '../components/social/SocialCards';
 import SocialButton from '../components/social/SocialButton';
 
 // Data
-import { GAME_CONFIG } from '../data/games'; 
+import { GAME_CONFIG } from '../config/games'; 
 
 // Context
 import { useAuth } from '../context/AuthContext';

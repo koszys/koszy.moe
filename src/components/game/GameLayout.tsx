@@ -4,7 +4,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import Footer from '../ui/Footer';
 import SocialButton from '../social/SocialButton';
 
-import { GAME_CONFIG } from '../../data/games'; 
+import { GAME_CONFIG } from '../../config/games'; 
 
 export default function GameLayout({ gameTitle, navLinks, currentGameBgUrl }) {
     const location = useLocation();

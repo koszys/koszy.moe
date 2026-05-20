@@ -1,17 +1,13 @@
 import { Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
-import { GAME_CONFIG } from './data/games';
+import { GAME_CONFIG } from './config/games';
+import { GAME_ROUTES } from './config/gameRoutes';
 
 import LoadingFallback from './components/ui/LoadingFallback';
 import GameLayout from './components/game/GameLayout';
-import AuthModal from './components/auth/AuthModal';
-import LogoutModal from './components/auth/LogoutModal';
 
 const Home = lazy(() => import('./pages/Home'));
-const GenshinHome = lazy(() => import('./pages/genshin/GenshinHome'));
-const GenshinPlanner = lazy(() => import('./pages/genshin/GenshinPlanner'));
-const Settings = lazy(() => import('./pages/Settings'));
 
 function getNavLinks(game) {
   const { navIcons } = game;
@@ -27,30 +23,26 @@ export default function App() {
 
   return (
     <>
-      <AuthModal />
-      <LogoutModal />
-
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           <Route path="/" element={<Home />} />
 
           {activeGames.map(game => {
-            if (game.id === 'genshin') {
-              return (
-                <Route key={game.id} path={game.path} element={
-                  <GameLayout
-                    gameTitle={game.name}
-                    currentGameBgUrl={game.bgUrl}
-                    navLinks={getNavLinks(game)}
-                  />
-                }>
-                  <Route index element={<GenshinHome />} />
-                  <Route path="planner" element={<GenshinPlanner />} />
-                  <Route path="settings" element={<Settings gameId={game.id} />} />
-                </Route>
-              );
-            }
-            return null;
+            const routes = GAME_ROUTES[game.id];
+            if (!routes) return null;
+            return (
+              <Route key={game.id} path={game.path} element={
+                <GameLayout
+                  gameTitle={game.name}
+                  currentGameBgUrl={game.bgUrl}
+                  navLinks={getNavLinks(game)}
+                />
+              }>
+                <Route index element={<routes.Home />} />
+                <Route path="planner" element={<routes.Planner />} />
+                <Route path="settings" element={<routes.Settings gameId={game.id} />} />
+              </Route>
+            );
           })}
         </Routes>
       </Suspense>
