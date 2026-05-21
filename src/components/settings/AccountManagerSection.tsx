@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 import { countImportedTasks } from '../../utils/dataIO';
 import { PlusIcon, PencilIcon, TrashIcon, DownloadIcon, UploadIcon } from './Icons';
+import Modal from '../ui/Modal';
 
 interface AccountManagerSectionProps {
     setToast: (toast: { type: 'success' | 'error'; message: string } | null) => void;
@@ -169,7 +170,7 @@ export default function AccountManagerSection({ setToast, setShowDeleteModal }: 
 
             {/* Import Confirmation Modal */}
             {importModalData && (
-                <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
+                <Modal onClose={() => setImportModalData(null)} bgClass="bg-black/80">
                     <div className="bg-[#18181b] border border-[#52525b] p-6 rounded-xl max-w-sm w-full shadow-2xl">
                         <h3 className="text-white font-bold text-lg mb-2">Import Account Data</h3>
                         <p className="text-sm text-gray-400 mb-4">
@@ -207,7 +208,7 @@ export default function AccountManagerSection({ setToast, setShowDeleteModal }: 
                             </button>
                         </div>
                     </div>
-                </div>
+                </Modal>
             )}
         </div>
     );

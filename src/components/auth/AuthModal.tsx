@@ -6,7 +6,7 @@ export default function AuthModal() {
 
     if (!isModalOpen) return null;
 
-    const iconButtonClass = "absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors";
+    const iconButtonClass = "absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 hover:border-blue-500 rounded-xl transition-colors";
 
     return (
         <Modal onClose={closeModal} bgClass="bg-[#09090b]/50">
